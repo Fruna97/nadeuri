@@ -22,4 +22,11 @@ public class MemoryMemberRepository implements MemberRepository {
         return Optional.ofNullable(store.get(id));
     }
 
+    @Override
+    public Optional<Member> findByEmail(String email) {
+        return store.values().stream()
+            .filter(member -> member.getEmail().equals(email))
+            .findFirst();
+    }
+
 }
