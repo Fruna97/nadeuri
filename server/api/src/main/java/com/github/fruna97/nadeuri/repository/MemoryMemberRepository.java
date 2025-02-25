@@ -29,4 +29,7 @@ public class MemoryMemberRepository implements MemberRepository {
             .findFirst();
     }
 
+    public void clear() {
+        store.clear();
+    }
 }
