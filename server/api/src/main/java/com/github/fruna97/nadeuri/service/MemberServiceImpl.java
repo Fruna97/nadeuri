@@ -1,15 +1,12 @@
 package com.github.fruna97.nadeuri.service;
 
-import java.util.DuplicateFormatFlagsException;
-import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.fruna97.nadeuri.domain.Member;
+import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
-import com.github.fruna97.nadeuri.repository.MemoryMemberRepository;
 
 @Service
 public class MemberServiceImpl implements MemberService {
@@ -40,7 +37,7 @@ public class MemberServiceImpl implements MemberService {
     private void validateDuplicateEmail(Member member) {
         memberRepository.findByEmail(member.getEmail())
             .ifPresent(m -> {
-                throw new DuplicateFormatFlagsException(m.getEmail());
+                throw new DuplicateEmailException(m.getEmail());
             });
     }
 }
