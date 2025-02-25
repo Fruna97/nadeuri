@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.github.fruna97.nadeuri.domain.Member;
+import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
 
 public class MemoryMemberRepository implements MemberRepository {
     private static Map<Long, Member> store = new ConcurrentHashMap<>();
@@ -12,6 +13,8 @@ public class MemoryMemberRepository implements MemberRepository {
 
     @Override
     public Member save(Member member) {
+        validateDuplicateEmail(member); // 중복 이메일 확인
+        
         member.setId(++sequence);
         store.put(member.getId(), member);
         return member;
@@ -27,6 +30,13 @@ public class MemoryMemberRepository implements MemberRepository {
         return store.values().stream()
             .filter(member -> member.getEmail().equals(email))
             .findFirst();
+    }
+
+    private void validateDuplicateEmail(Member member) {
+        findByEmail(member.getEmail())
+            .ifPresent(m -> {
+                throw new DuplicateEmailException(m.getEmail());
+            });
     }
 
     public void clear() {

@@ -5,7 +5,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.fruna97.nadeuri.domain.Member;
-import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
 
 @Service
@@ -22,8 +21,6 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     public Member signUp(Member member) {
-        validateDuplicateEmail(member); // 중복 이메일 확인
-
         String rawPassword = member.getPassword();
         String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 
@@ -32,12 +29,5 @@ public class MemberServiceImpl implements MemberService {
         Member memberEntity = memberRepository.save(member);
 
         return memberEntity;
-    }
-
-    private void validateDuplicateEmail(Member member) {
-        memberRepository.findByEmail(member.getEmail())
-            .ifPresent(m -> {
-                throw new DuplicateEmailException(m.getEmail());
-            });
     }
 }
