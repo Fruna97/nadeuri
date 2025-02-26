@@ -14,9 +14,4 @@ public class AppConfig {
     public MemberRepository memberRepository() {
         return new MemoryMemberRepository();
     }
-
-    @Bean
-    public BCryptPasswordEncoder bcCryptPasswordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }
