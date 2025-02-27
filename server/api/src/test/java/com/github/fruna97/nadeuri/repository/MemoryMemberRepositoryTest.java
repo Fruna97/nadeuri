@@ -11,7 +11,7 @@ import com.github.fruna97.nadeuri.domain.Member;
 class MemoryMemberRepositoryTest {
 
     MemoryMemberRepository memberRepository;
-    
+
     @BeforeEach
     public void beforeEach() {
         memberRepository = new MemoryMemberRepository();
@@ -24,11 +24,12 @@ class MemoryMemberRepositoryTest {
 
     @Test
     void save() {
-        Member member = new Member();
-        member.setEmail("test_email@test.com");
-        member.setPassword("test_password");
-        member.setUsername("test_username");
-        
+        Member member = Member.builder()
+                .email("test_email@test.com")
+                .password("test_password")
+                .username("test_username")
+                .build();
+
         memberRepository.save(member);
 
         Member result = memberRepository.findById(member.getId()).get();
@@ -38,21 +39,21 @@ class MemoryMemberRepositoryTest {
 
     @Test
     void findByEmail() {
-        Member member1 = new Member();
-        member1.setEmail("test_email_1@test.com");
-        member1.setPassword("test_password_1");
-        member1.setUsername("test_username_1");
+        Member member1 = Member.builder()
+                .email("test_email_1@test.com")
+                .password("test_password_1")
+                .username("test_username_1")
+                .build();
         memberRepository.save(member1);
-        
-        Member member2 = new Member();
-        member2.setEmail("test_email_2@test.com");
-        member2.setPassword("test_password_2");
-        member2.setUsername("test_username_2");
+
+        Member member2 = Member.builder()
+                .email("test_email_2@test.com")
+                .password("test_password_2")
+                .username("test_username_2")
+                .build();
         memberRepository.save(member2);
-        
+
         Member result = memberRepository.findByEmail("test_email_2@test.com").get();
         assertThat(result).isEqualTo(member2);
     }
-
-    
 }

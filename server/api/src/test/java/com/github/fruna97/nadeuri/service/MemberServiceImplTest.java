@@ -30,10 +30,11 @@ public class MemberServiceImplTest {
 
     @Test
     void signUp() {
-        Member member = new Member();
-        member.setEmail("test_email@test.com");
-        member.setPassword("test_password");
-        member.setUsername("test_username");
+        Member member = Member.builder()
+                .email("test_email@test.com")
+                .password("test_password")
+                .username("test_username")
+                .build();
 
         memberService.signUp(member);
 
@@ -44,15 +45,17 @@ public class MemberServiceImplTest {
 
     @Test
     void signUpWithDuplicateEmail() {
-        Member member = new Member();
-        member.setEmail("test_email_1@test.com");
-        member.setPassword("test_password");
-        member.setUsername("test_username");
+        Member member = Member.builder()
+                .email("test_email_1@test.com")
+                .password("test_password")
+                .username("test_username")
+                .build();
 
-        Member memberWithDuplicateEmail = new Member();
-        memberWithDuplicateEmail.setEmail("test_email_1@test.com");
-        memberWithDuplicateEmail.setPassword("test_password");
-        memberWithDuplicateEmail.setUsername("test_username");
+        Member memberWithDuplicateEmail = Member.builder()
+                .email("test_email_1@test.com")
+                .password("test_password")
+                .username("test_username")
+                .build();
 
         memberService.signUp(member);
 
