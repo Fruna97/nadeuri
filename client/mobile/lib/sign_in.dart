@@ -12,7 +12,7 @@ class SignInPage extends StatelessWidget {
         child: Center(
           child: ListView(
             shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
+            physics: const ClampingScrollPhysics(),
             children: <Widget>[
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.0),
@@ -112,6 +112,7 @@ class SignInPage extends StatelessWidget {
                     const SizedBox(width: 12.0),
                     TextButton(
                       onPressed: () {
+                        Navigator.pushNamed(context, "/sign-up");
                         log("회원가입 button pressed");
                       },
                       style: TextButton.styleFrom(
