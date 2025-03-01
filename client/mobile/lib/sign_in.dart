@@ -42,7 +42,7 @@ class SignInPage extends StatelessWidget {
                   children: [
                     TextButton(
                       onPressed: () {
-                        log("비밀번호 찾기 button pressed");
+                        log("비밀번호 재설정 button pressed");
                       },
                       style: TextButton.styleFrom(
                         shape: RoundedRectangleBorder(
@@ -52,7 +52,7 @@ class SignInPage extends StatelessWidget {
                         padding: const EdgeInsets.all(0),
                         minimumSize: Size.zero,
                       ),
-                      child: const Text("비밀번호 찾기"),
+                      child: const Text("비밀번호 재설정"),
                     ),
                   ],
                 ),
