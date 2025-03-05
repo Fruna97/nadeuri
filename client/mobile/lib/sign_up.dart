@@ -1,6 +1,8 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -146,9 +148,21 @@ class _SignUpFormState extends State<SignUpForm> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   log("모든 필드 검증 완료");
+                  final response = await http.post(
+                    Uri.parse('http://localhost:8080/member/signup'),
+                    headers: {'Content-Type': 'application/json'},
+                    body: jsonEncode({"email": _emailController.text, "password": _passwordController.text}),
+                  );
+
+                  if (response.statusCode == 200) {
+                    log("회원 가입 완료");
+                    log(response.body);
+                  } else {
+                    log("회원 가입 실패");
+                  }
                 }
                 log("회원가입 button pressed");
               },
