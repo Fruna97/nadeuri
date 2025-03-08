@@ -23,11 +23,11 @@ public class MemberController {
     }
 
     @PostMapping("/member/signup")
-    public ResponseEntity<ResponseDto> signUp(@RequestBody @Valid SignUpDto signUpDto) {
+    public ResponseEntity<ResponseDto<?>> signUp(@RequestBody @Valid SignUpDto signUpDto) {
         memberService.signUp(signUpDto.toEntity());
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseDto("회원가입 성공"));
+                .body(new ResponseDto<>("회원가입 성공", null));
     }
 }

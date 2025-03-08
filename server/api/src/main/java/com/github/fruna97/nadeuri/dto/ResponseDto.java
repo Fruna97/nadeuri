@@ -5,6 +5,8 @@ import lombok.Data;
 
 @AllArgsConstructor
 @Data
-public class ResponseDto {
+public class ResponseDto<T> {
+
     private String message;
+    private T data;
 }
