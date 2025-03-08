@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri;
+package com.github.fruna97.nadeuri.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
