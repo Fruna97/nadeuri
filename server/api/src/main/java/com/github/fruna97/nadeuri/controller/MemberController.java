@@ -5,7 +5,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
-
+import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.dto.SignUpDto;
 import com.github.fruna97.nadeuri.service.MemberService;
 
@@ -20,11 +20,11 @@ public class MemberController {
     }
 
     @PostMapping("/member/signup")
-    public ResponseEntity<String> signUp(@RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<ResponseDto> signUp(@RequestBody SignUpDto signUpDto) {
         memberService.signUp(signUpDto.toEntity());
 
         return ResponseEntity
                 .ok()
-                .body("회원가입 성공");
+                .body(new ResponseDto("회원가입 성공"));
     }
 }
