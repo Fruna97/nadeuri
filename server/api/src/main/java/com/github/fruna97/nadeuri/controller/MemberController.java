@@ -5,9 +5,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+
 import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.dto.SignUpDto;
 import com.github.fruna97.nadeuri.service.MemberService;
+
+import jakarta.validation.Valid;
 
 @RestController
 public class MemberController {
@@ -20,7 +23,7 @@ public class MemberController {
     }
 
     @PostMapping("/member/signup")
-    public ResponseEntity<ResponseDto> signUp(@RequestBody SignUpDto signUpDto) {
+    public ResponseEntity<ResponseDto> signUp(@RequestBody @Valid SignUpDto signUpDto) {
         memberService.signUp(signUpDto.toEntity());
 
         return ResponseEntity
