@@ -24,7 +24,7 @@ public class MemberController {
 
     @PostMapping("/member/signup")
     public ResponseEntity<ResponseDto<?>> signUp(@RequestBody @Valid SignUpDto signUpDto) {
-        memberService.signUp(signUpDto.toEntity());
+        memberService.signUp(signUpDto);
 
         return ResponseEntity
                 .ok()

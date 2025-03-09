@@ -15,9 +15,15 @@ public class MemoryMemberRepository implements MemberRepository {
     public Member save(Member member) {
         validateDuplicateEmail(member); // 중복 이메일 확인
         
-        member.setId(++sequence);
-        store.put(member.getId(), member);
-        return member;
+        Member savedMember = Member.builder()
+            .id(++sequence)
+            .email(member.getEmail())
+            .password(member.getPassword())
+            .username(member.getUsername())
+            .build();
+        store.put(savedMember.getId(), savedMember);
+
+        return savedMember;
     }
 
     @Override

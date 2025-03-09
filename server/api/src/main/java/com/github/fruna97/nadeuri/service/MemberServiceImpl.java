@@ -5,6 +5,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.github.fruna97.nadeuri.domain.Member;
+import com.github.fruna97.nadeuri.dto.SignUpDto;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
 
 @Service
@@ -20,14 +21,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public Member signUp(Member member) {
-        String rawPassword = member.getPassword();
+    public Member signUp(SignUpDto signUpDto) {
+        String rawPassword = signUpDto.getPassword();
         String encPassword = bCryptPasswordEncoder.encode(rawPassword);
 
-        member.setPassword(encPassword);
-
-        Member memberEntity = memberRepository.save(member);
-
-        return memberEntity;
+        return memberRepository.save(Member.builder()
+                .email(signUpDto.getEmail())
+                .password(encPassword)
+                .username(signUpDto.getUsername())
+                .build());
     }
 }

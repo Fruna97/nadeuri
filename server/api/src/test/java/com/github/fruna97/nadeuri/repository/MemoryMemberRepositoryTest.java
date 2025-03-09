@@ -24,21 +24,24 @@ class MemoryMemberRepositoryTest {
 
     @Test
     void save() {
-        Member member = Member.builder()
+        // Given
+        Member newMember = Member.builder()
                 .email("test_email@test.com")
                 .password("test_password")
                 .username("test_username")
                 .build();
 
-        memberRepository.save(member);
+        // When
+        Member savedMember = memberRepository.save(newMember);
 
-        Member result = memberRepository.findById(member.getId()).get();
-
-        assertThat(result).isEqualTo(member);
+        // Then
+        Member result = memberRepository.findById(savedMember.getId()).get();
+        assertThat(result).isEqualTo(savedMember);
     }
 
     @Test
     void findByEmail() {
+        // Given
         Member member1 = Member.builder()
                 .email("test_email_1@test.com")
                 .password("test_password_1")
@@ -51,9 +54,12 @@ class MemoryMemberRepositoryTest {
                 .password("test_password_2")
                 .username("test_username_2")
                 .build();
-        memberRepository.save(member2);
+        
+        // When
+        Member savedMember2 = memberRepository.save(member2);
 
+        // Then
         Member result = memberRepository.findByEmail("test_email_2@test.com").get();
-        assertThat(result).isEqualTo(member2);
+        assertThat(result).isEqualTo(savedMember2);
     }
 }

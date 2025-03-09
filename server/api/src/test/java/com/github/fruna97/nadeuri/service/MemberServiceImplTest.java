@@ -3,12 +3,14 @@ package com.github.fruna97.nadeuri.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import com.github.fruna97.nadeuri.domain.Member;
+import com.github.fruna97.nadeuri.dto.SignUpDto;
 import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
 import com.github.fruna97.nadeuri.repository.MemoryMemberRepository;
 
@@ -30,37 +32,43 @@ public class MemberServiceImplTest {
 
     @Test
     void signUp() {
-        Member member = Member.builder()
+        // Given
+        SignUpDto signUpDto = SignUpDto.builder()
                 .email("test_email@test.com")
                 .password("test_password")
                 .username("test_username")
                 .build();
 
-        memberService.signUp(member);
+        // When
+        Member savedMember = memberService.signUp(signUpDto);
+        Member result = memberRepository.findById(savedMember.getId()).get();
 
-        Member result = memberRepository.findById(member.getId()).get();
-
-        assertThat(result).isEqualTo(member);
+        // Then
+        assertThat(result).isEqualTo(savedMember);
     }
 
     @Test
     void signUpWithDuplicateEmail() {
-        Member member = Member.builder()
+        // Given
+        SignUpDto signUpDto1 = SignUpDto.builder()
                 .email("test_email_1@test.com")
                 .password("test_password")
                 .username("test_username")
                 .build();
 
-        Member memberWithDuplicateEmail = Member.builder()
+        SignUpDto signUpDto2 = SignUpDto.builder()
                 .email("test_email_1@test.com")
                 .password("test_password")
                 .username("test_username")
                 .build();
 
-        memberService.signUp(member);
+        // When
+        memberService.signUp(signUpDto1);
+        ThrowingCallable signUpWithDuplicatedEmailAction = () -> memberService.signUp(signUpDto2);
 
-        assertThatThrownBy(() -> memberService.signUp(memberWithDuplicateEmail))
+        // Then
+        assertThatThrownBy(signUpWithDuplicatedEmailAction)
                 .isInstanceOf(DuplicateEmailException.class)
-                .hasMessageContaining("이미 존재하는 이메일 입니니다: " + memberWithDuplicateEmail.getEmail());
+                .hasMessageContaining("이미 존재하는 이메일 입니다: " + signUpDto2.getEmail());
     }
 }
