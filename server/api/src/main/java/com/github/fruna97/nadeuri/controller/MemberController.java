@@ -28,6 +28,8 @@ public class MemberController {
 
         return ResponseEntity
                 .ok()
-                .body(new ResponseDto<>("회원가입 성공", null));
+                .body(ResponseDto.builder()
+                        .message("회원가입 성공")
+                        .build());
     }
 }

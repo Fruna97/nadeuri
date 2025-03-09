@@ -22,7 +22,11 @@ public class CustomExceptionHandler {
     @ExceptionHandler(DuplicateEmailException.class)
     public ResponseEntity<ResponseDto<?>> duplicateEmailHandler(DuplicateEmailException e) {
         log.warn("중복된 이메일 가입 요청 : " + e.getMessage());
-        return ResponseEntity.badRequest().body(new ResponseDto<>(e.getMessage(), null));
+        return ResponseEntity
+                .badRequest()
+                .body(ResponseDto.builder()
+                        .message(e.getMessage())
+                        .build());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -42,6 +46,9 @@ public class CustomExceptionHandler {
 
         return ResponseEntity
                 .badRequest()
-                .body(new ResponseDto<>("유효성 검사 실패", errorMap));
+                .body(ResponseDto.builder()
+                        .message("유효성 검사 실패")
+                        .data(errorMap)
+                        .build());
     }
 }

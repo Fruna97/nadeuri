@@ -1,10 +1,10 @@
 package com.github.fruna97.nadeuri.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
+import lombok.Builder;
+import lombok.Getter;
 
-@AllArgsConstructor
-@Data
+@Getter
+@Builder
 public class ResponseDto<T> {
 
     private String message;
