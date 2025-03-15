@@ -13,13 +13,13 @@ class MemoryMemberRepositoryTest {
     MemoryMemberRepository memberRepository;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         memberRepository = new MemoryMemberRepository();
     }
 
     @AfterEach
-    public void afterEach() {
-        memberRepository.clear();
+    void afterEach() {
+        MemoryMemberRepository.clear();
     }
 
     @Test

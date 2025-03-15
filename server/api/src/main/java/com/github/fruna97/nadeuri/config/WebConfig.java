@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Configuration
 @EnableWebMvc
-public class WebConfig implements WebMvcConfigurer {
+public class WebConfig implements WebMvcConfigurer { // TODO: 추후 삭제 고려 (Android 앱의 요청에 대해서는 필요하지 않음)
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {

@@ -14,20 +14,20 @@ import com.github.fruna97.nadeuri.dto.SignUpDto;
 import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
 import com.github.fruna97.nadeuri.repository.MemoryMemberRepository;
 
-public class MemberServiceImplTest {
+class MemberServiceImplTest {
 
     MemoryMemberRepository memberRepository;
     MemberService memberService;
 
     @BeforeEach
-    private void beforeEach() {
+    void beforeEach() {
         memberRepository = new MemoryMemberRepository();
         memberService = new MemberServiceImpl(memberRepository, new BCryptPasswordEncoder());
     }
 
     @AfterEach
-    private void afterEach() {
-        memberRepository.clear();
+    void afterEach() {
+        MemoryMemberRepository.clear();
     }
 
     @Test
