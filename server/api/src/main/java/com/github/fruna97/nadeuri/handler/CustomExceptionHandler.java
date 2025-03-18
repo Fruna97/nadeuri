@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri;
+package com.github.fruna97.nadeuri.handler;
 
 import java.util.ArrayList;
 import java.util.HashMap;
