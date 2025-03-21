@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -73,6 +74,8 @@ class _SignUpFormState extends State<SignUpForm> {
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
         children: <Widget>[
+          Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("회원가입", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold))]),
+          SizedBox(height: 40),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: TextFormField(
@@ -144,33 +147,93 @@ class _SignUpFormState extends State<SignUpForm> {
               decoration: const InputDecoration(labelText: "별명", helperText: "별명을 입력하지 않으시면, 이메일을 기반으로 자동으로 생성됩니다.", border: OutlineInputBorder()),
             ),
           ),
-          const SizedBox(height: 36.0),
+          const SizedBox(height: 32.0),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             child: ElevatedButton(
               onPressed: () async {
                 if (_formKey.currentState!.validate()) {
                   log("모든 필드 검증 완료");
-                  final response = await http.post(
-                    Uri.parse('http://localhost:8080/member/signup'),
-                    headers: {'Content-Type': 'application/json'},
-                    body: jsonEncode({"email": _emailController.text, "password": _passwordController.text}),
-                  );
 
+                  showDialog(context: context, builder: (context) => const Center(child: CircularProgressIndicator()));
+
+                  final response = await http
+                      .post(
+                        // Uri.parse("http://localhost:8080/member/signup"), // Chrome
+                        Uri.parse("http://10.0.2.2:8080/member/signup"), // Android
+                        headers: {"content-type": "application/json; charset=UTF-8"},
+                        body: jsonEncode({"email": _emailController.text, "password": _passwordController.text}),
+                      )
+                      .timeout(
+                        const Duration(seconds: 5),
+                        onTimeout: () {
+                          return http.Response(
+                            jsonEncode({"message": "타임아웃", "data": null}),
+                            HttpStatus.requestTimeout,
+                            headers: {"content-type": "application/json; charset=UTF-8"},
+                          );
+                        },
+                      );
+
+                  if (context.mounted) {
+                    Navigator.pop(context);
+                  }
+
+                  log(response.headers["content-type"] ?? "no content-type");
                   if (response.statusCode == 200) {
+                    if (context.mounted) {
+                      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignUpCompletePage()));
+                    }
                     log("회원 가입 완료");
                     log(response.body);
                   } else {
                     log("회원 가입 실패");
+                    log(response.statusCode.toString());
+                    log(response.body);
                   }
                 }
-                log("회원가입 button pressed");
               },
               style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0))),
               child: const Text("회원가입"),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SignUpCompletePage extends StatelessWidget {
+  const SignUpCompletePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: SafeArea(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            const Text("환영합니다!", style: TextStyle(fontSize: 32)),
+            const SizedBox(height: 24, width: double.maxFinite),
+            const Text("로그인을 통해 서비스를 이용해보세요!", style: TextStyle(fontSize: 18)),
+            const SizedBox(height: 36, width: double.maxFinite),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 12.0),
+              child: SizedBox(
+                width: double.maxFinite,
+                child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
+                  },
+                  style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0))),
+                  child: const Text("알겠습니다!"),
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
