@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/dto/response_dto.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -26,24 +27,20 @@ class _SignUpFormState extends State<SignUpForm> {
   final GlobalKey<FormFieldState> _emailKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _passwordKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _passwordCheckKey = GlobalKey<FormFieldState>();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordCheckController = TextEditingController();
   final TextEditingController _usernameController = TextEditingController();
+
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _passwordCheckFocusNode = FocusNode();
+
   Widget? _passwordError;
 
-  void _togglePasswordErrorState() {
-    setState(() {
-      if (_passwordError == null) {
-        _passwordError = SizedBox.shrink();
-      } else {
-        _passwordError = null;
-      }
-    });
-  }
+  String? _emailErrorText;
+  String? _passwordCheckErrorText;
 
   @override
   void initState() {
@@ -51,16 +48,31 @@ class _SignUpFormState extends State<SignUpForm> {
 
     _emailFocusNode.addListener(() {
       if (!_emailFocusNode.hasFocus) {
+        if (_emailErrorText != null) {
+          setState(() {
+            _emailErrorText = null;
+          });
+        }
         _emailKey.currentState?.validate();
       }
     });
     _passwordFocusNode.addListener(() {
       if (!_passwordFocusNode.hasFocus) {
+        if (_passwordCheckErrorText != null) {
+          setState(() {
+            _passwordCheckErrorText = null;
+          });
+        }
         _passwordCheckKey.currentState?.validate();
       }
     });
     _passwordCheckFocusNode.addListener(() {
       if (!_passwordCheckFocusNode.hasFocus) {
+        if (_passwordCheckErrorText != null) {
+          setState(() {
+            _passwordCheckErrorText = null;
+          });
+        }
         _passwordCheckKey.currentState?.validate();
       }
     });
@@ -82,7 +94,12 @@ class _SignUpFormState extends State<SignUpForm> {
               key: _emailKey,
               controller: _emailController,
               focusNode: _emailFocusNode,
-              decoration: const InputDecoration(labelText: "이메일", helperText: "추후 이메일을 통해 비밀번호를 재설정 하실 수 있습니다.", border: OutlineInputBorder()),
+              decoration: InputDecoration(
+                labelText: "이메일",
+                helperText: "추후 이메일을 통해 비밀번호를 재설정 하실 수 있습니다.",
+                errorText: _emailErrorText,
+                border: OutlineInputBorder(),
+              ),
               validator: (String? email) {
                 final regExp = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]+$");
                 if (email == null || email.isEmpty) {
@@ -117,17 +134,20 @@ class _SignUpFormState extends State<SignUpForm> {
               key: _passwordCheckKey,
               controller: _passwordCheckController,
               focusNode: _passwordCheckFocusNode,
-              decoration: const InputDecoration(labelText: "비밀번호 확인", border: OutlineInputBorder()),
+              decoration: InputDecoration(labelText: "비밀번호 확인", errorText: _passwordCheckErrorText, border: OutlineInputBorder()),
               obscureText: true,
               validator: (String? passwordCheck) {
                 String password = _passwordController.text;
 
                 // "비밀번호" 필드와 "비밀번호 확인" 필드의 검증 메시지 모두 "비밀번호 확인" 필드 아래에 표시
                 if (password.isEmpty) {
-                  if (_passwordError == null) _togglePasswordErrorState();
+                  _activatePasswordErrorState();
                   return "비밀번호를 입력해 주세요.";
-                } else if (_passwordError != null) {
-                  _togglePasswordErrorState();
+                } else if (password.length < 9) {
+                  _activatePasswordErrorState();
+                  return "비밀번호는 9자 이상이어야 합니다.";
+                } else if (_passwordError != null) { // 재검증시 비밀번호 필드에 이상이 없는 경우
+                  _deactivatePasswordErrorState();
                 }
 
                 if (passwordCheck == null || passwordCheck.isEmpty) {
@@ -179,17 +199,65 @@ class _SignUpFormState extends State<SignUpForm> {
                     Navigator.pop(context);
                   }
 
-                  log(response.headers["content-type"] ?? "no content-type");
-                  if (response.statusCode == 200) {
+                  final statusCode = response.statusCode;
+                  final body = jsonDecode(response.body);
+                  final responseDto = ResponseDto.fromJson(body, (data) {
+                    if (data != null) {
+                      if (data is Map<String, dynamic>) {
+                        final Map<String, List<String>> result = {};
+
+                        data.forEach((key, value) {
+                          if (value is List<dynamic>) {
+                            final List<String> filteredList = value.whereType<String>().toList();
+                            result[key] = filteredList;
+                          }
+                        });
+
+                        return result;
+                      } else {
+                        throw FormatException("응답 형식이 유효하지 않습니다"); // 검증에 대한 응답은 Map<String, List<String>> 형식
+                      }
+                    } else {
+                      return null;
+                    }
+                  });
+
+                  if (statusCode == 200) {
+                    log("회원가입 성공");
+                    log(responseDto.toString());
+
+                    // 회원가입 성공시 회원가입 완료 페이지로 전환
                     if (context.mounted) {
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignUpCompletePage()));
                     }
-                    log("회원 가입 완료");
-                    log(response.body);
                   } else {
-                    log("회원 가입 실패");
-                    log(response.statusCode.toString());
-                    log(response.body);
+                    log("회원가입 실패");
+                    log(responseDto.toString());
+
+                    // 회원가입을 실패하면 응답에 따라 각 텍스트 필드에 검증 에러 메시지 표시
+                    if (responseDto.message.startsWith("이미 존재하는 이메일 입니다")) {
+                      setState(() {
+                        _emailErrorText = "이미 가입된 이메일입니다.";
+                      });
+                      _emailFocusNode.requestFocus();
+                    } else if (responseDto.message.startsWith("유효성 검사 실패")) {
+                      responseDto.data!.forEach((key, value) {
+                        String errorText = "";
+                        value.forEach((item) {
+                          errorText += item + "\n";
+                        });
+
+                        setState(() {
+                          switch (key) {
+                            case "email":
+                              _emailErrorText = errorText;
+                            case "password":
+                              _activatePasswordErrorState();
+                              _passwordCheckErrorText = errorText;
+                          }
+                        });
+                      });
+                    }
                   }
                 }
               },
@@ -200,6 +268,20 @@ class _SignUpFormState extends State<SignUpForm> {
         ],
       ),
     );
+  }
+
+  void _activatePasswordErrorState() {
+    setState(() {
+      _passwordError ??= SizedBox.shrink();
+    });
+  }
+
+  void _deactivatePasswordErrorState() {
+    setState(() {
+      if (_passwordError != null) {
+        _passwordError = null;
+      }
+    });
   }
 }
 
