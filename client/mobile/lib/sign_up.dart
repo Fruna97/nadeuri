@@ -221,18 +221,38 @@ class _SignUpFormState extends State<SignUpForm> {
                       return null;
                     }
                   });
+                  log(responseDto.toString());
 
-                  if (statusCode == 200) {
+                  if (statusCode == HttpStatus.ok) {
                     log("회원가입 성공");
-                    log(responseDto.toString());
 
                     // 회원가입 성공시 회원가입 완료 페이지로 전환
                     if (context.mounted) {
                       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignUpCompletePage()));
                     }
+                  } else if (statusCode == HttpStatus.requestTimeout) {
+                    log("요청 타임아웃");
+                    showDialog(
+                      context: context,
+                      builder:
+                          (context) => AlertDialog(
+                            title: const Text("문제가 발생했어요"),
+                            content: const Text(
+                              '회원가입에 실패했습니다.\n'
+                              '잠시 후 다시 시도해 주세요.',
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text("알겠습니다."),
+                              ),
+                            ],
+                          ),
+                    );
                   } else {
                     log("회원가입 실패");
-                    log(responseDto.toString());
 
                     // 회원가입을 실패하면 응답에 따라 각 텍스트 필드에 검증 에러 메시지 표시
                     if (responseDto.message.startsWith("이미 존재하는 이메일 입니다")) {
