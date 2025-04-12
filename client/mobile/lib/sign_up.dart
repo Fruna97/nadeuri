@@ -16,6 +16,7 @@ class SignUpPage extends StatelessWidget {
 }
 
 class SignUpForm extends StatefulWidget {
+
   const SignUpForm({super.key});
 
   @override
@@ -23,6 +24,7 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _emailKey = GlobalKey<FormFieldState>();
   final GlobalKey<FormFieldState> _passwordKey = GlobalKey<FormFieldState>();
@@ -86,7 +88,10 @@ class _SignUpFormState extends State<SignUpForm> {
         shrinkWrap: true,
         physics: const ClampingScrollPhysics(),
         children: <Widget>[
-          Row(mainAxisAlignment: MainAxisAlignment.center, children: [Text("회원가입", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold))]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [Text("회원가입", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold))],
+          ),
           SizedBox(height: 40),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -134,7 +139,11 @@ class _SignUpFormState extends State<SignUpForm> {
               key: _passwordCheckKey,
               controller: _passwordCheckController,
               focusNode: _passwordCheckFocusNode,
-              decoration: InputDecoration(labelText: "비밀번호 확인", errorText: _passwordCheckErrorText, border: OutlineInputBorder()),
+              decoration: InputDecoration(
+                labelText: "비밀번호 확인",
+                errorText: _passwordCheckErrorText,
+                border: OutlineInputBorder(),
+              ),
               obscureText: true,
               validator: (String? passwordCheck) {
                 String password = _passwordController.text;
@@ -146,7 +155,8 @@ class _SignUpFormState extends State<SignUpForm> {
                 } else if (password.length < 9) {
                   _activatePasswordErrorState();
                   return "비밀번호는 9자 이상이어야 합니다.";
-                } else if (_passwordError != null) { // 재검증시 비밀번호 필드에 이상이 없는 경우
+                } else if (_passwordError != null) {
+                  // 재검증시 비밀번호 필드에 이상이 없는 경우
                   _deactivatePasswordErrorState();
                 }
 
@@ -164,7 +174,11 @@ class _SignUpFormState extends State<SignUpForm> {
             padding: EdgeInsets.symmetric(horizontal: 12.0),
             child: TextFormField(
               controller: _usernameController,
-              decoration: const InputDecoration(labelText: "별명", helperText: "별명을 입력하지 않으시면, 이메일을 기반으로 자동으로 생성됩니다.", border: OutlineInputBorder()),
+              decoration: const InputDecoration(
+                labelText: "별명",
+                helperText: "별명을 입력하지 않으시면, 이메일을 기반으로 자동으로 생성됩니다.",
+                border: OutlineInputBorder(),
+              ),
             ),
           ),
           const SizedBox(height: 32.0),
@@ -181,7 +195,7 @@ class _SignUpFormState extends State<SignUpForm> {
                       .post(
                         // Uri.parse("http://localhost:8080/member/signup"), // Chrome
                         Uri.parse("http://10.0.2.2:8080/member/signup"), // Android
-                        headers: {"content-type": "application/json; charset=UTF-8"},
+                        headers: {"content-type": "application/json;charset=UTF-8"},
                         body: jsonEncode({"email": _emailController.text, "password": _passwordController.text}),
                       )
                       .timeout(
@@ -255,7 +269,7 @@ class _SignUpFormState extends State<SignUpForm> {
                     log("회원가입 실패");
 
                     // 회원가입을 실패하면 응답에 따라 각 텍스트 필드에 검증 에러 메시지 표시
-                    if (responseDto.message.startsWith("이미 존재하는 이메일 입니다")) {
+                    if (responseDto.message.startsWith("이미 존재하는 이메일입니다")) {
                       setState(() {
                         _emailErrorText = "이미 가입된 이메일입니다.";
                       });
@@ -329,7 +343,9 @@ class SignUpCompletePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
                   },
-                  style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0))),
+                  style: ElevatedButton.styleFrom(
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+                  ),
                   child: const Text("알겠습니다!"),
                 ),
               ),
