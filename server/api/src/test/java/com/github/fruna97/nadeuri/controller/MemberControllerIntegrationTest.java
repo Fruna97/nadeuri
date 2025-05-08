@@ -50,7 +50,7 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "test_eamil@test.com",
                     "password": "test_password",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """;
         HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
@@ -79,7 +79,7 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "test_eamil@test.com",
                     "password": "test_password",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """;
         HttpEntity<String> request1 = new HttpEntity<>(requestBody1, headers);
@@ -88,7 +88,7 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "test_eamil@test.com",
                     "password": "test_password",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """;
         HttpEntity<String> request2 = new HttpEntity<>(requestBody2, headers);
@@ -121,7 +121,7 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "",
                     "password": "test_password",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """,
                 "유효성 검사 실패",
@@ -133,7 +133,7 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "invalid_email_format",
                     "password": "test_password",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """,
                 "유효성 검사 실패",
@@ -145,7 +145,7 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "test_email@test.com",
                     "password": "",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """,
                 "유효성 검사 실패",
@@ -157,7 +157,7 @@ class MemberControllerIntegrationTest {
                     {
                         "email": "test_email@test.com",
                         "password": "under_9",
-                        "username": "test_username"
+                        "nickname": "test_nickname"
                     }
                     """,
                     "유효성 검사 실패",

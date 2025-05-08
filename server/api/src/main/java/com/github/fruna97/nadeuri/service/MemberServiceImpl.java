@@ -28,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.save(Member.builder()
                 .email(signUpDto.getEmail())
                 .password(encPassword)
-                .username(signUpDto.getUsername())
+                .nickname(signUpDto.getNickname())
                 .build());
     }
 }

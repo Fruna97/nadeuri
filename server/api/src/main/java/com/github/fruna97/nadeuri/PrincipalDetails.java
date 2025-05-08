@@ -53,6 +53,6 @@ public class PrincipalDetails implements UserDetails {
     }
 
     public String getNickname() {
-        return member.getUsername();
+        return member.getNickname();
     }
 }

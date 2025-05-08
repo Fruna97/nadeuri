@@ -36,7 +36,7 @@ class MemberServiceImplTest {
         SignUpDto signUpDto = SignUpDto.builder()
                 .email("test_email@test.com")
                 .password("test_password")
-                .username("test_username")
+                .nickname("test_nickname")
                 .build();
 
         // When
@@ -53,13 +53,13 @@ class MemberServiceImplTest {
         SignUpDto signUpDto1 = SignUpDto.builder()
                 .email("test_email_1@test.com")
                 .password("test_password")
-                .username("test_username")
+                .nickname("test_nickname")
                 .build();
 
         SignUpDto signUpDto2 = SignUpDto.builder()
                 .email("test_email_1@test.com")
                 .password("test_password")
-                .username("test_username")
+                .nickname("test_nickname")
                 .build();
 
         // When

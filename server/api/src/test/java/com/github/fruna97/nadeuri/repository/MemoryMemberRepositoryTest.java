@@ -28,7 +28,7 @@ class MemoryMemberRepositoryTest {
         Member newMember = Member.builder()
                 .email("test_email@test.com")
                 .password("test_password")
-                .username("test_username")
+                .nickname("test_nickname")
                 .build();
 
         // When
@@ -45,14 +45,14 @@ class MemoryMemberRepositoryTest {
         Member member1 = Member.builder()
                 .email("test_email_1@test.com")
                 .password("test_password_1")
-                .username("test_username_1")
+                .nickname("test_nickname_1")
                 .build();
         memberRepository.save(member1);
 
         Member member2 = Member.builder()
                 .email("test_email_2@test.com")
                 .password("test_password_2")
-                .username("test_username_2")
+                .nickname("test_nickname_2")
                 .build();
         
         // When

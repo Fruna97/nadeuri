@@ -12,7 +12,7 @@ public class Member {
     private Long id;
     private String email;
     private String password;
-    private String username;
+    private String nickname;
     private LocalDateTime createDate;
     private String profileImageUrl;
 }

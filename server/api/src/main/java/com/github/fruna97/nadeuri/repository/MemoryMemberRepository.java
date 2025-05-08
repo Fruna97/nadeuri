@@ -19,7 +19,7 @@ public class MemoryMemberRepository implements MemberRepository {
             .id(++sequence)
             .email(member.getEmail())
             .password(member.getPassword())
-            .username(member.getUsername())
+            .nickname(member.getNickname())
             .build();
         store.put(savedMember.getId(), savedMember);
 

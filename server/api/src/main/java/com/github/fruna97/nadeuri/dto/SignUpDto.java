@@ -6,12 +6,12 @@ import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.NoArgsConstructor;
 
 @Builder
 // 요청에 담긴 데이터의 Deserialize를 위한 생성자
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor
 @Getter
 public class SignUpDto {
 
@@ -23,5 +23,5 @@ public class SignUpDto {
     @Size(min = 9, message = "비밀번호는 9자 이상 이여야 합니다")
     private String password;
 
-    private String username;
+    private String nickname;
 }
