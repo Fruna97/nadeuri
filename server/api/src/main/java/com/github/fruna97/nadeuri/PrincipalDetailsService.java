@@ -24,11 +24,11 @@ public class PrincipalDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
-        
+
         if (optionalMember.isPresent()) {
             return new PrincipalDetails(optionalMember.get());
         } else {
-            return null;
+            throw new UsernameNotFoundException("존재하지 않는 회원 입니다: " + email);
         }
     }
 }
