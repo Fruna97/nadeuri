@@ -8,7 +8,7 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -21,12 +21,10 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public JwtAuthenticationFilter(AuthenticationManager authenticationManager) {
-
-        super(authenticationManager);
-        setFilterProcessesUrl("/member/login");
+    public JwtAuthenticationFilter(String defaultFilterProcessesUrl, AuthenticationManager authenticationManager) {
+        super(defaultFilterProcessesUrl, authenticationManager);
     }
 
     @Override
@@ -68,13 +66,13 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException failed) throws IOException, ServletException {
 
-        ResponseDto responseDto = ResponseDto.builder()
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+        ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
                 .message("이메일 또는 비밀번호가 유효하지 않습니다.")
                 .data(null)
                 .build();
-        
         final ObjectMapper serializer = new ObjectMapper();
-        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.getWriter().write(serializer.writeValueAsString(responseDto));
     }
 }

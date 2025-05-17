@@ -11,8 +11,8 @@ import com.github.fruna97.nadeuri.repository.MemberRepository;
 @Service
 public class MemberServiceImpl implements MemberService {
 
-    MemberRepository memberRepository;
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     public MemberServiceImpl(MemberRepository memberRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
