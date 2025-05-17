@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Date;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -74,5 +75,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
                 .build();
         final ObjectMapper serializer = new ObjectMapper();
         response.getWriter().write(serializer.writeValueAsString(responseDto));
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     }
 }

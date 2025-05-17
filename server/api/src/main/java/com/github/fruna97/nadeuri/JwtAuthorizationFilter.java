@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Optional;
 
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -73,6 +74,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                     .build();
             final ObjectMapper serializer = new ObjectMapper();
             response.getWriter().write(serializer.writeValueAsString(responseDto));
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         }
     }
 }
