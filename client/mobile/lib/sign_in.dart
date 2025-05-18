@@ -20,24 +20,21 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       body: SafeArea(
         child: Center(
-          child: ListView(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: TextField(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+            child: ListView(
+              shrinkWrap: true,
+              physics: ClampingScrollPhysics(),
+              children: <Widget>[
+                TextField(
                   controller: _emailController, 
                   decoration: const InputDecoration(
                     labelText: "이메일",
                     border: OutlineInputBorder(),
                   ),
                 ),
-              ),
-              const SizedBox(height: 8.0),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: TextField(
+                const SizedBox(height: 8.0),
+                TextField(
                   controller: _passwordController,
                   decoration: const InputDecoration(
                     labelText: "비밀번호",
@@ -45,11 +42,8 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   obscureText: true,
                 ),
-              ),
-              const SizedBox(height: 12.0),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Row(
+                const SizedBox(height: 12.0),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     TextButton(
@@ -68,18 +62,15 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ],
                 ),
-              ),
-              if (_validationMessage.isNotEmpty) const SizedBox(height: 12.0),
-              if (_validationMessage.isNotEmpty) Center(child: Text(_validationMessage, style: TextStyle(color: Colors.red, fontSize: 12))),
-              const SizedBox(height: 12.0),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: ElevatedButton(
+                if (_validationMessage.isNotEmpty) const SizedBox(height: 12.0),
+                if (_validationMessage.isNotEmpty) Center(child: Text(_validationMessage, style: TextStyle(color: Colors.red, fontSize: 12))),
+                const SizedBox(height: 12.0),
+                ElevatedButton(
                   onPressed: () {
                     log("로그인 button pressed");
                     final String email = _emailController.text;
                     final String password = _passwordController.text;
-
+                            
                     if (email.isEmpty) {
                       setState(() {
                         _validationMessage = "이메일을 입력해 주세요.";
@@ -89,7 +80,7 @@ class _SignInPageState extends State<SignInPage> {
                         _validationMessage = "비밀번호를 입력해 주세요.";
                       });
                     } else {
-
+                            
                     }
                   },
                   style: ElevatedButton.styleFrom(
@@ -99,11 +90,8 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   child: const Text("로그인"),
                 ),
-              ),
-              const SizedBox(height: 18.0),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.0),
-                child: Row(
+                const SizedBox(height: 18.0),
+                const Row(
                   mainAxisSize: MainAxisSize.max,
                   children: [
                     Expanded(child: Divider(endIndent: 12.0)),
@@ -111,26 +99,20 @@ class _SignInPageState extends State<SignInPage> {
                     Expanded(child: Divider(indent: 12.0)),
                   ],
                 ),
-              ),
-              const SizedBox(height: 18.0),
-              Center(
-                child: ElevatedButton(
-                  onPressed: () {
-                    log("카카오로 로그인 button pressed");
-                  },
-                  style: ElevatedButton.styleFrom(shape: CircleBorder()),
-                  child: Text("K"), // TODO: 카카오 OAuth 로고로 교체
+                const SizedBox(height: 18.0),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      log("카카오로 로그인 button pressed");
+                    },
+                    style: ElevatedButton.styleFrom(shape: const CircleBorder()),
+                    child: const Text("K"), // TODO: 카카오 OAuth 로고로 교체
+                  ),
                 ),
-              ),
-              const SizedBox(height: 18.0),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.0),
-                child: Divider(),
-              ),
-              const SizedBox(height: 18.0),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                child: Row(
+                const SizedBox(height: 18.0),
+                const Divider(),
+                const SizedBox(height: 18.0),
+                Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     const Text("아직 회원이 아니신가요?"),
@@ -151,8 +133,8 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ],
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
