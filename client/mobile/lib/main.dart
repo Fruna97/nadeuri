@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/sign_in.dart';
+import 'package:mobile/sign_up.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/sign-in': (BuildContext context) => SignInPage(), 
+        '/sign-up': (BuildContext context) => SignUpPage(), 
       },
       initialRoute: '/sign-in',
     );
