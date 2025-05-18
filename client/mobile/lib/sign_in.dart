@@ -119,6 +119,7 @@ class _SignInPageState extends State<SignInPage> {
                     const SizedBox(width: 12.0),
                     TextButton(
                       onPressed: () {
+                        Navigator.pushNamed(context, "/sign-up");
                         log("회원가입 button pressed");
                       },
                       style: TextButton.styleFrom(
