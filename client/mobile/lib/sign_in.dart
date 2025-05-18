@@ -2,8 +2,18 @@ import 'dart:developer';
 
 import 'package:flutter/material.dart';
 
-class SignInPage extends StatelessWidget {
+class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
+
+  @override
+  State<SignInPage> createState() => _SignInPageState();
+}
+
+class _SignInPageState extends State<SignInPage> {
+  final TextEditingController _emailController = TextEditingController();
+  final TextEditingController _passwordController = TextEditingController();
+
+  String _validationMessage = '';
 
   @override
   Widget build(BuildContext context) {
@@ -14,20 +24,22 @@ class SignInPage extends StatelessWidget {
             shrinkWrap: true,
             physics: ClampingScrollPhysics(),
             children: <Widget>[
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: TextField(
-                  decoration: InputDecoration(
+                  controller: _emailController, 
+                  decoration: const InputDecoration(
                     labelText: "이메일",
                     border: OutlineInputBorder(),
                   ),
                 ),
               ),
               const SizedBox(height: 8.0),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 12.0),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: TextField(
-                  decoration: InputDecoration(
+                  controller: _passwordController,
+                  decoration: const InputDecoration(
                     labelText: "비밀번호",
                     border: OutlineInputBorder(),
                   ),
@@ -57,12 +69,28 @@ class SignInPage extends StatelessWidget {
                   ],
                 ),
               ),
+              if (_validationMessage.isNotEmpty) const SizedBox(height: 12.0),
+              if (_validationMessage.isNotEmpty) Center(child: Text(_validationMessage, style: TextStyle(color: Colors.red, fontSize: 12))),
               const SizedBox(height: 12.0),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 12.0),
                 child: ElevatedButton(
                   onPressed: () {
                     log("로그인 button pressed");
+                    final String email = _emailController.text;
+                    final String password = _passwordController.text;
+
+                    if (email.isEmpty) {
+                      setState(() {
+                        _validationMessage = "이메일을 입력해 주세요.";
+                      });
+                    } else if (password.isEmpty) {
+                      setState(() {
+                        _validationMessage = "비밀번호를 입력해 주세요.";
+                      });
+                    } else {
+
+                    }
                   },
                   style: ElevatedButton.styleFrom(
                     shape: RoundedRectangleBorder(
@@ -85,17 +113,14 @@ class SignInPage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 18.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  ElevatedButton(
-                    onPressed: () {
-                      log("카카오로 로그인 button pressed");
-                    },
-                    style: ElevatedButton.styleFrom(shape: CircleBorder()),
-                    child: Text("K"), // TODO: 카카오 OAuth 로고로 교체
-                  ),
-                ],
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    log("카카오로 로그인 button pressed");
+                  },
+                  style: ElevatedButton.styleFrom(shape: CircleBorder()),
+                  child: Text("K"), // TODO: 카카오 OAuth 로고로 교체
+                ),
               ),
               const SizedBox(height: 18.0),
               const Padding(
