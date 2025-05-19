@@ -215,26 +215,8 @@ class _SignUpFormState extends State<SignUpForm> {
 
                   final statusCode = response.statusCode;
                   final body = jsonDecode(response.body);
-                  final responseDto = ResponseDto.fromJson(body, (data) {
-                    if (data != null) {
-                      if (data is Map<String, dynamic>) {
-                        final Map<String, List<String>> result = {};
-
-                        data.forEach((key, value) {
-                          if (value is List<dynamic>) {
-                            final List<String> filteredList = value.whereType<String>().toList();
-                            result[key] = filteredList;
-                          }
-                        });
-
-                        return result;
-                      } else {
-                        throw FormatException("응답 형식이 유효하지 않습니다"); // 검증에 대한 응답은 Map<String, List<String>> 형식
-                      }
-                    } else {
-                      return null;
-                    }
-                  });
+                  final responseDto = ResponseDto.fromJson(body,ResponseDto.dataFromFieldValidation);
+                  
                   log(responseDto.toString());
 
                   if (statusCode == HttpStatus.ok) {
