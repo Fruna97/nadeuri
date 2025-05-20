@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -49,6 +50,15 @@ public class CustomExceptionHandler {
                 .body(ResponseDto.builder()
                         .message("유효성 검사에 실패했습니다.")
                         .data(errorMap)
+                        .build());
+    }
+
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ResponseDto<?>> httpMessageNotReadableException(HttpMessageNotReadableException e) {
+        return ResponseEntity
+                .badRequest()
+                .body(ResponseDto.builder()
+                        .message(e.getMessage())
                         .build());
     }
 }
