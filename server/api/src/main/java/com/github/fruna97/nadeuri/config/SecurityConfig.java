@@ -44,6 +44,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/member/signin").permitAll()
                         .requestMatchers("/member/signup").permitAll()
+                        .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated());
 
         http.with(new MyCustomDsl(memberRepository), dsl -> {});
