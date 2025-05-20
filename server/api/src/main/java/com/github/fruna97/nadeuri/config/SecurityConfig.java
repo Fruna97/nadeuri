@@ -3,6 +3,7 @@ package com.github.fruna97.nadeuri.config;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -12,9 +13,13 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fruna97.nadeuri.JwtAuthenticationFilter;
 import com.github.fruna97.nadeuri.JwtAuthorizationFilter;
+import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
+
+import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
 public class SecurityConfig {
@@ -42,6 +47,20 @@ public class SecurityConfig {
                         .anyRequest().authenticated());
 
         http.with(new MyCustomDsl(memberRepository), dsl -> {});
+
+        http.exceptionHandling((exceptionHandling) -> exceptionHandling
+                .authenticationEntryPoint(
+                        (request, response, authException) -> {
+                            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+
+                            ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+                                    .message("인증 정보가 유효하지 않습니다.")
+                                    .data(null)
+                                    .build();
+                            final ObjectMapper serializer = new ObjectMapper();
+                            response.getWriter().write(serializer.writeValueAsString(responseDto));
+                            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                        }));
 
         return http.build();
     }

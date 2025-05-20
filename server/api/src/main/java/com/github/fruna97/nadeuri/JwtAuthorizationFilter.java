@@ -69,7 +69,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
             ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
-                    .message("토큰이 유효하지 않습니다.")
+                    .message("인증 정보가 유효하지 않습니다.")
                     .data(null)
                     .build();
             final ObjectMapper serializer = new ObjectMapper();
