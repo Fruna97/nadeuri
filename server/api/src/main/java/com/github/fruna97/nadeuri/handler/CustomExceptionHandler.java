@@ -47,7 +47,7 @@ public class CustomExceptionHandler {
         return ResponseEntity
                 .badRequest()
                 .body(ResponseDto.builder()
-                        .message("유효성 검사 실패")
+                        .message("유효성 검사에 실패했습니다.")
                         .data(errorMap)
                         .build());
     }
