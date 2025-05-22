@@ -62,6 +62,14 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
                 .sign(Algorithm.HMAC512("nadeuri")); // TODO: 하드코딩한 비밀키 수정
 
         response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
+
+        ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
+                .message("성공적으로 로그인이 됐습니다.")
+                .data(null)
+                .build();
+        final ObjectMapper serializer = new ObjectMapper();
+        response.getWriter().write(serializer.writeValueAsString(responseDto));
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     }
 
     @Override
