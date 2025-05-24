@@ -14,11 +14,10 @@ import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fruna97.nadeuri.JwtAuthenticationFilter;
-import com.github.fruna97.nadeuri.JwtAuthorizationFilter;
 import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
-
+import com.github.fruna97.nadeuri.security.JwtAuthenticationFilter;
+import com.github.fruna97.nadeuri.security.JwtAuthorizationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration

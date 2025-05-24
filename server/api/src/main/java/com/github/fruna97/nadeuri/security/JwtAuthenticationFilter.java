@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri;
+package com.github.fruna97.nadeuri.security;
 
 import java.io.IOException;
 import java.util.Date;

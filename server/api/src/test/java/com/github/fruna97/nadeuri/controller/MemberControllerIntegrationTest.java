@@ -124,7 +124,7 @@ class MemberControllerIntegrationTest {
                     "nickname": "test_nickname"
                 }
                 """,
-                "유효성 검사 실패",
+                "유효성 검사에 실패했습니다.",
                 Map.of("email", List.of("공백일 수 없습니다"))
             ), 
             // 올바르지 않은 형식의 이메일
@@ -136,7 +136,7 @@ class MemberControllerIntegrationTest {
                     "nickname": "test_nickname"
                 }
                 """,
-                "유효성 검사 실패",
+                "유효성 검사에 실패했습니다.",
                 Map.of("email", List.of("올바른 형식의 이메일 주소여야 합니다"))
             ), 
             // 빈 비밀번호
@@ -148,7 +148,7 @@ class MemberControllerIntegrationTest {
                     "nickname": "test_nickname"
                 }
                 """,
-                "유효성 검사 실패",
+                "유효성 검사에 실패했습니다.",
                 Map.of("password", List.of("공백일 수 없습니다", "비밀번호는 9자 이상 이여야 합니다"))
             ), 
             // 9자 미만의 비밀번호
@@ -160,7 +160,7 @@ class MemberControllerIntegrationTest {
                         "nickname": "test_nickname"
                     }
                     """,
-                    "유효성 검사 실패",
+                    "유효성 검사에 실패했습니다.",
                     Map.of("password", List.of("비밀번호는 9자 이상 이여야 합니다"))
             ) 
         );
