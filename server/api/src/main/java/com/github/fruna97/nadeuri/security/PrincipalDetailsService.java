@@ -25,10 +25,10 @@ public class PrincipalDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<Member> optionalMember = memberRepository.findByEmail(email);
 
-        if (optionalMember.isPresent()) {
-            return new PrincipalDetails(optionalMember.get());
-        } else {
+        if (optionalMember.isEmpty()) {
             throw new UsernameNotFoundException("존재하지 않는 회원 입니다: " + email);
         }
+
+        return new PrincipalDetails(optionalMember.get());
     }
 }

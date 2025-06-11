@@ -30,6 +30,7 @@ class SecurityIntegrationTest {
 
     @Test
     void 로그인_성공시_JWT_반환() throws Exception {
+        // Given
         String testEmail = "test_email@test.com";
         String testPassword = "test_password";
 
@@ -37,6 +38,7 @@ class SecurityIntegrationTest {
                 .password(passwordEncoder.encode(testPassword)).build());
         when(userDetailsService.loadUserByUsername(testEmail)).thenReturn(principalDetails);
 
+        // When
         ResultActions result = mockMvc
                 .perform(post("/member/signin").contentType(MediaType.APPLICATION_JSON).content("""
                         {
@@ -45,11 +47,13 @@ class SecurityIntegrationTest {
                         }
                         """.formatted(testEmail, testPassword)));
 
+        // Then
         result.andExpectAll(status().isOk(), header().exists(HttpHeaders.AUTHORIZATION));
     }
 
     @Test
     void 유효하지_않은_정보로_로그인시_401_반환() throws Exception {
+        // Given
         String testEmail = "test_email@test.com";
         String testPassword = "test_password";
         String wrongPassword = "wrong_password";
@@ -58,6 +62,7 @@ class SecurityIntegrationTest {
                 .password(passwordEncoder.encode(testPassword)).build());
         when(userDetailsService.loadUserByUsername(testEmail)).thenReturn(principalDetails);
 
+        // When
         ResultActions result = mockMvc
                 .perform(post("/member/signin").contentType(MediaType.APPLICATION_JSON).content("""
                         {
@@ -65,6 +70,8 @@ class SecurityIntegrationTest {
                                 "password": "%s"
                         }
                         """.formatted(testEmail, wrongPassword)));
+
+        // Then
         result.andExpectAll(status().isUnauthorized(),
                 header().doesNotExist(HttpHeaders.AUTHORIZATION));
     }
