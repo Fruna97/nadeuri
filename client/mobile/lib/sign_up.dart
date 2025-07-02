@@ -34,7 +34,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordCheckController = TextEditingController();
-  final TextEditingController _usernameController = TextEditingController();
+  final TextEditingController _nicknameController = TextEditingController();
 
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
@@ -44,6 +44,9 @@ class _SignUpFormState extends State<SignUpForm> {
 
   String? _emailErrorText;
   String? _passwordCheckErrorText;
+
+  bool _passwordObscureText = true;
+  bool _passwordCheckObscureText = true;
 
   String _errorText = '';
 
@@ -105,7 +108,9 @@ class _SignUpFormState extends State<SignUpForm> {
               helperText: "추후 이메일을 통해 비밀번호를 재설정 하실 수 있습니다.",
               errorText: _emailErrorText,
               border: OutlineInputBorder(),
+              counterText: "", 
             ),
+            maxLength: 320,
             validator: (String? email) {
               if (email == null || email.isEmpty) {
                 return "이메일을 입력해 주세요.";
@@ -127,10 +132,20 @@ class _SignUpFormState extends State<SignUpForm> {
             focusNode: _passwordFocusNode,
             decoration: InputDecoration(
               labelText: "비밀번호",
-              border: const OutlineInputBorder(),
               error: _passwordError, // "비밀번호 확인" 필드에서 error 상태를 조절하기 위한 state
+              suffixIcon: IconButton(
+                icon: Icon(_passwordObscureText ? Icons.visibility_off : Icons.visibility),
+                onPressed: () {
+                  setState(() {
+                    _passwordObscureText = !_passwordObscureText;
+                  });
+                },
+              ),
+              border: const OutlineInputBorder(),
+              counterText: "", 
             ),
-            obscureText: true,
+            obscureText: _passwordObscureText,
+            maxLength: 20,
           ),
           const SizedBox(height: 6.0),
           TextFormField(
@@ -140,19 +155,29 @@ class _SignUpFormState extends State<SignUpForm> {
             decoration: InputDecoration(
               labelText: "비밀번호 확인",
               errorText: _passwordCheckErrorText,
+              suffixIcon: IconButton(
+                icon: Icon(_passwordCheckObscureText ? Icons.visibility_off : Icons.visibility),
+                onPressed: () {
+                  setState(() {
+                    _passwordCheckObscureText = !_passwordCheckObscureText;
+                  });
+                },
+              ),
               border: OutlineInputBorder(),
+              counterText: "", 
             ),
-            obscureText: true,
+            obscureText: _passwordCheckObscureText,
+            maxLength: 20,
             validator: (String? passwordCheck) { // "비밀번호" 필드와 "비밀번호 확인" 필드의 검증 메시지 모두 "비밀번호 확인" 필드 아래에 표시
               String password = _passwordController.text;
               if (password.isEmpty) {
                 _activatePasswordErrorState();
                 return "비밀번호를 입력해 주세요.";
               } 
-              if (password.length < 9) {
-                _activatePasswordErrorState();
-                return "비밀번호는 9자 이상이어야 합니다.";
-              } 
+              final regExp = RegExp(r"""^[a-zA-Z0-9\-=\[\]\\;',\./~!@#\$%\^&\*\(\)_\+\{\}\|:"<>\?]{9,20}$""");
+              if (!regExp.hasMatch(password)) {
+                return "비밀번호는 9~20자의 영문, 숫자, 특수문자로 이루어져야 합니다.";
+              }
               if (_passwordError != null) { // 재검증시 비밀번호 필드에 이상이 없는 경우
                 _deactivatePasswordErrorState();
               }
@@ -170,12 +195,19 @@ class _SignUpFormState extends State<SignUpForm> {
           ),
           const SizedBox(height: 24.0),
           TextFormField(
-            controller: _usernameController,
+            controller: _nicknameController,
             decoration: const InputDecoration(
               labelText: "별명",
               helperText: "별명을 입력하지 않으시면, 이메일을 기반으로 자동으로 생성됩니다.",
               border: OutlineInputBorder(),
+              counterText: "", 
             ),
+            maxLength: 20,
+            validator: (String? nickname) {
+              if (nickname != null && nickname.length > 20) {
+                return "별명은 20자 이하로 이루어져야 합니다.";
+              }
+            },
           ),
           if (_errorText.isNotEmpty) const SizedBox(height: 12), 
           if (_errorText.isNotEmpty) Center(child: Text(_errorText, style: TextStyle(color: Colors.red, fontSize: 12))),
