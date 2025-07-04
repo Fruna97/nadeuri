@@ -21,6 +21,8 @@ class _SignInPageState extends State<SignInPage> {
 
   String _errorText = '';
 
+  bool _passwordObscureText = true;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,16 +39,28 @@ class _SignInPageState extends State<SignInPage> {
                   decoration: const InputDecoration(
                     labelText: "이메일",
                     border: OutlineInputBorder(),
+                    counterText: "", 
                   ),
+                  maxLength: 320,
                 ),
                 const SizedBox(height: 8.0),
                 TextField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(
+                  decoration: InputDecoration(
                     labelText: "비밀번호",
+                    suffixIcon: IconButton(
+                      icon: Icon(_passwordObscureText ? Icons.visibility_off : Icons.visibility),
+                      onPressed: () {
+                        setState(() {
+                          _passwordObscureText = !_passwordObscureText;
+                        });
+                      },
+                    ),
                     border: OutlineInputBorder(),
+                    counterText: "", 
                   ),
-                  obscureText: true,
+                  obscureText: _passwordObscureText,
+                  maxLength: 20,
                 ),
                 const SizedBox(height: 12.0),
                 Row(
@@ -74,6 +88,11 @@ class _SignInPageState extends State<SignInPage> {
                 ElevatedButton(
                   onPressed: () async {
                     log("로그인 button pressed");
+
+                    setState(() {
+                      _errorText = "";
+                    });
+
                     final String email = _emailController.text;
                     final String password = _passwordController.text;
                             
@@ -84,10 +103,26 @@ class _SignInPageState extends State<SignInPage> {
 
                       return ;
                     }
+                    final emailRegExp = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]+$");
+                    if (!emailRegExp.hasMatch(email)) {
+                      setState(() {
+                        _errorText =  "이메일 또는 비밀번호가 잘못 되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.";
+                      });
+
+                      return ;
+                    }
 
                     if (password.isEmpty) {
                       setState(() {
                         _errorText = "비밀번호를 입력해 주세요.";
+                      });
+
+                      return ;
+                    }
+                    final passwordRegExp = RegExp(r"""^[a-zA-Z0-9\-=\[\]\\;',\./~!@#\$%\^&\*\(\)_\+\{\}\|:"<>\?]{9,20}$""");
+                    if (!passwordRegExp.hasMatch(password)) {
+                      setState(() {
+                        _errorText =  "이메일 또는 비밀번호가 잘못 되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.";
                       });
 
                       return ;
