@@ -4,9 +4,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
 
 import 'dto/response_dto.dart';
+import 'api_service.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
@@ -130,39 +130,32 @@ class _SignInPageState extends State<SignInPage> {
 
                     showDialog(context: context, builder: (context) => const Center(child: CircularProgressIndicator()));
 
-                    Response response;
-                    try {
-                      response = await http
-                          .post(
-                            // Uri.parse("http://localhost:8080/member/signin"), // Chrome
-                            Uri.parse("http://10.0.2.2:8080/member/signin"), // Android
-                            headers: {"content-type": "application/json; charset=UTF-8"},
-                            body: jsonEncode({"email": email, "password": password}),
-                          )
-                          .timeout(
-                            const Duration(seconds: 5),
-                            onTimeout: () {
-                              return http.Response(
-                                jsonEncode({"message": "타임아웃", "data": null}),
-                                HttpStatus.requestTimeout,
-                                headers: {"content-type": "application/json;charset=UTF-8"},
-                              );
-                            },
-                          );
-                    } catch (e) {
-                      log(e.toString());
+                    http.Response? response;
+                    ApiService apiService = ApiService();
+                    response = await apiService.post("/member/signin", {"email":email.trim(), "password":password.trim()});
+                    
+                    if (context.mounted) {
+                      Navigator.pop(context);
+                    }
+
+                    if (response == null) {
+                      setState(() {
+                        _errorText = "문제가 발생했습니다. 문제가 반복된다면, 고객센터에 문의해주세요.";
+                      });
+
+                      return ;
+                    }
+
+                    final statusCode = response.statusCode;
+                    log("StatusCode : ${statusCode.toString()}");
+                    if (statusCode == HttpStatus.requestTimeout) {
                       setState(() {
                         _errorText = "문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
                       });
 
                       return ;
-                    } finally {
-                      if (context.mounted) {
-                        Navigator.pop(context);
-                      }
                     }
 
-                    final statusCode = response.statusCode;
                     dynamic body;
                     ResponseDto<Map<String, List<String>>?> responseDto;
                     try {
@@ -176,7 +169,6 @@ class _SignInPageState extends State<SignInPage> {
 
                       return ;
                     }
-                    log("StatusCode : ${statusCode.toString()}");
                     log("Response Data : ${responseDto.toString()}");
 
                     if (statusCode != HttpStatus.ok) {
