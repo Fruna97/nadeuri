@@ -4,7 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'package:http/http.dart';
+import 'package:mobile/api_service.dart';
 import 'package:mobile/dto/response_dto.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -169,6 +169,8 @@ class _SignUpFormState extends State<SignUpForm> {
             obscureText: _passwordCheckObscureText,
             maxLength: 20,
             validator: (String? passwordCheck) { // "비밀번호" 필드와 "비밀번호 확인" 필드의 검증 메시지 모두 "비밀번호 확인" 필드 아래에 표시
+              _deactivatePasswordErrorState();
+
               String password = _passwordController.text;
               if (password.isEmpty) {
                 _activatePasswordErrorState();
@@ -176,12 +178,9 @@ class _SignUpFormState extends State<SignUpForm> {
               } 
               final regExp = RegExp(r"""^[a-zA-Z0-9\-=\[\]\\;',\./~!@#\$%\^&\*\(\)_\+\{\}\|:"<>\?]{9,20}$""");
               if (!regExp.hasMatch(password)) {
+                _activatePasswordErrorState();
                 return "비밀번호는 9~20자의 영문, 숫자, 특수문자로 이루어져야 합니다.";
-              }
-              if (_passwordError != null) { // 재검증시 비밀번호 필드에 이상이 없는 경우
-                _deactivatePasswordErrorState();
-              }
-          
+              }          
           
               if (passwordCheck == null || passwordCheck.isEmpty) {
                 return "비밀번호 확인란을 입력해 주세요.";
@@ -217,44 +216,43 @@ class _SignUpFormState extends State<SignUpForm> {
               if (!_formKey.currentState!.validate()) {
                 return ;
               }
-          
-              _errorText = '';
+
+              setState(() {
+                _errorText = "";  
+              });
+
+              final String email = _emailController.text;
+              final String password = _passwordController.text;
+              final String nickname = _nicknameController.text;
           
               showDialog(context: context, builder: (context) => const Center(child: CircularProgressIndicator()));
           
-              Response response;
-              try {
-                response = await http
-                    .post(
-                      // Uri.parse("http://localhost:8080/member/signup"), // Chrome
-                      Uri.parse("http://10.0.2.2:8080/member/signup"), // Android
-                      headers: {"content-type": "application/json;charset=UTF-8"},
-                      body: jsonEncode({"email": _emailController.text, "password": _passwordController.text}),
-                    )
-                    .timeout(
-                      const Duration(seconds: 5),
-                      onTimeout: () {
-                        return http.Response(
-                          jsonEncode({"message": "타임아웃", "data": null}),
-                          HttpStatus.requestTimeout,
-                          headers: {"content-type": "application/json; charset=UTF-8"},
-                        );
-                      },
-                    );
-              } catch (e) {
-                log(e.toString());
+              http.Response? response;
+              ApiService apiService = ApiService();
+              response = await apiService.post("/member/signup", {"email":email.trim(), "password":password.trim(), "nickname":nickname.trim()});
+
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+
+              if (response == null) {
                 setState(() {
                   _errorText = "문제가 발생했습니다. 문제가 반복된다면, 고객센터에 문의해주세요.";
                 });
-          
+                
                 return ;
-              } finally {
-                if (context.mounted) {
-                  Navigator.pop(context);
-                }
               }
           
               final statusCode = response.statusCode;
+              log("Status Code : $statusCode");
+              if (statusCode == HttpStatus.requestTimeout) {
+                setState(() {
+                  _errorText = "문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+                });
+
+                return ;
+              }
+
               dynamic body;
               ResponseDto<Map<String, List<String>>?> responseDto;
               try {
@@ -268,18 +266,8 @@ class _SignUpFormState extends State<SignUpForm> {
           
                 return ;
               }
-              log("Status Code : $statusCode");
               log("Response Data : ${responseDto.toString()}");
-              
-              if (statusCode == HttpStatus.requestTimeout) {
-                log("요청 타임아웃");
-                setState(() {
-                  _errorText = "문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
-                });
-          
-                return ;
-              }
-          
+
               if (statusCode != HttpStatus.ok) {
                 log("회원가입 실패");
           
