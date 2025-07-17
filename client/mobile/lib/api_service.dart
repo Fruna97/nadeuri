@@ -19,7 +19,7 @@ class ApiService {
   Future<http.Response?> post(String endpoint, Map<String, String> requestBody) async {
     try {
       return await http
-          .post(Uri.parse(uri + endpoint), headers: {"content-type": "application/json; charset=UTF-8"}, body: jsonEncode(requestBody))
+          .post(Uri.parse(uri + endpoint), headers: headers, body: jsonEncode(requestBody))
           .timeout(
             const Duration(seconds: 5),
             onTimeout: () {
