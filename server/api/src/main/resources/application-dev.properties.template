@@ -1,0 +1,8 @@
+#
+# JWTService 사용을 위한 임의의 속성
+#
+# duration 포맷 예시: 
+#  - 30s, 20m, 6h, 7d
+jwt.secret=<JWT_SECRET_KEY>
+jwt.access-token-duration=30m
+jwt.refresh-token-duration=5d
