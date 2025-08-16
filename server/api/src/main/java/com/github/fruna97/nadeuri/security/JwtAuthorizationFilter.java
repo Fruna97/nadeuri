@@ -2,22 +2,15 @@ package com.github.fruna97.nadeuri.security;
 
 import java.io.IOException;
 import java.util.Optional;
-
 import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.JWTVerificationException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.fruna97.nadeuri.domain.Member;
-import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
-
+import com.github.fruna97.nadeuri.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -28,9 +21,11 @@ import lombok.extern.slf4j.Slf4j;
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
     private final MemberRepository memberRepository;
+    private final JwtService jwtService;
 
-    public JwtAuthorizationFilter(MemberRepository memberRepository) {
+    public JwtAuthorizationFilter(MemberRepository memberRepository, JwtService jwtService) {
         this.memberRepository = memberRepository;
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -44,37 +39,26 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        try {
-            String jwt = jwtHeader.replace("Bearer ", "");
-            String email = JWT.require(Algorithm.HMAC512("nadeuri")).build().verify(jwt).getClaim("email").asString(); // TODO: 하드코딩한 비밀키 수정
-            Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        String accessToken = jwtHeader.replace("Bearer ", "");
+        Optional<DecodedJWT> verifiedToken = jwtService.verifyToken(accessToken);
 
-            if (optionalMember.isPresent()) {
-                Member member = optionalMember.get();
-                PrincipalDetails principalDetails = new PrincipalDetails(member);
-                // 임의로 인증된 객체 생성
-                // 해당 생성자의 권장되는 방식은 아니지만, 앞전의 JWT의 서명 검증을 근거로 둠
-                Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, null);
-
-                SecurityContextHolder.getContext().setAuthentication(authentication);
-
-                chain.doFilter(request, response);
-            } else {
-                throw new JWTVerificationException("존재하지 않는 회원의 JWT 요청이 발생하였습니다. : " + email);
-            }
-
-        } catch (JWTVerificationException e) {
-            log.warn(e.getMessage());
-
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-            ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
-                    .message("인증 정보가 유효하지 않습니다.")
-                    .data(null)
-                    .build();
-            final ObjectMapper serializer = new ObjectMapper();
-            response.getWriter().write(serializer.writeValueAsString(responseDto));
-            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        if (verifiedToken.isEmpty()) {
+            chain.doFilter(request, response);
+            return;
         }
+
+        String email = verifiedToken.get().getClaim("email").asString();
+        Optional<Member> member = memberRepository.findByEmail(email);
+        if (member.isEmpty()) {
+            log.warn("존재하지 않는 회원의 JWT 요청이 발생 : " + email);
+            chain.doFilter(request, response);
+            return;
+        }
+
+        PrincipalDetails principalDetails = new PrincipalDetails(member.get());
+        // 임의로 인증된 객체 생성 (UsernamePasswordAuthenticationToken의 권장되는 생성 방식은 아니지만, 앞전의 AccessToken 검증을 근거로 둠)
+        Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, null);
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        chain.doFilter(request, response);
     }
 }

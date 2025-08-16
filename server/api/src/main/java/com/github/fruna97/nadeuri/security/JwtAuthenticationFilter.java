@@ -1,8 +1,6 @@
 package com.github.fruna97.nadeuri.security;
 
 import java.io.IOException;
-import java.util.Date;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,13 +9,10 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.AbstractAuthenticationProcessingFilter;
-
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.dto.SignInDto;
-
+import com.github.fruna97.nadeuri.service.JwtService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -27,8 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
-    public JwtAuthenticationFilter(String defaultFilterProcessesUrl, AuthenticationManager authenticationManager) {
+    private final JwtService jwtService;
+
+    public JwtAuthenticationFilter(String defaultFilterProcessesUrl, AuthenticationManager authenticationManager, JwtService jwtService) {
         super(defaultFilterProcessesUrl, authenticationManager);
+        this.jwtService = jwtService;
     }
 
     @Override
@@ -55,13 +53,8 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 
         PrincipalDetails principalDetails = (PrincipalDetails) authResult.getPrincipal();
 
-        String jwt = JWT.create()
-                .withIssuer("nadeuri-api")
-                .withClaim("email", principalDetails.getUsername())
-                .withExpiresAt(new Date(System.currentTimeMillis() + (1000 * 60 * 60)))
-                .sign(Algorithm.HMAC512("nadeuri")); // TODO: 하드코딩한 비밀키 수정
-
-        response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + jwt);
+        String accessToken = jwtService.createAccessToken(principalDetails.getUsername());
+        response.addHeader(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken);
 
         ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
                 .message("성공적으로 로그인이 됐습니다.")

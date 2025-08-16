@@ -17,6 +17,7 @@ import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
 import com.github.fruna97.nadeuri.security.JwtAuthenticationFilter;
 import com.github.fruna97.nadeuri.security.JwtAuthorizationFilter;
+import com.github.fruna97.nadeuri.service.JwtService;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
@@ -34,13 +35,13 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationManager authenticationManager) {
-        return new JwtAuthenticationFilter("/member/signin", authenticationManager);
+    JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
+        return new JwtAuthenticationFilter("/member/signin", authenticationManager, jwtService);
     }
 
     @Bean
-    JwtAuthorizationFilter jwtAuthorizationFilter(MemberRepository memberRepository) {
-        return new JwtAuthorizationFilter(memberRepository);
+    JwtAuthorizationFilter jwtAuthorizationFilter(MemberRepository memberRepository, JwtService jwtService) {
+        return new JwtAuthorizationFilter(memberRepository, jwtService);
     }
 
     @Bean
