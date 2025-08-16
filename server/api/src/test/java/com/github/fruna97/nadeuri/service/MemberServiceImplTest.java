@@ -27,7 +27,9 @@ class MemberServiceImplTest {
 
     @AfterEach
     void afterEach() {
-        MemoryMemberRepository.clear();
+        if (memberRepository instanceof MemoryMemberRepository) {
+            MemoryMemberRepository.clear();
+        }
     }
 
     @Test
