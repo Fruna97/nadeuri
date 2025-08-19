@@ -35,19 +35,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    JwtAuthenticationFilter jwtAuthenticationFilter(AuthenticationManager authenticationManager, JwtService jwtService) {
-        return new JwtAuthenticationFilter("/member/signin", authenticationManager, jwtService);
-    }
-
-    @Bean
-    JwtAuthorizationFilter jwtAuthorizationFilter(MemberRepository memberRepository, JwtService jwtService) {
-        return new JwtAuthorizationFilter(memberRepository, jwtService);
-    }
-
-    @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http,
-            JwtAuthenticationFilter jwtAuthenticationFilter,
-            JwtAuthorizationFilter jwtAuthorizationFilter) throws Exception {
+        AuthenticationManager authenticationManager, 
+        JwtService jwtService, 
+        MemberRepository memberRepository) throws Exception {
         http.csrf(csrf -> csrf.disable())
                 .sessionManagement(sessionManagement -> sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .formLogin(formLogin -> formLogin.disable())
@@ -60,8 +51,8 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated());
 
-        http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        http.addFilterBefore(jwtAuthorizationFilter, AuthorizationFilter.class);
+        http.addFilterBefore(new JwtAuthenticationFilter("/member/signin", authenticationManager, jwtService), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtService, memberRepository), AuthorizationFilter.class);
 
         http.exceptionHandling((exceptionHandling) -> exceptionHandling
                 .authenticationEntryPoint((request, response, authException) -> {

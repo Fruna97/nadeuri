@@ -20,12 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
-    private final MemberRepository memberRepository;
     private final JwtService jwtService;
+    private final MemberRepository memberRepository;
 
-    public JwtAuthorizationFilter(MemberRepository memberRepository, JwtService jwtService) {
-        this.memberRepository = memberRepository;
+    public JwtAuthorizationFilter(JwtService jwtService, MemberRepository memberRepository) {
         this.jwtService = jwtService;
+        this.memberRepository = memberRepository;
     }
 
     @Override
