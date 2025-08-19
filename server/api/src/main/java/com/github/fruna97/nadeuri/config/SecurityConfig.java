@@ -11,11 +11,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
-import com.github.fruna97.nadeuri.security.JwtAuthenticationFilter;
 import com.github.fruna97.nadeuri.security.JwtAuthorizationFilter;
 import com.github.fruna97.nadeuri.service.JwtService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,7 +49,6 @@ public class SecurityConfig {
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated());
 
-        http.addFilterBefore(new JwtAuthenticationFilter("/member/signin", authenticationManager, jwtService), UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtAuthorizationFilter(jwtService, memberRepository), AuthorizationFilter.class);
 
         http.exceptionHandling((exceptionHandling) -> exceptionHandling
@@ -59,7 +56,7 @@ public class SecurityConfig {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
                     ResponseDto<Void> responseDto = ResponseDto.<Void>builder()
-                            .message("인증 정보가 유효하지 않습니다.")
+                            .message(authException.getLocalizedMessage())
                             .data(null)
                             .build();
                     final ObjectMapper serializer = new ObjectMapper();

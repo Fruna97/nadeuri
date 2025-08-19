@@ -3,6 +3,7 @@ package com.github.fruna97.nadeuri.security;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,7 +49,9 @@ class SecurityIntegrationTest {
                         """.formatted(testEmail, testPassword)));
 
         // Then
-        result.andExpectAll(status().isOk(), header().exists(HttpHeaders.AUTHORIZATION));
+        result.andExpectAll(status().isOk()
+                , jsonPath("$.data.accessToken").exists()
+                , jsonPath("$.data.refreshToken").exists());
     }
 
     @Test
