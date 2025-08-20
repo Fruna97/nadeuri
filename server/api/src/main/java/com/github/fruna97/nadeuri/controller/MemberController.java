@@ -1,16 +1,19 @@
 package com.github.fruna97.nadeuri.controller;
 
 import java.util.Map;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.dto.SignInDto;
 import com.github.fruna97.nadeuri.dto.SignUpDto;
+import com.github.fruna97.nadeuri.security.PrincipalDetails;
 import com.github.fruna97.nadeuri.service.JwtService;
 import com.github.fruna97.nadeuri.service.MemberService;
 import jakarta.validation.Valid;
@@ -49,10 +52,14 @@ public class MemberController {
         String email = signInDto.getEmail();
         String password = signInDto.getPassword();
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, password);
-        authenticationManager.authenticate(usernamePasswordAuthenticationToken);
+        Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
-        String accessToken = jwtService.createAccessToken(email);
-        String refreshToken = jwtService.createAndSaveRefreshToken(email);
+        PrincipalDetails principalDetails = (PrincipalDetails) authentication.getPrincipal();
+        UUID uuid = principalDetails.getUuid();
+
+        String accessToken = jwtService.createAccessToken(uuid);
+        String refreshToken = jwtService.createAndSaveRefreshToken(uuid);
+
         Map<String, String> data = Map.of("accessToken", accessToken, 
                 "refreshToken", refreshToken);
         return ResponseEntity

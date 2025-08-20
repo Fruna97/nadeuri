@@ -3,6 +3,7 @@ package com.github.fruna97.nadeuri.service;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -33,23 +34,23 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public String createAccessToken(String email) {
+    public String createAccessToken(UUID uuid) {
         return JWT.create()
                 .withIssuer("nadeuri-api")
-                .withClaim("email", email)
+                .withSubject(uuid.toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + (accessTokenDuration.toMillis())))
                 .sign(Algorithm.HMAC512(secretKey));
     }
 
     @Override
-    public String createAndSaveRefreshToken(String email) {
+    public String createAndSaveRefreshToken(UUID uuid) {
         String jwt = JWT.create()
                 .withIssuer("nadeuri-api")
-                .withClaim("email", email)
+                .withSubject(uuid.toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + (refreshTokenDuration.toMillis())))
                 .sign(Algorithm.HMAC512(secretKey));
 
-        return refreshTokenRepository.save(email, jwt, refreshTokenDuration);
+        return refreshTokenRepository.save(uuid, jwt, refreshTokenDuration);
     }
 
     @Override
@@ -65,7 +66,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public void deleteRefreshToken(String email) {
-        refreshTokenRepository.deleteByEmail(email);        
+    public void deleteRefreshToken(UUID uuid) {
+        refreshTokenRepository.deleteByUuid(uuid);        
     }
 }

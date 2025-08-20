@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -39,10 +40,10 @@ class JwtServiceImplTest {
     @Test
     void createAccessToken() {
         // given
-        String email = "test_email@test.com";
+        UUID uuid = UUID.randomUUID();
 
         // when
-        String accessToken = jwtService.createAccessToken(email);
+        String accessToken = jwtService.createAccessToken(uuid);
 
         // then
         assertThat(accessToken).isNotEmpty();
@@ -54,10 +55,10 @@ class JwtServiceImplTest {
     @Test
     void createAndSaveRefreshToken() {
         // given
-        String email = "test_email@test.com";
+        UUID uuid = UUID.randomUUID();
 
         // when
-        String refreshToken = jwtService.createAndSaveRefreshToken(email);
+        String refreshToken = jwtService.createAndSaveRefreshToken(uuid);
 
         // then
         assertThat(refreshToken).isNotEmpty();
@@ -65,7 +66,7 @@ class JwtServiceImplTest {
             JWT.require(Algorithm.HMAC512(secretKey)).build().verify(refreshToken)
         ).doesNotThrowAnyException();
 
-        Optional<String> savedRefreshToken = refreshTokenRepository.findByEmail(email);
+        Optional<String> savedRefreshToken = refreshTokenRepository.findByUuid(uuid);
         assertThat(savedRefreshToken)
                 .isPresent()
                 .get()
@@ -75,23 +76,23 @@ class JwtServiceImplTest {
     @Test
     void deleteRefreshToken() {
         // given
-        String email = "test_email@test.com";
+        UUID uuid = UUID.randomUUID();
         String refreshToken = "test_token";
-        refreshTokenRepository.save(email, refreshToken, refreshTokenDuration);
+        refreshTokenRepository.save(uuid, refreshToken, refreshTokenDuration);
 
         // when
-        jwtService.deleteRefreshToken(email);
+        jwtService.deleteRefreshToken(uuid);
 
         // then
-        assertThat(refreshTokenRepository.findByEmail(email)).isNotPresent();
+        assertThat(refreshTokenRepository.findByUuid(uuid)).isNotPresent();
     }
 
     @Test
     void verifyToken_유효토큰() {
         // given
-        String email = "test_email@test.com";
+        UUID uuid = UUID.randomUUID();
         String validToken = JWT.create()
-                .withClaim("email", email)
+                .withSubject(uuid.toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 3600))
                 .sign(Algorithm.HMAC512(secretKey));
 
@@ -100,15 +101,15 @@ class JwtServiceImplTest {
 
         // then
         assertThat(verifiedToken).isPresent();
-        assertThat(verifiedToken.get().getClaim("email").asString()).isEqualTo(email);
+        assertThat(verifiedToken.get().getSubject()).isEqualTo(uuid.toString());
     }
 
     @Test
     void verifyToken_만료토큰() {
         // given
-        String email = "test_email@test.com";
+        UUID uuid = UUID.randomUUID();
         String expiredToken = JWT.create()
-                .withClaim("email", email)
+                .withSubject(uuid.toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() - 3600))
                 .sign(Algorithm.HMAC512(secretKey));
 
@@ -122,9 +123,9 @@ class JwtServiceImplTest {
     @Test
     void verifyToken_위변조토큰() {
         // given
-        String email = "test_email@test.com";
+        UUID uuid = UUID.randomUUID();
         String validToken = JWT.create()
-                .withClaim("email", email)
+                .withSubject(uuid.toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 3600))
                 .sign(Algorithm.HMAC512(secretKey));
         String tamperedToken = validToken + "tempering";

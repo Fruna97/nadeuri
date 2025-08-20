@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.when;
 import java.util.Optional;
+import java.util.UUID;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,10 +27,11 @@ class PrincipalDetailsServiceTest {
     @Test
     void loadUserByUsername_회원존재() {
         // Given
+        UUID uuid = UUID.randomUUID();
         String email = "test_email@test.com";
         String password = "test_email@test.com";
         String nickname = "test_email@test.com";
-        Member member = Member.builder().email(email).password(password).nickname(nickname).build();
+        Member member = Member.builder().uuid(uuid).email(email).password(password).nickname(nickname).build();
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
 

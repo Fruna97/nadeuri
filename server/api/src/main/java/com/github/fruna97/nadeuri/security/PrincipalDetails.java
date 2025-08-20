@@ -1,7 +1,7 @@
 package com.github.fruna97.nadeuri.security;
 
 import java.util.Collection;
-
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,5 +54,9 @@ public class PrincipalDetails implements UserDetails {
 
     public String getNickname() {
         return member.getNickname();
+    }
+
+    public UUID getUuid() {
+        return member.getUuid();
     }
 }

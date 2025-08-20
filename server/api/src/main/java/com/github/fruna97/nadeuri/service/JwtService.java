@@ -1,13 +1,14 @@
 package com.github.fruna97.nadeuri.service;
 
 import java.util.Optional;
+import java.util.UUID;
 import com.auth0.jwt.interfaces.DecodedJWT;
 
 public interface JwtService {
 
-    String createAccessToken(String email);
+    String createAccessToken(UUID uuid);
 
-    String createAndSaveRefreshToken(String email);
+    String createAndSaveRefreshToken(UUID uuid);
 
     /**
      * 주어진 JWT를 검증
@@ -17,5 +18,5 @@ public interface JwtService {
      */
     Optional<DecodedJWT> verifyToken(String jwt);
 
-    void deleteRefreshToken(String email);
+    void deleteRefreshToken(UUID uuid);
 }

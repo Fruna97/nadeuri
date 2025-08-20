@@ -2,6 +2,7 @@ package com.github.fruna97.nadeuri.security;
 
 import java.io.IOException;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -44,10 +45,10 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String email = verifiedToken.get().getClaim("email").asString();
-        Optional<Member> member = memberRepository.findByEmail(email);
+        UUID uuid = UUID.fromString(verifiedToken.get().getSubject());
+        Optional<Member> member = memberRepository.findByUuid(uuid);
         if (member.isEmpty()) {
-            log.warn("존재하지 않는 회원의 JWT 요청이 발생 : " + email);
+            log.warn("존재하지 않는 회원의 JWT 요청이 발생 : " + uuid.toString());
             chain.doFilter(request, response);
             return;
         }

@@ -5,6 +5,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -35,8 +36,11 @@ class SecurityIntegrationTest {
         String testEmail = "test_email@test.com";
         String testPassword = "test_password";
 
-        PrincipalDetails principalDetails = new PrincipalDetails(Member.builder().email(testEmail)
-                .password(passwordEncoder.encode(testPassword)).build());
+        PrincipalDetails principalDetails = new PrincipalDetails(Member.builder()
+                .uuid(UUID.randomUUID())
+                .email(testEmail)
+                .password(passwordEncoder.encode(testPassword))
+                .build());
         when(userDetailsService.loadUserByUsername(testEmail)).thenReturn(principalDetails);
 
         // When
@@ -61,8 +65,11 @@ class SecurityIntegrationTest {
         String testPassword = "test_password";
         String wrongPassword = "wrong_password";
 
-        PrincipalDetails principalDetails = new PrincipalDetails(Member.builder().email(testEmail)
-                .password(passwordEncoder.encode(testPassword)).build());
+        PrincipalDetails principalDetails = new PrincipalDetails(Member.builder()
+                .uuid(UUID.randomUUID())
+                .email(testEmail)
+                .password(passwordEncoder.encode(testPassword))
+                .build());
         when(userDetailsService.loadUserByUsername(testEmail)).thenReturn(principalDetails);
 
         // When
