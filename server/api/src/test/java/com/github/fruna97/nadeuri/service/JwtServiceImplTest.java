@@ -47,9 +47,10 @@ class JwtServiceImplTest {
 
         // then
         assertThat(accessToken).isNotEmpty();
-        assertThatCode(() -> 
-            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(accessToken)
-        ).doesNotThrowAnyException();
+        assertThatCode(() -> {
+            DecodedJWT verifiedToken = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(accessToken);
+            if (!verifiedToken.getClaim("type").asString().equals("access")) throw new Exception();
+        }).doesNotThrowAnyException();
     }
 
     @Test
@@ -62,9 +63,10 @@ class JwtServiceImplTest {
 
         // then
         assertThat(refreshToken).isNotEmpty();
-        assertThatCode(() -> 
-            JWT.require(Algorithm.HMAC512(secretKey)).build().verify(refreshToken)
-        ).doesNotThrowAnyException();
+        assertThatCode(() -> {
+            DecodedJWT verifiedToken = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(refreshToken);
+            if (!verifiedToken.getClaim("type").asString().equals("refresh")) throw new Exception();
+        }).doesNotThrowAnyException();
 
         Optional<String> savedRefreshToken = refreshTokenRepository.findByUuid(uuid);
         assertThat(savedRefreshToken)

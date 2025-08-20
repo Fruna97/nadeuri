@@ -38,6 +38,7 @@ public class JwtServiceImpl implements JwtService {
         return JWT.create()
                 .withIssuer("nadeuri-api")
                 .withSubject(uuid.toString())
+                .withClaim("type", "access")
                 .withExpiresAt(new Date(System.currentTimeMillis() + (accessTokenDuration.toMillis())))
                 .sign(Algorithm.HMAC512(secretKey));
     }
@@ -47,6 +48,7 @@ public class JwtServiceImpl implements JwtService {
         String jwt = JWT.create()
                 .withIssuer("nadeuri-api")
                 .withSubject(uuid.toString())
+                .withClaim("type", "refresh")
                 .withExpiresAt(new Date(System.currentTimeMillis() + (refreshTokenDuration.toMillis())))
                 .sign(Algorithm.HMAC512(secretKey));
 

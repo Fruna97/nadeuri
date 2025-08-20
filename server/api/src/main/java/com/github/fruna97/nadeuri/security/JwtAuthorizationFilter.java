@@ -45,6 +45,12 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             return;
         }
 
+        String tokenType = verifiedToken.get().getClaim("type").asString();
+        if (!tokenType.equals("access")) {
+            chain.doFilter(request, response);
+            return;
+        }
+
         UUID uuid = UUID.fromString(verifiedToken.get().getSubject());
         Optional<Member> member = memberRepository.findByUuid(uuid);
         if (member.isEmpty()) {
