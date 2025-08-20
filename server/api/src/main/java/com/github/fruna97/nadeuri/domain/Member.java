@@ -1,7 +1,7 @@
 package com.github.fruna97.nadeuri.domain;
 
 import java.time.LocalDateTime;
-
+import java.util.UUID;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,6 +10,7 @@ import lombok.Getter;
 public class Member {
 
     private Long id;
+    private UUID uuid;
     private String email;
     private String password;
     private String nickname;
