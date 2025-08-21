@@ -46,6 +46,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/member/signin").permitAll()
                         .requestMatchers("/member/signup").permitAll()
+                        .requestMatchers("/member/reissue-token").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated());
 

@@ -6,9 +6,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import com.github.fruna97.nadeuri.dto.ReissueTokenDto;
 import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.dto.SignInDto;
 import com.github.fruna97.nadeuri.dto.SignUpDto;
+import com.github.fruna97.nadeuri.service.JwtService;
 import com.github.fruna97.nadeuri.service.MemberService;
 import jakarta.validation.Valid;
 
@@ -17,10 +19,12 @@ import jakarta.validation.Valid;
 public class MemberController {
 
     private final MemberService memberService;
+    private final JwtService jwtService;
 
     @Autowired
-    public MemberController(MemberService memberService) {
+    public MemberController(MemberService memberService, JwtService jwtService) {
         this.memberService = memberService;
+        this.jwtService = jwtService;
     }
 
     @PostMapping("/member/signup")
@@ -49,4 +53,19 @@ public class MemberController {
                         .data(issuedTokens)
                         .build());
     }
+
+    @PostMapping("/member/reissue-token")
+    public ResponseEntity<ResponseDto<Map<String, String>>> reissueToken(@RequestBody @Valid ReissueTokenDto reissueTokenDto) {
+        String refreshToken = reissueTokenDto.getRefreshToken();
+
+        Map<String, String> reissuedTokens = jwtService.reissueToken(refreshToken);
+
+        return ResponseEntity
+                .ok()
+                .body(ResponseDto.<Map<String, String>>builder()
+                        .message("토큰이 재발급 되었습니다.")
+                        .data(reissuedTokens)
+                        .build());
+    }
+    
 }
