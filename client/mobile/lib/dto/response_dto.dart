@@ -32,4 +32,8 @@ abstract class ResponseDto<T> with _$ResponseDto<T> {
 
     return deserializedData;
   }
+
+  static Map<String, String>? dataFromTokens(Object? data) {
+    return Map<String, String>.from(data as Map);
+  }
 }
