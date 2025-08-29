@@ -14,7 +14,7 @@ class ApiService {
   }) : 
     // uri = uri ?? "http://localhost:8080", // Chrome
     uri = uri ?? "http://10.0.2.2:8080", // Android
-    headers = headers ?? {"content-type": "application/json; charset=UTF-8;"};
+    headers = headers ?? {"content-type": "application/json; charset=UTF-8"};
 
   Future<http.Response?> post(String endpoint, Map<String, String> requestBody) async {
     try {
