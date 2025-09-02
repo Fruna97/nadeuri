@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/dto/validation_error_data.dart';
 
 import 'dto/response_dto.dart';
 import 'api_service.dart';
@@ -157,10 +158,10 @@ class _SignInPageState extends State<SignInPage> {
                     }
 
                     dynamic body;
-                    ResponseDto<Map<String, List<String>>?> responseDto;
+                    ResponseDto<ValidationErrorData> responseDto;
                     try {
                       body = jsonDecode(response.body);
-                      responseDto = ResponseDto.fromJson(body, ResponseDto.dataFromFieldValidation);
+                      responseDto = ResponseDto.fromJson(body, (json) => ValidationErrorData.fromJson(json as Map<String, dynamic>));
                     } catch (e) {
                       log(e.toString());
                       setState(() {
