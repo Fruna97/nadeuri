@@ -5,6 +5,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/dto/validation_error_data.dart';
+import 'package:provider/provider.dart';
 
 import 'dto/response_dto.dart';
 import 'api_service.dart';
@@ -17,12 +18,21 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  late final ApiService _apiService;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
   String _errorText = '';
 
   bool _passwordObscureText = true;
+
+  @override
+  void initState() {
+    _apiService = context.read<ApiService>();
+
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -131,9 +141,8 @@ class _SignInPageState extends State<SignInPage> {
 
                     showDialog(context: context, builder: (context) => const Center(child: CircularProgressIndicator()));
 
-                    http.Response? response;
-                    ApiService apiService = ApiService();
-                    response = await apiService.post("/member/signin", {"email":email.trim(), "password":password.trim()});
+                    final http.Response? response;
+                    response = await _apiService.post("/member/signin", {"email":email.trim(), "password":password.trim()});
                     
                     if (context.mounted) {
                       Navigator.pop(context);
