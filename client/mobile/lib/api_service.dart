@@ -14,12 +14,12 @@ class ApiService {
   }) : 
     // uri = uri ?? "http://localhost:8080", // Chrome
     uri = uri ?? "http://10.0.2.2:8080", // Android
-    headers = headers ?? {"content-type": "application/json; charset=UTF-8;"};
+    headers = headers ?? {"content-type": "application/json; charset=UTF-8"};
 
   Future<http.Response?> post(String endpoint, Map<String, String> requestBody) async {
     try {
       return await http
-          .post(Uri.parse(uri + endpoint), headers: {"content-type": "application/json; charset=UTF-8"}, body: jsonEncode(requestBody))
+          .post(Uri.parse(uri + endpoint), headers: headers, body: jsonEncode(requestBody))
           .timeout(
             const Duration(seconds: 5),
             onTimeout: () {

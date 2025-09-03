@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/api_service.dart';
 import 'package:mobile/dto/response_dto.dart';
+import 'package:mobile/dto/validation_error_data.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -44,6 +45,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   String? _emailErrorText;
   String? _passwordCheckErrorText;
+  String? _nicknameErrorText;
 
   bool _passwordObscureText = true;
   bool _passwordCheckObscureText = true;
@@ -195,10 +197,11 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: 24.0),
           TextFormField(
             controller: _nicknameController,
-            decoration: const InputDecoration(
+            decoration: InputDecoration(
               labelText: "별명",
               helperText: "별명을 입력하지 않으시면, 이메일을 기반으로 자동으로 생성됩니다.",
-              border: OutlineInputBorder(),
+              errorText: _nicknameErrorText,
+              border: const OutlineInputBorder(),
               counterText: "", 
             ),
             maxLength: 20,
@@ -254,10 +257,10 @@ class _SignUpFormState extends State<SignUpForm> {
               }
 
               dynamic body;
-              ResponseDto<Map<String, List<String>>?> responseDto;
+              ResponseDto<ValidationErrorData> responseDto;
               try {
                 body = jsonDecode(response.body);
-                responseDto = ResponseDto.fromJson(body,ResponseDto.dataFromFieldValidation);
+                responseDto = ResponseDto.fromJson(body, (json) => ValidationErrorData.fromJson(json as Map<String, dynamic>));
               } catch (e) {
                 log(e.toString());
                 setState(() {
@@ -277,22 +280,12 @@ class _SignUpFormState extends State<SignUpForm> {
                     _emailErrorText = "이미 가입된 이메일 입니다.";
                   });
                   _emailFocusNode.requestFocus();
-                } else if (responseDto.message.startsWith("유효성 검사 실패")) {
-                  responseDto.data!.forEach((key, value) {
-                    String errorText = "";
-                    value.forEach((item) {
-                      errorText += item + "\n";
-                    });
-          
-                    setState(() {
-                      switch (key) {
-                        case "email":
-                          _emailErrorText = errorText;
-                        case "password":
-                          _activatePasswordErrorState();
-                          _passwordCheckErrorText = errorText;
-                      }
-                    });
+                } else if (responseDto.message.startsWith("유효성 검사")) {
+                  setState(() {
+                    _emailErrorText = responseDto.data!.email?.join("\n");
+                    if (responseDto.data!.password != null) _activatePasswordErrorState();
+                    _passwordCheckErrorText = responseDto.data!.password?.join("\n");
+                    _nicknameErrorText = responseDto.data!.nickname?.join("\n");
                   });
                 }
           
