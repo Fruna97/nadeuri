@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:http/http.dart' as http;
 import 'package:mobile/dto/token_data.dart';
 import 'package:mobile/dto/validation_error_data.dart';
@@ -20,6 +21,7 @@ class SignInPage extends StatefulWidget {
 
 class _SignInPageState extends State<SignInPage> {
   late final ApiService _apiService;
+  late final FlutterSecureStorage _flutterSecureStorage;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -31,6 +33,7 @@ class _SignInPageState extends State<SignInPage> {
   @override
   void initState() {
     _apiService = context.read<ApiService>();
+    _flutterSecureStorage = context.read<FlutterSecureStorage>();
 
     super.initState();
   }
@@ -216,6 +219,9 @@ class _SignInPageState extends State<SignInPage> {
                       return;
                     }
 
+                    await _flutterSecureStorage.write(key: "accessToken", value: responseDto.data!.accessToken);
+                    await _flutterSecureStorage.write(key: "refreshToken", value: responseDto.data!.refreshToken);
+                    
                     log("로그인 성공");
                     // TODO: 메인화면으로 이동
                   },
