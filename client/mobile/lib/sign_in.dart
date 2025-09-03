@@ -4,6 +4,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mobile/dto/token_data.dart';
 import 'package:mobile/dto/validation_error_data.dart';
 import 'package:provider/provider.dart';
 
@@ -94,7 +95,14 @@ class _SignInPageState extends State<SignInPage> {
                   ],
                 ),
                 if (_errorText.isNotEmpty) const SizedBox(height: 12.0),
-                if (_errorText.isNotEmpty) Center(child: Text(_errorText, style: TextStyle(color: Colors.red, fontSize: 12))),
+                if (_errorText.isNotEmpty)
+                  Center(
+                    child: Text(
+                      _errorText,
+                      style: TextStyle(color: Colors.red, fontSize: 12),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
                 const SizedBox(height: 12.0),
                 ElevatedButton(
                   onPressed: () async {
@@ -111,32 +119,28 @@ class _SignInPageState extends State<SignInPage> {
                       setState(() {
                         _errorText = "이메일을 입력해 주세요.";
                       });
-
-                      return ;
+                      return;
                     }
                     final emailRegExp = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]+$");
                     if (!emailRegExp.hasMatch(email)) {
                       setState(() {
                         _errorText =  "이메일 또는 비밀번호가 잘못 되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.";
                       });
-
-                      return ;
+                      return;
                     }
 
                     if (password.isEmpty) {
                       setState(() {
                         _errorText = "비밀번호를 입력해 주세요.";
                       });
-
-                      return ;
+                      return;
                     }
                     final passwordRegExp = RegExp(r"""^[a-zA-Z0-9\-=\[\]\\;',\./~!@#\$%\^&\*\(\)_\+\{\}\|:"<>\?]{9,20}$""");
                     if (!passwordRegExp.hasMatch(password)) {
                       setState(() {
                         _errorText =  "이메일 또는 비밀번호가 잘못 되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.";
                       });
-
-                      return ;
+                      return;
                     }
 
                     showDialog(context: context, builder: (context) => const Center(child: CircularProgressIndicator()));
@@ -150,43 +154,66 @@ class _SignInPageState extends State<SignInPage> {
 
                     if (response == null) {
                       setState(() {
-                        _errorText = "문제가 발생했습니다. 문제가 반복된다면, 고객센터에 문의해주세요.";
+                        _errorText = "문제가 발생했습니다.\n문제가 반복된다면, 고객센터에 문의해주세요.";
                       });
-
-                      return ;
+                      return;
                     }
 
-                    final statusCode = response.statusCode;
-                    log("StatusCode : ${statusCode.toString()}");
+                    final int statusCode = response.statusCode;
+                    final Map<String, dynamic> body = jsonDecode(response.body) as Map<String, dynamic>;
+                    log("StatusCode : $statusCode");
+
+                    if (statusCode == HttpStatus.badRequest) {
+                      try {
+                        ResponseDto<ValidationErrorData> responseDto = ResponseDto.fromJson(
+                          body,
+                          (json) => ValidationErrorData.fromJson(json as Map<String, dynamic>),
+                        );
+                        setState(() {
+                          _errorText = "이메일 또는 비밀번호가 잘못 되었습니다.\n이메일 또는 비밀번호 정확히 입력해 주세요.";
+                        });
+                        log("요청 본문 데이터 검증 오류: $responseDto");
+                      } catch (e) {
+                        setState(() {
+                          _errorText = "문제가 발생했습니다.\n문제가 반복된다면, 고객센터에 문의해주세요.";
+                        });
+                        log("예외 상세: $e");
+                      }
+                      return;
+                    }
+
+                    if (statusCode == HttpStatus.unauthorized) {
+                      setState(() {
+                        _errorText = "이메일 또는 비밀번호가 잘못 되었습니다.\n이메일 또는 비밀번호 정확히 입력해 주세요.";
+                      });
+                      return;
+                    }
+
                     if (statusCode == HttpStatus.requestTimeout) {
                       setState(() {
-                        _errorText = "문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
+                        _errorText = "문제가 발생했습니다.\n잠시 후 다시 시도해 주세요.";
                       });
-
-                      return ;
+                      return;
                     }
-
-                    dynamic body;
-                    ResponseDto<ValidationErrorData> responseDto;
-                    try {
-                      body = jsonDecode(response.body);
-                      responseDto = ResponseDto.fromJson(body, (json) => ValidationErrorData.fromJson(json as Map<String, dynamic>));
-                    } catch (e) {
-                      log(e.toString());
-                      setState(() {
-                        _errorText = "문제가 발생했습니다. 문제가 반복된다면, 고객센터에 문의해주세요.";
-                      });
-
-                      return ;
-                    }
-                    log("Response Data : ${responseDto.toString()}");
 
                     if (statusCode != HttpStatus.ok) {
-                        setState(() {
-                          _errorText = "이메일 또는 비밀번호가 잘못 되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.";
-                        });
+                      setState(() {
+                        _errorText = "문제가 발생했습니다.\n문제가 반복된다면, 고객센터에 문의해주세요.";
+                      });
+                      return;
+                    }
 
-                        return ;
+                    final ResponseDto<TokenData> responseDto;
+                    try {
+                      responseDto = ResponseDto.fromJson(
+                        body,
+                        (json) => TokenData.fromJson(json as Map<String, dynamic>),
+                      );
+                    } catch (e) {
+                      setState(() {
+                        _errorText = "문제가 발생했습니다.\n문제가 반복된다면, 고객센터에 문의해주세요.";
+                      });
+                      return;
                     }
 
                     log("로그인 성공");
