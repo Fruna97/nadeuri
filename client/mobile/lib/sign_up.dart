@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/api_service.dart';
 import 'package:mobile/dto/response_dto.dart';
 import 'package:mobile/dto/validation_error_data.dart';
+import 'package:provider/provider.dart';
 
 class SignUpPage extends StatelessWidget {
   const SignUpPage({super.key});
@@ -26,6 +27,8 @@ class SignUpForm extends StatefulWidget {
 }
 
 class _SignUpFormState extends State<SignUpForm> {
+
+  late final ApiService _apiService;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final GlobalKey<FormFieldState> _emailKey = GlobalKey<FormFieldState>();
@@ -54,7 +57,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   @override
   void initState() {
-    super.initState();
+    _apiService = context.read<ApiService>();
 
     _emailFocusNode.addListener(() {
       if (!_emailFocusNode.hasFocus) {
@@ -86,6 +89,8 @@ class _SignUpFormState extends State<SignUpForm> {
         _passwordCheckKey.currentState?.validate();
       }
     });
+
+    super.initState();
   }
 
   @override
@@ -209,6 +214,8 @@ class _SignUpFormState extends State<SignUpForm> {
               if (nickname != null && nickname.length > 20) {
                 return "별명은 20자 이하로 이루어져야 합니다.";
               }
+
+              return null;
             },
           ),
           if (_errorText.isNotEmpty) const SizedBox(height: 12), 
@@ -217,7 +224,7 @@ class _SignUpFormState extends State<SignUpForm> {
           ElevatedButton(
             onPressed: () async {
               if (!_formKey.currentState!.validate()) {
-                return ;
+                return;
               }
 
               setState(() {
@@ -231,8 +238,7 @@ class _SignUpFormState extends State<SignUpForm> {
               showDialog(context: context, builder: (context) => const Center(child: CircularProgressIndicator()));
           
               http.Response? response;
-              ApiService apiService = ApiService();
-              response = await apiService.post("/member/signup", {"email":email.trim(), "password":password.trim(), "nickname":nickname.trim()});
+              response = await _apiService.post("/member/signup", {"email":email.trim(), "password":password.trim(), "nickname":nickname.trim()});
 
               if (context.mounted) {
                 Navigator.pop(context);
@@ -243,7 +249,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   _errorText = "문제가 발생했습니다. 문제가 반복된다면, 고객센터에 문의해주세요.";
                 });
                 
-                return ;
+                return;
               }
           
               final statusCode = response.statusCode;
@@ -253,7 +259,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   _errorText = "문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
                 });
 
-                return ;
+                return;
               }
 
               dynamic body;
@@ -267,7 +273,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   _errorText = "문제가 발생했습니다. 문제가 반복된다면, 고객센터에 문의해주세요.";
                 });
           
-                return ;
+                return;
               }
               log("Response Data : ${responseDto.toString()}");
 
@@ -289,7 +295,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   });
                 }
           
-                return ;
+                return;
               }
           
               log("회원가입 성공");
