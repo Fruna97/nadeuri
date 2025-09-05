@@ -146,7 +146,11 @@ class _SignInPageState extends State<SignInPage> {
                       return;
                     }
 
-                    showDialog(context: context, builder: (context) => const Center(child: CircularProgressIndicator()));
+                    showDialog(
+                      context: context,
+                      builder: (context) => PopScope(canPop: false, child: Center(child: CircularProgressIndicator())),
+                      barrierDismissible: false,
+                    );
 
                     final http.Response? response;
                     response = await _apiService.post("/member/signin", {"email":email.trim(), "password":password.trim()});
