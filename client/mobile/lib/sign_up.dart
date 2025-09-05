@@ -115,20 +115,20 @@ class _SignUpFormState extends State<SignUpForm> {
               helperText: "추후 이메일을 통해 비밀번호를 재설정 하실 수 있습니다.",
               errorText: _emailErrorText,
               border: OutlineInputBorder(),
-              counterText: "", 
+              counterText: "",
             ),
             maxLength: 320,
             validator: (String? email) {
               if (email == null || email.isEmpty) {
                 return "이메일을 입력해 주세요.";
               }
-          
+
               final regExp = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]+$");
               if (!regExp.hasMatch(email)) {
                 // 정규 표현식을 사용하여 이메일 형식 검증
                 return "올바른 형식의 이메일을 입력해 주세요.";
               }
-          
+
               return null;
             },
           ),
@@ -149,7 +149,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 },
               ),
               border: const OutlineInputBorder(),
-              counterText: "", 
+              counterText: "",
             ),
             obscureText: _passwordObscureText,
             maxLength: 20,
@@ -171,7 +171,7 @@ class _SignUpFormState extends State<SignUpForm> {
                 },
               ),
               border: OutlineInputBorder(),
-              counterText: "", 
+              counterText: "",
             ),
             obscureText: _passwordCheckObscureText,
             maxLength: 20,
@@ -182,20 +182,20 @@ class _SignUpFormState extends State<SignUpForm> {
               if (password.isEmpty) {
                 _activatePasswordErrorState();
                 return "비밀번호를 입력해 주세요.";
-              } 
+              }
               final regExp = RegExp(r"""^[a-zA-Z0-9\-=\[\]\\;',\./~!@#\$%\^&\*\(\)_\+\{\}\|:"<>\?]{9,20}$""");
               if (!regExp.hasMatch(password)) {
                 _activatePasswordErrorState();
                 return "비밀번호는 9~20자의 영문, 숫자, 특수문자로 이루어져야 합니다.";
-              }          
-          
+              }
+
               if (passwordCheck == null || passwordCheck.isEmpty) {
                 return "비밀번호 확인란을 입력해 주세요.";
               }
               if (password != passwordCheck) {
                 return "비밀번호가 동일하지 않습니다.";
               }
-          
+
               return null;
             },
           ),
@@ -207,7 +207,7 @@ class _SignUpFormState extends State<SignUpForm> {
               helperText: "별명을 입력하지 않으시면, 이메일을 기반으로 자동으로 생성됩니다.",
               errorText: _nicknameErrorText,
               border: const OutlineInputBorder(),
-              counterText: "", 
+              counterText: "",
             ),
             maxLength: 20,
             validator: (String? nickname) {
@@ -218,25 +218,36 @@ class _SignUpFormState extends State<SignUpForm> {
               return null;
             },
           ),
-          if (_errorText.isNotEmpty) const SizedBox(height: 12), 
-          if (_errorText.isNotEmpty) Center(child: Text(_errorText, style: TextStyle(color: Colors.red, fontSize: 12))),
+          if (_errorText.isNotEmpty) const SizedBox(height: 12),
+          if (_errorText.isNotEmpty)
+            Center(
+              child: Text(
+                _errorText, 
+                style: TextStyle(color: Colors.red, fontSize: 12), 
+                textAlign: TextAlign.center
+              ),
+            ),
           const SizedBox(height: 32.0),
           ElevatedButton(
             onPressed: () async {
+              setState(() {
+                _errorText = "";
+                _deactivatePasswordErrorState();
+                _emailErrorText = null;
+                _passwordCheckErrorText = null;
+                _nicknameErrorText = null;
+              });
+
               if (!_formKey.currentState!.validate()) {
                 return;
               }
 
-              setState(() {
-                _errorText = "";  
-              });
-
               final String email = _emailController.text;
               final String password = _passwordController.text;
               final String nickname = _nicknameController.text;
-          
+
               showDialog(context: context, builder: (context) => const Center(child: CircularProgressIndicator()));
-          
+
               http.Response? response;
               response = await _apiService.post("/member/signup", {"email":email.trim(), "password":password.trim(), "nickname":nickname.trim()});
 
@@ -246,58 +257,60 @@ class _SignUpFormState extends State<SignUpForm> {
 
               if (response == null) {
                 setState(() {
-                  _errorText = "문제가 발생했습니다. 문제가 반복된다면, 고객센터에 문의해주세요.";
+                  _errorText = "문제가 발생했습니다.\n문제가 반복된다면, 고객센터에 문의해주세요.";
                 });
-                
-                return;
-              }
-          
-              final statusCode = response.statusCode;
-              log("Status Code : $statusCode");
-              if (statusCode == HttpStatus.requestTimeout) {
-                setState(() {
-                  _errorText = "문제가 발생했습니다. 잠시 후 다시 시도해 주세요.";
-                });
-
                 return;
               }
 
-              dynamic body;
-              ResponseDto<ValidationErrorData> responseDto;
-              try {
-                body = jsonDecode(response.body);
-                responseDto = ResponseDto.fromJson(body, (json) => ValidationErrorData.fromJson(json as Map<String, dynamic>));
-              } catch (e) {
-                log(e.toString());
-                setState(() {
-                  _errorText = "문제가 발생했습니다. 문제가 반복된다면, 고객센터에 문의해주세요.";
-                });
-          
-                return;
-              }
-              log("Response Data : ${responseDto.toString()}");
+              final int statusCode = response.statusCode;
+              final Map<String, dynamic> body = jsonDecode(response.body) as Map<String, dynamic>;
+              log("StatusCode : $statusCode");
 
-              if (statusCode != HttpStatus.ok) {
-                log("회원가입 실패");
-          
-                // 회원가입을 실패하면 응답에 따라 각 텍스트 필드에 검증 에러 메시지 표시
-                if (responseDto.message.startsWith("이미 존재하는 이메일 입니다")) {
-                  setState(() {
-                    _emailErrorText = "이미 가입된 이메일 입니다.";
-                  });
-                  _emailFocusNode.requestFocus();
-                } else if (responseDto.message.startsWith("유효성 검사")) {
+              if (statusCode == HttpStatus.badRequest) {
+                try {
+                  ResponseDto<ValidationErrorData> responseDto = ResponseDto.fromJson(
+                    body,
+                    (json) => ValidationErrorData.fromJson(json as Map<String, dynamic>),
+                  );
                   setState(() {
                     _emailErrorText = responseDto.data!.email?.join("\n");
                     if (responseDto.data!.password != null) _activatePasswordErrorState();
                     _passwordCheckErrorText = responseDto.data!.password?.join("\n");
                     _nicknameErrorText = responseDto.data!.nickname?.join("\n");
                   });
+                  log("요청 본문 데이터 검증 오류: $responseDto");
+                } catch (e) {
+                  setState(() {
+                    _errorText = "문제가 발생했습니다.\n문제가 반복된다면, 고객센터에 문의해주세요.";
+                  });
+                  log("예외 상세: $e");
                 }
-          
                 return;
               }
-          
+
+              if (statusCode == HttpStatus.requestTimeout) {
+                setState(() {
+                  _errorText = "문제가 발생했습니다.\n잠시 후 다시 시도해 주세요.";
+                });
+                return;
+              }
+
+              if (statusCode == HttpStatus.conflict) {
+                ResponseDto<Null> responseDto = ResponseDto.fromJson(body, (json) => null);
+                setState(() {
+                  _emailErrorText = "이미 가입된 이메일 입니다.";
+                });
+                log("중복 이메일 가입 요청: $responseDto");
+                return;
+              }
+
+              if (statusCode != HttpStatus.ok) {
+                setState(() {
+                  _errorText = "문제가 발생했습니다.\n문제가 반복된다면, 고객센터에 문의해주세요.";
+                });
+                return;
+              }
+
               log("회원가입 성공");
               // 회원가입 성공시 회원가입 완료 페이지로 전환
               if (context.mounted) {
@@ -320,9 +333,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   void _deactivatePasswordErrorState() {
     setState(() {
-      if (_passwordError != null) {
-        _passwordError = null;
-      }
+      _passwordError = null;
     });
   }
 }
