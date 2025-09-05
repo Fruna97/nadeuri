@@ -246,7 +246,11 @@ class _SignUpFormState extends State<SignUpForm> {
               final String password = _passwordController.text;
               final String nickname = _nicknameController.text;
 
-              showDialog(context: context, builder: (context) => const Center(child: CircularProgressIndicator()));
+              showDialog(
+                context: context,
+                builder: (context) => PopScope(canPop: false, child: Center(child: CircularProgressIndicator())),
+                barrierDismissible: false,
+              );
 
               http.Response? response;
               response = await _apiService.post("/member/signup", {"email":email.trim(), "password":password.trim(), "nickname":nickname.trim()});
