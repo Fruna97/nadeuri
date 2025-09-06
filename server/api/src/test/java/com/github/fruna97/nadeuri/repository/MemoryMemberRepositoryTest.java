@@ -1,7 +1,8 @@
 package com.github.fruna97.nadeuri.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
-
+import java.util.Optional;
+import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -28,7 +29,7 @@ class MemoryMemberRepositoryTest {
         Member newMember = Member.builder()
                 .email("test_email@test.com")
                 .password("test_password")
-                .username("test_username")
+                .nickname("test_nickname")
                 .build();
 
         // When
@@ -40,26 +41,65 @@ class MemoryMemberRepositoryTest {
     }
 
     @Test
+    void findById() {
+        // given
+        Member newMember = Member.builder()
+                .email("test_email@test.com")
+                .password("test_password")
+                .nickname("test_nickname")
+                .build();
+        Member savedMember = memberRepository.save(newMember);
+        Long savedId = savedMember.getId();
+        
+        // when
+        Optional<Member> result = memberRepository.findById(savedId);
+
+        // then
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(savedMember);
+    }
+
+    @Test
+    void findByUuid() {
+        // given
+        Member newMember = Member.builder()
+                .email("test_email@test.com")
+                .password("test_password")
+                .nickname("test_nickname")
+                .build();
+        Member savedMember = memberRepository.save(newMember);
+        UUID uuid = savedMember.getUuid();
+        
+        // when
+        Optional<Member> result = memberRepository.findByUuid(uuid);
+
+        // then
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(savedMember);
+    }
+
+    @Test
     void findByEmail() {
         // Given
         Member member1 = Member.builder()
                 .email("test_email_1@test.com")
                 .password("test_password_1")
-                .username("test_username_1")
+                .nickname("test_nickname_1")
                 .build();
         memberRepository.save(member1);
 
         Member member2 = Member.builder()
                 .email("test_email_2@test.com")
                 .password("test_password_2")
-                .username("test_username_2")
+                .nickname("test_nickname_2")
                 .build();
+        Member savedMember2 = memberRepository.save(member2);
         
         // When
-        Member savedMember2 = memberRepository.save(member2);
+        Optional<Member> result = memberRepository.findByEmail("test_email_2@test.com");
 
         // Then
-        Member result = memberRepository.findByEmail("test_email_2@test.com").get();
-        assertThat(result).isEqualTo(savedMember2);
+        assertThat(result).isPresent();
+        assertThat(result.get()).isEqualTo(savedMember2);
     }
 }

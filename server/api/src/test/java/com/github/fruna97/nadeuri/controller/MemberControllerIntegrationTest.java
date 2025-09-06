@@ -50,7 +50,7 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "test_eamil@test.com",
                     "password": "test_password",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """;
         HttpEntity<String> request = new HttpEntity<>(requestBody, headers);
@@ -79,7 +79,7 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "test_eamil@test.com",
                     "password": "test_password",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """;
         HttpEntity<String> request1 = new HttpEntity<>(requestBody1, headers);
@@ -88,7 +88,7 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "test_eamil@test.com",
                     "password": "test_password",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """;
         HttpEntity<String> request2 = new HttpEntity<>(requestBody2, headers);
@@ -121,10 +121,10 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "",
                     "password": "test_password",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """,
-                "유효성 검사 실패",
+                "유효성 검사에 실패했습니다.",
                 Map.of("email", List.of("공백일 수 없습니다"))
             ), 
             // 올바르지 않은 형식의 이메일
@@ -133,10 +133,10 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "invalid_email_format",
                     "password": "test_password",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """,
-                "유효성 검사 실패",
+                "유효성 검사에 실패했습니다.",
                 Map.of("email", List.of("올바른 형식의 이메일 주소여야 합니다"))
             ), 
             // 빈 비밀번호
@@ -145,10 +145,10 @@ class MemberControllerIntegrationTest {
                 {
                     "email": "test_email@test.com",
                     "password": "",
-                    "username": "test_username"
+                    "nickname": "test_nickname"
                 }
                 """,
-                "유효성 검사 실패",
+                "유효성 검사에 실패했습니다.",
                 Map.of("password", List.of("공백일 수 없습니다", "비밀번호는 9자 이상 이여야 합니다"))
             ), 
             // 9자 미만의 비밀번호
@@ -157,10 +157,10 @@ class MemberControllerIntegrationTest {
                     {
                         "email": "test_email@test.com",
                         "password": "under_9",
-                        "username": "test_username"
+                        "nickname": "test_nickname"
                     }
                     """,
-                    "유효성 검사 실패",
+                    "유효성 검사에 실패했습니다.",
                     Map.of("password", List.of("비밀번호는 9자 이상 이여야 합니다"))
             ) 
         );
