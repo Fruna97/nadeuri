@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -24,7 +24,7 @@ public class CustomExceptionHandler {
     public ResponseEntity<ResponseDto<Void>> duplicateEmailHandler(DuplicateEmailException e) {
         log.warn("중복된 이메일 가입 요청 : " + e.getMessage());
         return ResponseEntity
-                .badRequest()
+                .status(HttpStatus.CONFLICT)
                 .body(ResponseDto.<Void>builder()
                         .message(e.getMessage())
                         .data(null)

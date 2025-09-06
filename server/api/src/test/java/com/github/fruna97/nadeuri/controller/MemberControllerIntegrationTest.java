@@ -109,7 +109,7 @@ class MemberControllerIntegrationTest {
         ResponseDto responseBody = Optional.ofNullable(response.getBody()).get();
 
         // Then
-        assertThat(statusCode).isEqualTo(HttpStatus.BAD_REQUEST);
+        assertThat(statusCode).isEqualTo(HttpStatus.CONFLICT);
         assertThat(responseBody.getMessage()).isEqualTo("이미 존재하는 이메일 입니다: test_eamil@test.com");
     }
 
