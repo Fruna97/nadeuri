@@ -29,7 +29,11 @@ public class MemberController {
 
     @PostMapping("/member/signup")
     public ResponseEntity<ResponseDto<Void>> signUp(@RequestBody @Valid SignUpDto signUpDto) {
-        memberService.signUp(signUpDto);
+        String email = signUpDto.getEmail();
+        String password = signUpDto.getPassword();
+        String nickname = signUpDto.getNickname();
+        
+        memberService.signUp(email, password, nickname);
 
         return ResponseEntity
                 .ok()

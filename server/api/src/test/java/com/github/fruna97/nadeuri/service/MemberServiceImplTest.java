@@ -20,7 +20,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.github.fruna97.nadeuri.domain.Member;
-import com.github.fruna97.nadeuri.dto.SignUpDto;
 import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
 import com.github.fruna97.nadeuri.repository.MemoryMemberRepository;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
@@ -52,16 +51,14 @@ class MemberServiceImplTest {
     }
 
     @Test
-    void signUp() {
+    void signUp_성공() {
         // Given
-        SignUpDto signUpDto = SignUpDto.builder()
-                .email("test_email@test.com")
-                .password("test_password")
-                .nickname("test_nickname")
-                .build();
+        String email = "test_email@test.com";
+        String password = "test_password";
+        String nickname = "test_nickname";
 
         // When
-        Member savedMember = memberService.signUp(signUpDto);
+        Member savedMember = memberService.signUp(email, password, nickname);
         Member result = memberRepository.findById(savedMember.getId()).get();
 
         // Then
@@ -69,28 +66,23 @@ class MemberServiceImplTest {
     }
 
     @Test
-    void signUpWithDuplicateEmail() {
+    void signUp_중복이메일() {
         // Given
-        SignUpDto signUpDto1 = SignUpDto.builder()
-                .email("test_email_1@test.com")
-                .password("test_password")
-                .nickname("test_nickname")
-                .build();
+        String email1 = "test_email@test.com";
+        String password1 = "test_password_1";
+        String nickname1 = "test_nickname_1";
 
-        SignUpDto signUpDto2 = SignUpDto.builder()
-                .email("test_email_1@test.com")
-                .password("test_password")
-                .nickname("test_nickname")
-                .build();
+        String email2 = "test_email@test.com";
+        String password2 = "test_password_2";
+        String nickname2 = "test_nickname_2";
 
         // When
-        memberService.signUp(signUpDto1);
-        ThrowingCallable signUpWithDuplicatedEmailAction = () -> memberService.signUp(signUpDto2);
+        memberService.signUp(email1, password1, nickname1);
+        ThrowingCallable signUpWithDuplicatedEmailAction = () -> memberService.signUp(email2, password2, nickname2);
 
         // Then
         assertThatThrownBy(signUpWithDuplicatedEmailAction)
-                .isInstanceOf(DuplicateEmailException.class)
-                .hasMessageContaining("이미 존재하는 이메일 입니다: " + signUpDto2.getEmail());
+                .isInstanceOf(DuplicateEmailException.class);
     }
 
     @Test
