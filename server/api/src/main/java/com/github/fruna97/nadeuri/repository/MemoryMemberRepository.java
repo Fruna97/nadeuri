@@ -2,6 +2,7 @@ package com.github.fruna97.nadeuri.repository;
 
 import java.util.Map;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
 import com.github.fruna97.nadeuri.domain.Member;
@@ -16,11 +17,12 @@ public class MemoryMemberRepository implements MemberRepository {
         validateDuplicateEmail(member); // 중복 이메일 확인
         
         Member savedMember = Member.builder()
-            .id(++sequence)
-            .email(member.getEmail())
-            .password(member.getPassword())
-            .username(member.getUsername())
-            .build();
+                .id(++sequence)
+                .uuid(UUID.randomUUID())
+                .email(member.getEmail())
+                .password(member.getPassword())
+                .nickname(member.getNickname())
+                .build();
         store.put(savedMember.getId(), savedMember);
 
         return savedMember;
@@ -32,17 +34,24 @@ public class MemoryMemberRepository implements MemberRepository {
     }
 
     @Override
+    public Optional<Member> findByUuid(UUID uuid) {
+        return store.values().stream()
+                .filter(member -> member.getUuid().equals(uuid))
+                .findFirst();
+    }
+
+    @Override
     public Optional<Member> findByEmail(String email) {
         return store.values().stream()
-            .filter(member -> member.getEmail().equals(email))
-            .findFirst();
+                .filter(member -> member.getEmail().equals(email))
+                .findFirst();
     }
 
     private void validateDuplicateEmail(Member member) {
         findByEmail(member.getEmail())
-            .ifPresent(m -> {
-                throw new DuplicateEmailException(m.getEmail());
-            });
+                .ifPresent(m -> {
+                    throw new DuplicateEmailException(m.getEmail());
+                });
     }
 
     public static void clear() {
