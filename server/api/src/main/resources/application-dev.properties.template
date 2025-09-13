@@ -6,3 +6,16 @@
 jwt.secret=<JWT_SECRET_KEY>
 jwt.access-token-duration=30m
 jwt.refresh-token-duration=5d
+
+#
+# SQL Database 연결을 위한 속성
+#
+spring.datasource.url=jdbc:postgresql://localhost:5432/database_name
+spring.datasource.username=username
+spring.datasource.password=password
+
+#
+# 개발 환경에서 편리한 JPA 사용을 위한 속성
+#
+spring.jpa.hibernate.ddl-auto=create
+spring.jpa.show-sql=true
