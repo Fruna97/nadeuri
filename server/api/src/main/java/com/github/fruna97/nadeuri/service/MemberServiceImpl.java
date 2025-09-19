@@ -3,12 +3,15 @@ package com.github.fruna97.nadeuri.service;
 import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import com.github.fruna97.nadeuri.domain.Member;
+import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
@@ -32,14 +35,21 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public Member signUp(String email, String password, String nickname) {
         String encPassword = bCryptPasswordEncoder.encode(password);
 
-        return memberRepository.save(Member.builder()
+        Member member = Member.builder()
                 .email(email)
                 .password(encPassword)
                 .nickname(nickname)
-                .build());
+                .build();
+
+        try {
+            return memberRepository.saveAndFlush(member);
+        } catch (DataIntegrityViolationException e) {
+            throw new DuplicateEmailException(email);
+        }
     }
 
     @Override

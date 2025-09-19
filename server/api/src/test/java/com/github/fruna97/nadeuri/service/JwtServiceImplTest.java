@@ -2,6 +2,7 @@ package com.github.fruna97.nadeuri.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
+import static org.mockito.Mockito.when;
 import java.time.Duration;
 import java.util.Date;
 import java.util.Map;
@@ -10,19 +11,25 @@ import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.github.fruna97.nadeuri.domain.Member;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
-import com.github.fruna97.nadeuri.repository.MemoryMemberRepository;
 import com.github.fruna97.nadeuri.repository.MemoryRefreshTokenRepository;
 import com.github.fruna97.nadeuri.repository.RefreshTokenRepository;
 
+@ExtendWith(MockitoExtension.class)
 class JwtServiceImplTest {
 
     JwtService jwtService;
+
     RefreshTokenRepository refreshTokenRepository;
+
+    @Mock
     MemberRepository memberRepository;
 
     private final String secretKey = "test_secret_key";
@@ -32,7 +39,6 @@ class JwtServiceImplTest {
     @BeforeEach
     void beforeEach() {
         refreshTokenRepository = new MemoryRefreshTokenRepository();
-        memberRepository = new MemoryMemberRepository();
         jwtService = new JwtServiceImpl(secretKey, accessTokenDuration, refreshTokenDuration, refreshTokenRepository, memberRepository);
     }
 
@@ -45,78 +51,78 @@ class JwtServiceImplTest {
 
     @Test
     void createAccessToken() {
-        // given
+        // Given
         UUID uuid = UUID.randomUUID();
 
-        // when
+        // When
         String accessToken = jwtService.createAccessToken(uuid);
 
-        // then
-        assertThat(accessToken).isNotEmpty();
+        // Then
+        assertThat(accessToken).isNotEmpty(); // Access Token이 생성되었는지
         assertThatCode(() -> {
             DecodedJWT verifiedToken = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(accessToken);
             if (!verifiedToken.getClaim("type").asString().equals("access")) throw new Exception();
-        }).doesNotThrowAnyException();
+        }).doesNotThrowAnyException(); // 토큰이 유효한지
     }
 
     @Test
     void createAndSaveRefreshToken() {
-        // given
+        // Given
         UUID uuid = UUID.randomUUID();
 
-        // when
+        // When
         String refreshToken = jwtService.createAndSaveRefreshToken(uuid);
 
-        // then
-        assertThat(refreshToken).isNotEmpty();
+        // Then
+        assertThat(refreshToken).isNotEmpty(); // Refresh Token이 생성되었는지
         assertThatCode(() -> {
             DecodedJWT verifiedToken = JWT.require(Algorithm.HMAC512(secretKey)).build().verify(refreshToken);
             if (!verifiedToken.getClaim("type").asString().equals("refresh")) throw new Exception();
-        }).doesNotThrowAnyException();
+        }).doesNotThrowAnyException(); // 토큰이 유효한지
 
         Optional<String> savedRefreshToken = refreshTokenRepository.findByUuid(uuid);
         assertThat(savedRefreshToken)
-                .isPresent()
+                .isPresent() // 토큰이 저장되었는지
                 .get()
-                .isEqualTo(refreshToken);
+                .isEqualTo(refreshToken); // 저장된 토큰이 생성한 토큰과 일치하는지
     }
 
     @Test
     void verifyToken_유효토큰() {
-        // given
+        // Given
         UUID uuid = UUID.randomUUID();
         String validToken = JWT.create()
                 .withSubject(uuid.toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 3600))
                 .sign(Algorithm.HMAC512(secretKey));
 
-        // when
+        // When
         Optional<DecodedJWT> verifiedToken = jwtService.verifyToken(validToken);
 
-        // then
-        assertThat(verifiedToken).isPresent();
-        assertThat(verifiedToken.get().getSubject()).isEqualTo(uuid.toString());
+        // Then
+        assertThat(verifiedToken).isPresent(); // 유효한 토큰을 제대로 검증했는지
+        assertThat(verifiedToken.get().getSubject()).isEqualTo(uuid.toString()); // 복호화한 토큰에 정상적인 UUID가 담겨있는지
     }
 
     @Test
     void verifyToken_만료토큰() {
-        // given
+        // Given
         UUID uuid = UUID.randomUUID();
         String expiredToken = JWT.create()
                 .withSubject(uuid.toString())
                 .withExpiresAt(new Date(System.currentTimeMillis() - 3600))
                 .sign(Algorithm.HMAC512(secretKey));
 
-        // when
+        // When
         Optional<DecodedJWT> verifiedToken = jwtService.verifyToken(expiredToken);
 
-        // then
-        assertThat(verifiedToken).isNotPresent();
+        // Then
+        assertThat(verifiedToken).isNotPresent(); // 유효하지 않은 토큰을 제대로 검증했는지
     }
 
     @Test
     void verifyToken_위변조토큰() {
-        // given
+        // Given
         UUID uuid = UUID.randomUUID();
         String validToken = JWT.create()
                 .withSubject(uuid.toString())
@@ -124,21 +130,23 @@ class JwtServiceImplTest {
                 .sign(Algorithm.HMAC512(secretKey));
         String tamperedToken = validToken + "tempering";
 
-        // when
+        // When
         Optional<DecodedJWT> verifiedToken = jwtService.verifyToken(tamperedToken);
 
-        // then
-        assertThat(verifiedToken).isNotPresent();
+        // Then
+        assertThat(verifiedToken).isNotPresent(); // 유효하지 않은 토큰을 제대로 검증했는지
     }
 
     @Test
     void reissueToken() {
-        // given
-        Member member = memberRepository.save(Member.builder()
-                .email("test_email@test.com")
+        // Given
+        UUID uuid = UUID.randomUUID();
+        Member member = Member.builder()
+                .email("test_email")
                 .password("test_password")
-                .build());
-        UUID uuid = member.getUuid();
+                .uuid(uuid)
+                .build();
+        when(memberRepository.findByUuid(uuid)).thenReturn(Optional.of(member));
 
         String refreshToken = JWT.create()
                 .withSubject(uuid.toString())
@@ -147,30 +155,30 @@ class JwtServiceImplTest {
                 .sign(Algorithm.HMAC512(secretKey));
         refreshTokenRepository.save(uuid, refreshToken, refreshTokenDuration);
 
-        // when
+        // When
         Map<String, String> reissuedToken = jwtService.reissueToken(refreshToken);
 
-        // then
-        assertThat(reissuedToken).containsKeys("accessToken", "refreshToken");
+        // Then
+        assertThat(reissuedToken).containsKeys("accessToken", "refreshToken"); // 토큰 재발급 시 Access Token, RefreshToken을 모두 반환하는지
 
         String reissuedRefreshToken = reissuedToken.get("refreshToken");
         Optional<String> savedRefreshToken = refreshTokenRepository.findByUuid(uuid);
         assertThat(savedRefreshToken).get()
-                .isEqualTo(reissuedRefreshToken)
-                .isNotEqualTo(refreshToken);
+                .isEqualTo(reissuedRefreshToken) // 재발급한 Refresh Token을 저장했는지
+                .isNotEqualTo(refreshToken); // 재발급한 Refresh Token이 기존의 것과 다른지
     }
 
     @Test
     void deleteRefreshToken() {
-        // given
+        // Given
         UUID uuid = UUID.randomUUID();
         String refreshToken = "test_token";
         refreshTokenRepository.save(uuid, refreshToken, refreshTokenDuration);
 
-        // when
+        // When
         jwtService.deleteRefreshToken(uuid);
 
-        // then
-        assertThat(refreshTokenRepository.findByUuid(uuid)).isNotPresent();
+        // Then
+        assertThat(refreshTokenRepository.findByUuid(uuid)).isNotPresent(); // UUID에 해당하는 RefreshToken을 정상적으로 제거했는지
     }
 }
