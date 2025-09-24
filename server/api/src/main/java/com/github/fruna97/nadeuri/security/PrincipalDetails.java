@@ -52,11 +52,15 @@ public class PrincipalDetails implements UserDetails {
         return true;
     }
 
-    public String getNickname() {
-        return member.getNickname();
+    public Long getId() {
+        return member.getId();
     }
 
     public UUID getUuid() {
         return member.getUuid();
+    }
+
+    public String getNickname() {
+        return member.getNickname();
     }
 }
