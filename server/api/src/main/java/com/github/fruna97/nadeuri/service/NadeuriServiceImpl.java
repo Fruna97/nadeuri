@@ -1,10 +1,13 @@
 package com.github.fruna97.nadeuri.service;
 
+import java.util.Set;
+import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.fruna97.nadeuri.domain.Member;
 import com.github.fruna97.nadeuri.domain.Nadeuri;
+import com.github.fruna97.nadeuri.dto.ParticipatingNadeuriDto;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
 import com.github.fruna97.nadeuri.repository.NadeuriRepository;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
@@ -34,5 +37,18 @@ public class NadeuriServiceImpl implements NadeuriService {
         nadeuri.getMembers().add(owner);
 
         return nadeuriRepository.save(nadeuri);
+    }
+
+    @Override
+    @Transactional
+    public Set<ParticipatingNadeuriDto> getParticipatingNadeuris(PrincipalDetails principalDetails) {
+        Member member = memberRepository.findById(principalDetails.getId()).orElseThrow();
+        Set<Nadeuri> participatingNadeuris = member.getParticipatingNadeuris();
+
+        return participatingNadeuris.stream()
+                .map(nadeuri -> ParticipatingNadeuriDto.builder()
+                        .title(nadeuri.getTitle())
+                        .build())
+                .collect(Collectors.toSet());
     }
 }
