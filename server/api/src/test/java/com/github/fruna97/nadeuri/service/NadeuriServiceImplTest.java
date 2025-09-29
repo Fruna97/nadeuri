@@ -25,7 +25,7 @@ import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
 @ExtendWith(MockitoExtension.class)
 @Transactional
-public class NadeuriServiceImplTest {
+class NadeuriServiceImplTest {
 
     @Mock
     NadeuriRepository nadeuriRepository;
@@ -105,7 +105,7 @@ public class NadeuriServiceImplTest {
         assertThat(result).hasSize(2); // 참가 Nadeuri 목록의 개수가 정확한지
 
         Set<String> titles = result.stream()
-                .map(participatingNadeuriDto -> participatingNadeuriDto.getTitle())
+                .map(ParticipatingNadeuriDto::getTitle)
                 .collect(Collectors.toSet());
         assertThat(titles).containsExactlyInAnyOrder(title1, title2); // 변환된 DTO가 제목을 그대로 가지고 있는지
     }

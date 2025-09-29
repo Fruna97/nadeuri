@@ -22,7 +22,7 @@ import com.github.fruna97.nadeuri.security.PrincipalDetails;
 import com.github.fruna97.nadeuri.service.NadeuriService;
 
 @ExtendWith(MockitoExtension.class)
-public class NadeuriControllerTest {
+class NadeuriControllerTest {
 
     @Mock
     private NadeuriService nadeuriService;
