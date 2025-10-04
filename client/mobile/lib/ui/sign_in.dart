@@ -9,8 +9,8 @@ import 'package:mobile/dto/token_data.dart';
 import 'package:mobile/dto/validation_error_data.dart';
 import 'package:provider/provider.dart';
 
-import 'dto/response_dto.dart';
-import 'api_service.dart';
+import '../dto/response_dto.dart';
+import '../api_service.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});

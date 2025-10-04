@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/api_service.dart';
-import 'package:mobile/sign_in.dart';
-import 'package:mobile/sign_up.dart';
+import 'package:mobile/ui/sign_in.dart';
+import 'package:mobile/ui/sign_up.dart';
 import 'package:provider/provider.dart';
 
 void main() {
