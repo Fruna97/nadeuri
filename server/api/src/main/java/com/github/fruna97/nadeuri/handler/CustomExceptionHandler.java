@@ -7,13 +7,12 @@ import java.util.Map;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
 import com.github.fruna97.nadeuri.dto.ResponseDto;
 import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
-
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
@@ -60,6 +59,23 @@ public class CustomExceptionHandler {
                 .badRequest()
                 .body(ResponseDto.<Void>builder()
                         .message(e.getMessage())
+                        .data(null)
+                        .build());
+    }
+
+    @ExceptionHandler(AuthenticationException.class)
+    public void authenticationExceptionHandler(AuthenticationException e) throws AuthenticationException {
+        throw e;
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<ResponseDto<Void>> commonHandler(Exception e) {
+        log.error("처리되지 않은 예외 발생 :", e);
+
+        return ResponseEntity
+                .internalServerError()
+                .body(ResponseDto.<Void>builder()
+                        .message("Internal Server Error")
                         .data(null)
                         .build());
     }
