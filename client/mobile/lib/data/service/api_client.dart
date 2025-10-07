@@ -25,8 +25,8 @@ class ApiClient {
        _flutterSecureStorage = flutterSecureStorage;
 
   Future<Result<SignUpResponse>> signUp(SignUpRequest signUpRequest) async {
-    String endpoint = "/member/signup";
-    http.Response? response;
+    final String endpoint = "/member/signup";
+    final http.Response? response;
     try {
       response = await http
           .post(Uri.parse("$_host:$_port$endpoint"), headers: _baseHeaders, body: jsonEncode(signUpRequest.toJson()))
@@ -45,9 +45,9 @@ class ApiClient {
       return Result.error(SignUpResponse.unknownError());
     }
 
-    int statusCode = response.statusCode;
-    dynamic decodedBody = jsonDecode(response.body);
-    String? message = decodedBody["message"];
+    final int statusCode = response.statusCode;
+    final dynamic decodedBody = jsonDecode(response.body);
+    final String? message = decodedBody["message"];
     Map<String, dynamic>? data = decodedBody["data"];
     log("Response summary (StatusCode: $statusCode, Message: $message)");
 
@@ -58,7 +58,7 @@ class ApiClient {
       HttpStatus.conflict => "duplicateEmailError",
       _ => "unknownError",
     };
-    SignUpResponse signUpResponse = SignUpResponse.fromJson(data);
+    final SignUpResponse signUpResponse = SignUpResponse.fromJson(data);
 
     if (signUpResponse is Registered) {
       return Result.ok(signUpResponse);
