@@ -19,12 +19,16 @@ SignUpResponse _$SignUpResponseFromJson(
           return Registered.fromJson(
             json
           );
-                case 'validationError':
-          return ValidationError.fromJson(
+                case 'requestTimeoutError':
+          return RequestTimeout.fromJson(
             json
           );
                 case 'duplicateEmailError':
           return DuplicateEmailError.fromJson(
+            json
+          );
+                case 'validationError':
+          return ValidationError.fromJson(
             json
           );
                 case 'unknownError':
@@ -89,13 +93,14 @@ extension SignUpResponsePatterns on SignUpResponse {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Registered value)?  registered,TResult Function( ValidationError value)?  validationError,TResult Function( DuplicateEmailError value)?  duplicateEmailError,TResult Function( UnknownError value)?  unknownError,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Registered value)?  registered,TResult Function( RequestTimeout value)?  requestTimeoutError,TResult Function( DuplicateEmailError value)?  duplicateEmailError,TResult Function( ValidationError value)?  validationError,TResult Function( UnknownError value)?  unknownError,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case Registered() when registered != null:
-return registered(_that);case ValidationError() when validationError != null:
-return validationError(_that);case DuplicateEmailError() when duplicateEmailError != null:
-return duplicateEmailError(_that);case UnknownError() when unknownError != null:
+return registered(_that);case RequestTimeout() when requestTimeoutError != null:
+return requestTimeoutError(_that);case DuplicateEmailError() when duplicateEmailError != null:
+return duplicateEmailError(_that);case ValidationError() when validationError != null:
+return validationError(_that);case UnknownError() when unknownError != null:
 return unknownError(_that);case _:
   return orElse();
 
@@ -114,13 +119,14 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Registered value)  registered,required TResult Function( ValidationError value)  validationError,required TResult Function( DuplicateEmailError value)  duplicateEmailError,required TResult Function( UnknownError value)  unknownError,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Registered value)  registered,required TResult Function( RequestTimeout value)  requestTimeoutError,required TResult Function( DuplicateEmailError value)  duplicateEmailError,required TResult Function( ValidationError value)  validationError,required TResult Function( UnknownError value)  unknownError,}){
 final _that = this;
 switch (_that) {
 case Registered():
-return registered(_that);case ValidationError():
-return validationError(_that);case DuplicateEmailError():
-return duplicateEmailError(_that);case UnknownError():
+return registered(_that);case RequestTimeout():
+return requestTimeoutError(_that);case DuplicateEmailError():
+return duplicateEmailError(_that);case ValidationError():
+return validationError(_that);case UnknownError():
 return unknownError(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -138,13 +144,14 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Registered value)?  registered,TResult? Function( ValidationError value)?  validationError,TResult? Function( DuplicateEmailError value)?  duplicateEmailError,TResult? Function( UnknownError value)?  unknownError,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Registered value)?  registered,TResult? Function( RequestTimeout value)?  requestTimeoutError,TResult? Function( DuplicateEmailError value)?  duplicateEmailError,TResult? Function( ValidationError value)?  validationError,TResult? Function( UnknownError value)?  unknownError,}){
 final _that = this;
 switch (_that) {
 case Registered() when registered != null:
-return registered(_that);case ValidationError() when validationError != null:
-return validationError(_that);case DuplicateEmailError() when duplicateEmailError != null:
-return duplicateEmailError(_that);case UnknownError() when unknownError != null:
+return registered(_that);case RequestTimeout() when requestTimeoutError != null:
+return requestTimeoutError(_that);case DuplicateEmailError() when duplicateEmailError != null:
+return duplicateEmailError(_that);case ValidationError() when validationError != null:
+return validationError(_that);case UnknownError() when unknownError != null:
 return unknownError(_that);case _:
   return null;
 
@@ -162,12 +169,13 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  registered,TResult Function( List<String>? email,  List<String>? password,  List<String>? nickname)?  validationError,TResult Function()?  duplicateEmailError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  registered,TResult Function()?  requestTimeoutError,TResult Function()?  duplicateEmailError,TResult Function( List<String>? email,  List<String>? password,  List<String>? nickname)?  validationError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Registered() when registered != null:
-return registered();case ValidationError() when validationError != null:
-return validationError(_that.email,_that.password,_that.nickname);case DuplicateEmailError() when duplicateEmailError != null:
-return duplicateEmailError();case UnknownError() when unknownError != null:
+return registered();case RequestTimeout() when requestTimeoutError != null:
+return requestTimeoutError();case DuplicateEmailError() when duplicateEmailError != null:
+return duplicateEmailError();case ValidationError() when validationError != null:
+return validationError(_that.email,_that.password,_that.nickname);case UnknownError() when unknownError != null:
 return unknownError();case _:
   return orElse();
 
@@ -186,12 +194,13 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  registered,required TResult Function( List<String>? email,  List<String>? password,  List<String>? nickname)  validationError,required TResult Function()  duplicateEmailError,required TResult Function()  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  registered,required TResult Function()  requestTimeoutError,required TResult Function()  duplicateEmailError,required TResult Function( List<String>? email,  List<String>? password,  List<String>? nickname)  validationError,required TResult Function()  unknownError,}) {final _that = this;
 switch (_that) {
 case Registered():
-return registered();case ValidationError():
-return validationError(_that.email,_that.password,_that.nickname);case DuplicateEmailError():
-return duplicateEmailError();case UnknownError():
+return registered();case RequestTimeout():
+return requestTimeoutError();case DuplicateEmailError():
+return duplicateEmailError();case ValidationError():
+return validationError(_that.email,_that.password,_that.nickname);case UnknownError():
 return unknownError();case _:
   throw StateError('Unexpected subclass');
 
@@ -209,12 +218,13 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  registered,TResult? Function( List<String>? email,  List<String>? password,  List<String>? nickname)?  validationError,TResult? Function()?  duplicateEmailError,TResult? Function()?  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  registered,TResult? Function()?  requestTimeoutError,TResult? Function()?  duplicateEmailError,TResult? Function( List<String>? email,  List<String>? password,  List<String>? nickname)?  validationError,TResult? Function()?  unknownError,}) {final _that = this;
 switch (_that) {
 case Registered() when registered != null:
-return registered();case ValidationError() when validationError != null:
-return validationError(_that.email,_that.password,_that.nickname);case DuplicateEmailError() when duplicateEmailError != null:
-return duplicateEmailError();case UnknownError() when unknownError != null:
+return registered();case RequestTimeout() when requestTimeoutError != null:
+return requestTimeoutError();case DuplicateEmailError() when duplicateEmailError != null:
+return duplicateEmailError();case ValidationError() when validationError != null:
+return validationError(_that.email,_that.password,_that.nickname);case UnknownError() when unknownError != null:
 return unknownError();case _:
   return null;
 
@@ -254,6 +264,84 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'SignUpResponse.registered()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+@JsonSerializable()
+
+class RequestTimeout implements SignUpResponse {
+  const RequestTimeout({final  String? $type}): $type = $type ?? 'requestTimeoutError';
+  factory RequestTimeout.fromJson(Map<String, dynamic> json) => _$RequestTimeoutFromJson(json);
+
+
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+
+@override
+Map<String, dynamic> toJson() {
+  return _$RequestTimeoutToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RequestTimeout);
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SignUpResponse.requestTimeoutError()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+@JsonSerializable()
+
+class DuplicateEmailError implements SignUpResponse {
+  const DuplicateEmailError({final  String? $type}): $type = $type ?? 'duplicateEmailError';
+  factory DuplicateEmailError.fromJson(Map<String, dynamic> json) => _$DuplicateEmailErrorFromJson(json);
+
+
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+
+@override
+Map<String, dynamic> toJson() {
+  return _$DuplicateEmailErrorToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DuplicateEmailError);
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'SignUpResponse.duplicateEmailError()';
 }
 
 
@@ -362,45 +450,6 @@ as List<String>?,
 
 
 }
-
-/// @nodoc
-@JsonSerializable()
-
-class DuplicateEmailError implements SignUpResponse {
-  const DuplicateEmailError({final  String? $type}): $type = $type ?? 'duplicateEmailError';
-  factory DuplicateEmailError.fromJson(Map<String, dynamic> json) => _$DuplicateEmailErrorFromJson(json);
-
-
-
-@JsonKey(name: 'runtimeType')
-final String $type;
-
-
-
-@override
-Map<String, dynamic> toJson() {
-  return _$DuplicateEmailErrorToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DuplicateEmailError);
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SignUpResponse.duplicateEmailError()';
-}
-
-
-}
-
-
-
 
 /// @nodoc
 @JsonSerializable()

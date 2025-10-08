@@ -54,8 +54,9 @@ class ApiClient {
     data ??= <String, dynamic>{};
     data["runtimeType"] = switch (statusCode) {
       HttpStatus.ok => "registered",
-      HttpStatus.unprocessableEntity => "validationError",
+      HttpStatus.requestTimeout => "requestTimeoutError",
       HttpStatus.conflict => "duplicateEmailError",
+      HttpStatus.unprocessableEntity => "validationError",
       _ => "unknownError",
     };
     final SignUpResponse signUpResponse = SignUpResponse.fromJson(data);
