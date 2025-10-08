@@ -5,6 +5,7 @@ import 'package:mobile/data/repository/auth_repository.dart';
 import 'package:mobile/data/service/api_client.dart';
 import 'package:mobile/ui/sign_in.dart';
 import 'package:mobile/ui/sign_up.dart';
+import 'package:mobile/ui/sign_up_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -59,7 +60,10 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/sign-in': (BuildContext context) => SignInPage(), 
-        '/sign-up': (BuildContext context) => SignUpPage(), 
+        '/sign-up': (BuildContext context) => ChangeNotifierProvider(
+          create: (_) => SignUpViewModel(authRepository: context.read<AuthRepository>()),
+          child: SignUpPage(),
+        ), 
       },
       initialRoute: '/sign-in',
     );
