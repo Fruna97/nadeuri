@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:mobile/api_service.dart';
 import 'package:mobile/dto/response_dto.dart';
 import 'package:mobile/dto/validation_error_data.dart';
+import 'package:mobile/ui/sign_up_view_model.dart';
 import 'package:provider/provider.dart';
 
 class SignUpPage extends StatelessWidget {
@@ -43,6 +44,7 @@ class _SignUpFormState extends State<SignUpForm> {
   final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
   final FocusNode _passwordCheckFocusNode = FocusNode();
+  final FocusNode _nicknameFocusNode = FocusNode();
 
   Widget? _passwordError;
 
@@ -59,36 +61,10 @@ class _SignUpFormState extends State<SignUpForm> {
   void initState() {
     _apiService = context.read<ApiService>();
 
-    _emailFocusNode.addListener(() {
-      if (!_emailFocusNode.hasFocus) {
-        if (_emailErrorText != null) {
-          setState(() {
-            _emailErrorText = null;
-          });
-        }
-        _emailKey.currentState?.validate();
-      }
-    });
-    _passwordFocusNode.addListener(() {
-      if (!_passwordFocusNode.hasFocus) {
-        if (_passwordCheckErrorText != null) {
-          setState(() {
-            _passwordCheckErrorText = null;
-          });
-        }
-        _passwordCheckKey.currentState?.validate();
-      }
-    });
-    _passwordCheckFocusNode.addListener(() {
-      if (!_passwordCheckFocusNode.hasFocus) {
-        if (_passwordCheckErrorText != null) {
-          setState(() {
-            _passwordCheckErrorText = null;
-          });
-        }
-        _passwordCheckKey.currentState?.validate();
-      }
-    });
+    _emailFocusNode.addListener(_validateOnEmailFocusLost);
+    _passwordFocusNode.addListener(_validateOnPasswordFocusLost);
+    _passwordCheckFocusNode.addListener(_validateOnPasswordCheckFocusLost);
+    _nicknameFocusNode.addListener(_validateOnNicknameFocusLost);
 
     super.initState();
   }
@@ -113,24 +89,11 @@ class _SignUpFormState extends State<SignUpForm> {
             decoration: InputDecoration(
               labelText: "이메일",
               helperText: "추후 이메일을 통해 비밀번호를 재설정 하실 수 있습니다.",
-              errorText: _emailErrorText,
+              errorText: context.select((SignUpViewModel viewModel) => viewModel.emailErrorText),
               border: OutlineInputBorder(),
               counterText: "",
             ),
             maxLength: 320,
-            validator: (String? email) {
-              if (email == null || email.isEmpty) {
-                return "이메일을 입력해 주세요.";
-              }
-
-              final regExp = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]+$");
-              if (!regExp.hasMatch(email)) {
-                // 정규 표현식을 사용하여 이메일 형식 검증
-                return "올바른 형식의 이메일을 입력해 주세요.";
-              }
-
-              return null;
-            },
           ),
           const SizedBox(height: 24.0),
           TextFormField(
@@ -139,7 +102,7 @@ class _SignUpFormState extends State<SignUpForm> {
             focusNode: _passwordFocusNode,
             decoration: InputDecoration(
               labelText: "비밀번호",
-              error: _passwordError, // "비밀번호 확인" 필드에서 error 상태를 조절하기 위한 state
+              error: context.select((SignUpViewModel viewModel) => viewModel.passwordErrorState) ? SizedBox.shrink() : null,
               suffixIcon: IconButton(
                 icon: Icon(_passwordObscureText ? Icons.visibility_off : Icons.visibility),
                 onPressed: () {
@@ -161,7 +124,7 @@ class _SignUpFormState extends State<SignUpForm> {
             focusNode: _passwordCheckFocusNode,
             decoration: InputDecoration(
               labelText: "비밀번호 확인",
-              errorText: _passwordCheckErrorText,
+              errorText: context.select((SignUpViewModel viewModel) => viewModel.passwordCheckErrorText),
               suffixIcon: IconButton(
                 icon: Icon(_passwordCheckObscureText ? Icons.visibility_off : Icons.visibility),
                 onPressed: () {
@@ -175,48 +138,19 @@ class _SignUpFormState extends State<SignUpForm> {
             ),
             obscureText: _passwordCheckObscureText,
             maxLength: 20,
-            validator: (String? passwordCheck) { // "비밀번호" 필드와 "비밀번호 확인" 필드의 검증 메시지 모두 "비밀번호 확인" 필드 아래에 표시
-              _deactivatePasswordErrorState();
-
-              String password = _passwordController.text;
-              if (password.isEmpty) {
-                _activatePasswordErrorState();
-                return "비밀번호를 입력해 주세요.";
-              }
-              final regExp = RegExp(r"""^[a-zA-Z0-9\-=\[\]\\;',\./~!@#\$%\^&\*\(\)_\+\{\}\|:"<>\?]{9,20}$""");
-              if (!regExp.hasMatch(password)) {
-                _activatePasswordErrorState();
-                return "비밀번호는 9~20자의 영문, 숫자, 특수문자로 이루어져야 합니다.";
-              }
-
-              if (passwordCheck == null || passwordCheck.isEmpty) {
-                return "비밀번호 확인란을 입력해 주세요.";
-              }
-              if (password != passwordCheck) {
-                return "비밀번호가 동일하지 않습니다.";
-              }
-
-              return null;
-            },
           ),
           const SizedBox(height: 24.0),
           TextFormField(
             controller: _nicknameController,
+            focusNode: _nicknameFocusNode,
             decoration: InputDecoration(
               labelText: "별명",
               helperText: "별명을 입력하지 않으시면, 이메일을 기반으로 자동으로 생성됩니다.",
-              errorText: _nicknameErrorText,
+              errorText: context.select((SignUpViewModel viewModel) => viewModel.nicknameErrorText),
               border: const OutlineInputBorder(),
               counterText: "",
             ),
             maxLength: 20,
-            validator: (String? nickname) {
-              if (nickname != null && nickname.length > 20) {
-                return "별명은 20자 이하로 이루어져야 합니다.";
-              }
-
-              return null;
-            },
           ),
           if (_errorText.isNotEmpty) const SizedBox(height: 12),
           if (_errorText.isNotEmpty)
@@ -230,21 +164,22 @@ class _SignUpFormState extends State<SignUpForm> {
           const SizedBox(height: 32.0),
           ElevatedButton(
             onPressed: () async {
-              setState(() {
-                _errorText = "";
-                _deactivatePasswordErrorState();
-                _emailErrorText = null;
-                _passwordCheckErrorText = null;
-                _nicknameErrorText = null;
-              });
-
-              if (!_formKey.currentState!.validate()) {
-                return;
-              }
-
               final String email = _emailController.text;
               final String password = _passwordController.text;
+              final String passwordCheck = _passwordCheckController.text;
               final String nickname = _nicknameController.text;
+
+              setState(() {
+                _errorText = "";
+              });
+
+              context.read<SignUpViewModel>().validateEmail(email: email);
+              context.read<SignUpViewModel>().validatePassword(password: password, passwordCheck: passwordCheck);
+              context.read<SignUpViewModel>().validateNickname(nickname: nickname);
+
+              if (!context.read<SignUpViewModel>().allValidated) {
+                return;
+              }
 
               showDialog(
                 context: context,
@@ -278,7 +213,7 @@ class _SignUpFormState extends State<SignUpForm> {
                   );
                   setState(() {
                     _emailErrorText = responseDto.data!.email?.join("\n");
-                    if (responseDto.data!.password != null) _activatePasswordErrorState();
+                    // if (responseDto.data!.password != null) _activatePasswordErrorState(); // TODO: ViewModel 도입을 통해 수정 예정
                     _passwordCheckErrorText = responseDto.data!.password?.join("\n");
                     _nicknameErrorText = responseDto.data!.nickname?.join("\n");
                   });
@@ -329,16 +264,34 @@ class _SignUpFormState extends State<SignUpForm> {
     );
   }
 
-  void _activatePasswordErrorState() {
-    setState(() {
-      _passwordError ??= SizedBox.shrink();
-    });
+  void _validateOnEmailFocusLost() {
+    if (!_emailFocusNode.hasFocus) {
+      context.read<SignUpViewModel>().validateEmail(email: _emailController.text);
+    }
   }
 
-  void _deactivatePasswordErrorState() {
-    setState(() {
-      _passwordError = null;
-    });
+  void _validateOnPasswordFocusLost() {
+    if (!_passwordFocusNode.hasFocus) {
+      context.read<SignUpViewModel>().validatePassword(
+        password: _passwordController.text,
+        passwordCheck: _passwordCheckController.text,
+      );
+    }
+  }
+
+  void _validateOnPasswordCheckFocusLost() {
+    if (!_passwordCheckFocusNode.hasFocus) {
+      context.read<SignUpViewModel>().validatePassword(
+        password: _passwordController.text,
+        passwordCheck: _passwordCheckController.text,
+      );
+    }
+  }
+
+  void _validateOnNicknameFocusLost() {
+    if (!_nicknameFocusNode.hasFocus) {
+      context.read<SignUpViewModel>().validateNickname(nickname: _nicknameController.text);
+    }
   }
 }
 
