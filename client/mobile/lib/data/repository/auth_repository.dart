@@ -7,7 +7,7 @@ import 'package:mobile/result.dart';
 
 class AuthRepository {
   final ApiClient _apiClient;
-  
+
   AuthRepository({required ApiClient apiClient}) : _apiClient = apiClient;
 
   Future<Result<SignUpResponse>> signUp({
@@ -24,10 +24,12 @@ class AuthRepository {
       case Error<SignUpResponse> _:
         SignUpResponse error = result.error;
         switch (error) {
-          case ValidationError _:
-            log("Result is ValidationError: $error");
+          case RequestTimeout _:
+            log("Result is RequestTimeout");
           case DuplicateEmailError _:
             log("Result is DuplicateEmailError");
+          case ValidationError _:
+            log("Result is ValidationError: $error");
           case UnknownError _:
             log("Result is UnknownError");
         }
