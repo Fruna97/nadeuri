@@ -24,7 +24,12 @@ void main() {
             flutterSecureStorage: context.read<FlutterSecureStorage>(),
           ),
         ),
-        Provider<AuthRepository>(create: (context) => AuthRepository(apiClient: context.read<ApiClient>())),
+        Provider<AuthRepository>(
+          create: (context) => AuthRepository(
+            apiClient: context.read<ApiClient>(),
+            flutterSecureStorage: context.read<FlutterSecureStorage>(),
+          ),
+        ),
       ],
       child: const MyApp(),
     ),
