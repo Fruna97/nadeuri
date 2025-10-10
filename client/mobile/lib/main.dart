@@ -3,9 +3,9 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/api_service.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
 import 'package:mobile/data/service/api_client.dart';
-import 'package:mobile/ui/sign_in.dart';
-import 'package:mobile/ui/sign_up.dart';
-import 'package:mobile/ui/sign_up_view_model.dart';
+import 'package:mobile/ui/sign_in/sign_in.dart';
+import 'package:mobile/ui/sign_up/sign_up.dart';
+import 'package:mobile/ui/sign_up/sign_up_view_model.dart';
 import 'package:provider/provider.dart';
 
 void main() {

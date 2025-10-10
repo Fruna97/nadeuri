@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/ui/sign_up_view_model.dart';
+import 'package:mobile/ui/sign_up/sign_up_view_model.dart';
 import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
