@@ -96,40 +96,41 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Form(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 12.0),
-          child: ListView(
-            shrinkWrap: true,
-            physics: const ClampingScrollPhysics(),
-            children: <Widget>[
-              const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [Text("회원가입", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold))],
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: ListView(
+          shrinkWrap: true,
+          physics: const ClampingScrollPhysics(),
+          children: <Widget>[
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [Text("회원가입", style: TextStyle(fontSize: 32, fontWeight: FontWeight.bold))],
+            ),
+            const SizedBox(height: 40),
+            TextFormField(
+              controller: _emailController,
+              focusNode: _emailFocusNode,
+              decoration: InputDecoration(
+                labelText: "이메일",
+                helperText: "추후 이메일을 통해 비밀번호를 재설정 하실 수 있습니다.",
+                errorText: context.select((SignUpViewModel viewModel) => viewModel.emailErrorText),
+                border: const OutlineInputBorder(),
+                counterText: "",
               ),
-              const SizedBox(height: 40),
-              TextFormField(
-                controller: _emailController,
-                focusNode: _emailFocusNode,
-                decoration: InputDecoration(
-                  labelText: "이메일",
-                  helperText: "추후 이메일을 통해 비밀번호를 재설정 하실 수 있습니다.",
-                  errorText: context.select((SignUpViewModel viewModel) => viewModel.emailErrorText),
-                  border: const OutlineInputBorder(),
-                  counterText: "",
-                ),
-                maxLength: 320,
-              ),
-              const SizedBox(height: 24.0),
-              TextFormField(
-                controller: _passwordController,
-                focusNode: _passwordFocusNode,
-                decoration: InputDecoration(
-                  labelText: "비밀번호",
-                  error: context.select((SignUpViewModel viewModel) => viewModel.passwordErrorState)
-                      ? SizedBox.shrink()
-                      : null,
-                  suffixIcon: IconButton(
+              textInputAction: TextInputAction.next,
+              maxLength: 320,
+            ),
+            const SizedBox(height: 24.0),
+            TextFormField(
+              controller: _passwordController,
+              focusNode: _passwordFocusNode,
+              decoration: InputDecoration(
+                labelText: "비밀번호",
+                error: context.select((SignUpViewModel viewModel) => viewModel.passwordErrorState)
+                    ? SizedBox.shrink()
+                    : null,
+                suffixIcon: ExcludeFocus(
+                  child: IconButton(
                     icon: Icon(_passwordObscureText ? Icons.visibility_off : Icons.visibility),
                     onPressed: () {
                       setState(() {
@@ -137,20 +138,23 @@ class _SignUpFormState extends State<SignUpForm> {
                       });
                     },
                   ),
-                  border: const OutlineInputBorder(),
-                  counterText: "",
                 ),
-                obscureText: _passwordObscureText,
-                maxLength: 20,
+                border: const OutlineInputBorder(),
+                counterText: "",
               ),
-              const SizedBox(height: 6.0),
-              TextFormField(
-                controller: _passwordCheckController,
-                focusNode: _passwordCheckFocusNode,
-                decoration: InputDecoration(
-                  labelText: "비밀번호 확인",
-                  errorText: context.select((SignUpViewModel viewModel) => viewModel.passwordCheckErrorText),
-                  suffixIcon: IconButton(
+              textInputAction: TextInputAction.next,
+              obscureText: _passwordObscureText,
+              maxLength: 20,
+            ),
+            const SizedBox(height: 6.0),
+            TextFormField(
+              controller: _passwordCheckController,
+              focusNode: _passwordCheckFocusNode,
+              decoration: InputDecoration(
+                labelText: "비밀번호 확인",
+                errorText: context.select((SignUpViewModel viewModel) => viewModel.passwordCheckErrorText),
+                suffixIcon: ExcludeFocus(
+                  child: IconButton(
                     icon: Icon(_passwordCheckObscureText ? Icons.visibility_off : Icons.visibility),
                     onPressed: () {
                       setState(() {
@@ -158,66 +162,67 @@ class _SignUpFormState extends State<SignUpForm> {
                       });
                     },
                   ),
-                  border: const OutlineInputBorder(),
-                  counterText: "",
                 ),
-                obscureText: _passwordCheckObscureText,
-                maxLength: 20,
+                border: const OutlineInputBorder(),
+                counterText: "",
               ),
-              const SizedBox(height: 24.0),
-              TextFormField(
-                controller: _nicknameController,
-                focusNode: _nicknameFocusNode,
-                decoration: InputDecoration(
-                  labelText: "별명",
-                  helperText: "별명을 입력하지 않으시면, 이메일을 기반으로 자동으로 생성됩니다.",
-                  errorText: context.select((SignUpViewModel viewModel) => viewModel.nicknameErrorText),
-                  border: const OutlineInputBorder(),
-                  counterText: "",
-                ),
-                maxLength: 20,
+              textInputAction: TextInputAction.next,
+              obscureText: _passwordCheckObscureText,
+              maxLength: 20,
+            ),
+            const SizedBox(height: 24.0),
+            TextFormField(
+              controller: _nicknameController,
+              focusNode: _nicknameFocusNode,
+              decoration: InputDecoration(
+                labelText: "별명",
+                helperText: "별명을 입력하지 않으시면, 이메일을 기반으로 자동으로 생성됩니다.",
+                errorText: context.select((SignUpViewModel viewModel) => viewModel.nicknameErrorText),
+                border: const OutlineInputBorder(),
+                counterText: "",
               ),
-              if (context.select((SignUpViewModel viewModel) => viewModel.commonErrorText).isNotEmpty)
-                const SizedBox(height: 12),
-              if (context.select((SignUpViewModel viewModel) => viewModel.commonErrorText).isNotEmpty)
-                Center(
-                  child: Text(
-                    context.select((SignUpViewModel viewModel) => viewModel.commonErrorText),
-                    style: TextStyle(color: Colors.red, fontSize: 12),
-                    textAlign: TextAlign.center,
-                  ),
+              maxLength: 20,
+            ),
+            if (context.select((SignUpViewModel viewModel) => viewModel.commonErrorText).isNotEmpty)
+              const SizedBox(height: 12),
+            if (context.select((SignUpViewModel viewModel) => viewModel.commonErrorText).isNotEmpty)
+              Center(
+                child: Text(
+                  context.select((SignUpViewModel viewModel) => viewModel.commonErrorText),
+                  style: TextStyle(color: Colors.red, fontSize: 12),
+                  textAlign: TextAlign.center,
                 ),
-              const SizedBox(height: 32.0),
-              ElevatedButton(
-                onPressed: () async {
-                  FocusScope.of(context).unfocus();
-
-                  final String email = _emailController.text;
-                  final String password = _passwordController.text;
-                  final String passwordCheck = _passwordCheckController.text;
-                  final String nickname = _nicknameController.text;
-
-                  // 필드 유효성 검증
-                  signUpViewModel.validateAll(
-                    email: email,
-                    password: password,
-                    passwordCheck: passwordCheck,
-                    nickname: nickname,
-                  );
-                  if (!signUpViewModel.allValidated) {
-                    return;
-                  }
-
-                  // 유효성 검증 완료 시 회원가입 요청 전송
-                  signUpViewModel.signUp.execute((email, password, nickname));
-                },
-                style: ElevatedButton.styleFrom(
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
-                ),
-                child: const Text("회원가입"),
               ),
-            ],
-          ),
+            const SizedBox(height: 32.0),
+            ElevatedButton(
+              onPressed: () async {
+                FocusScope.of(context).unfocus();
+      
+                final String email = _emailController.text;
+                final String password = _passwordController.text;
+                final String passwordCheck = _passwordCheckController.text;
+                final String nickname = _nicknameController.text;
+      
+                // 필드 유효성 검증
+                signUpViewModel.validateAll(
+                  email: email,
+                  password: password,
+                  passwordCheck: passwordCheck,
+                  nickname: nickname,
+                );
+                if (!signUpViewModel.allValidated) {
+                  return;
+                }
+      
+                // 유효성 검증 완료 시 회원가입 요청 전송
+                signUpViewModel.signUp.execute((email, password, nickname));
+              },
+              style: ElevatedButton.styleFrom(
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
+              ),
+              child: const Text("회원가입"),
+            ),
+          ],
         ),
       ),
     );
