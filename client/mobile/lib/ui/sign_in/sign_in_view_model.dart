@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mobile/command.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
 import 'package:mobile/data/service/model/sign_in_response/sign_in_response.dart';
-import 'package:mobile/result.dart';
+import 'package:mobile/utils/command.dart';
+import 'package:mobile/utils/result.dart';
 
 class SignInViewModel extends ChangeNotifier {
   final AuthRepository _authRepository;

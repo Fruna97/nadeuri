@@ -8,7 +8,7 @@ import 'package:mobile/data/service/model/sign_in_response/sign_in_response.dart
 import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
 import 'package:mobile/data/service/model/sign_up_response/sign_up_response.dart';
 import 'package:mobile/data/service/model/sign_up_response/sign_up_response.dart' as sign_up_response;
-import 'package:mobile/result.dart';
+import 'package:mobile/utils/result.dart';
 
 class AuthRepository {
   final ApiClient _apiClient;

@@ -5,7 +5,7 @@
 // Modified by Fruna97
 
 import 'package:flutter/material.dart';
-import 'package:mobile/result.dart';
+import 'package:mobile/utils/result.dart';
 
 typedef CommandAction0<T> = Future<Result<T>> Function();
 typedef CommandAction1<T, A> = Future<Result<T>> Function(A);
