@@ -54,7 +54,8 @@ class _SignInPageState extends State<SignInPage> {
 
   void _navigateOnSignInComplete() {
     if (_signInViewModel.signIn.completed) {
-      // TODO: 메인 화면으로 이동
+      _signInViewModel.signIn.clearResult();
+      Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
     }
   }
 }

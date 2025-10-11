@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
 import 'package:mobile/data/service/api_client.dart';
+import 'package:mobile/ui/home/home.dart';
 import 'package:mobile/ui/sign_in/sign_in.dart';
 import 'package:mobile/ui/sign_in/sign_in_view_model.dart';
 import 'package:mobile/ui/sign_up/sign_up.dart';
@@ -63,6 +64,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true, 
       ),
       routes: {
+        '/home': (BuildContext context) => HomePage(),
         '/sign-in': (BuildContext context) => ChangeNotifierProvider(
           create: (_) => SignInViewModel(authRepository: context.read<AuthRepository>()),
           child: SignInPage(),
