@@ -4,6 +4,7 @@ import 'package:mobile/api_service.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
 import 'package:mobile/data/service/api_client.dart';
 import 'package:mobile/ui/sign_in/sign_in.dart';
+import 'package:mobile/ui/sign_in/sign_in_view_model.dart';
 import 'package:mobile/ui/sign_up/sign_up.dart';
 import 'package:mobile/ui/sign_up/sign_up_view_model.dart';
 import 'package:provider/provider.dart';
@@ -64,7 +65,10 @@ class MyApp extends StatelessWidget {
         useMaterial3: true, 
       ),
       routes: {
-        '/sign-in': (BuildContext context) => SignInPage(), 
+        '/sign-in': (BuildContext context) => ChangeNotifierProvider(
+          create: (_) => SignInViewModel(authRepository: context.read<AuthRepository>()),
+          child: SignInPage(),
+        ), 
         '/sign-up': (BuildContext context) => ChangeNotifierProvider(
           create: (_) => SignUpViewModel(authRepository: context.read<AuthRepository>()),
           child: SignUpPage(),
