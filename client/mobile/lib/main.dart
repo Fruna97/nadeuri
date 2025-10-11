@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
-import 'package:mobile/api_service.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
 import 'package:mobile/data/service/api_client.dart';
 import 'package:mobile/ui/sign_in/sign_in.dart';
@@ -16,7 +15,6 @@ void main() {
         Provider<FlutterSecureStorage>(
           create: (_) => const FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true)),
         ),
-        Provider<ApiService>(create: (_) => ApiService()),
         Provider<ApiClient>(
           create: (context) => ApiClient(
             host: "http://10.0.2.2",
