@@ -10,64 +10,64 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  late final SignUpViewModel signUpViewModel;
+  late final SignUpViewModel _signUpViewModel;
 
   @override
   void initState() {
     super.initState();
 
-    signUpViewModel = context.read<SignUpViewModel>();
+    _signUpViewModel = context.read<SignUpViewModel>();
 
-    signUpViewModel.signUp.addListener(_navigateOnSignUpComplete);
+    _signUpViewModel.signUp.addListener(_navigateOnSignUpComplete);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListenableBuilder(
-        listenable: signUpViewModel.signUp,
+        listenable: _signUpViewModel.signUp,
         builder: (context, child) {
           return Stack(
             fit: StackFit.expand,
             children: [
-              child!,
-              if (signUpViewModel.signUp.running) ...[
+              SafeArea(child: child!),
+              if (_signUpViewModel.signUp.running) ...[
                 ModalBarrier(dismissible: false, color: Colors.black45),
                 const Center(child: CircularProgressIndicator()),
               ],
             ],
           );
         },
-        child: SignUpForm(),
+        child: SignUpForm(signUpViewModel: _signUpViewModel),
       ),
     );
   }
 
   @override
   void dispose() {
-    signUpViewModel.signUp.removeListener(_navigateOnSignUpComplete);
+    _signUpViewModel.signUp.removeListener(_navigateOnSignUpComplete);
 
     super.dispose();
   }
 
   void _navigateOnSignUpComplete() {
-    if (signUpViewModel.signUp.completed && mounted) {
-      signUpViewModel.signUp.clearResult();
+    if (_signUpViewModel.signUp.completed && mounted) {
+      _signUpViewModel.signUp.clearResult();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignUpCompletePage()));
     }
   }
 }
 
 class SignUpForm extends StatefulWidget {
-  const SignUpForm({super.key});
+  final SignUpViewModel _signUpViewModel;
+
+  const SignUpForm({super.key, required SignUpViewModel signUpViewModel}) : _signUpViewModel = signUpViewModel;
 
   @override
   State<SignUpForm> createState() => _SignUpFormState();
 }
 
 class _SignUpFormState extends State<SignUpForm> {
-  late final SignUpViewModel signUpViewModel;
-
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _passwordCheckController = TextEditingController();
@@ -84,8 +84,6 @@ class _SignUpFormState extends State<SignUpForm> {
   @override
   void initState() {
     super.initState();
-
-    signUpViewModel = context.read<SignUpViewModel>();
 
     _emailFocusNode.addListener(_validateOnEmailFocusLost);
     _passwordFocusNode.addListener(_validateOnPasswordFocusLost);
@@ -183,9 +181,8 @@ class _SignUpFormState extends State<SignUpForm> {
               ),
               maxLength: 20,
             ),
-            if (context.select((SignUpViewModel viewModel) => viewModel.commonErrorText).isNotEmpty)
+            if (context.select((SignUpViewModel viewModel) => viewModel.commonErrorText).isNotEmpty) ...[
               const SizedBox(height: 12),
-            if (context.select((SignUpViewModel viewModel) => viewModel.commonErrorText).isNotEmpty)
               Center(
                 child: Text(
                   context.select((SignUpViewModel viewModel) => viewModel.commonErrorText),
@@ -193,33 +190,32 @@ class _SignUpFormState extends State<SignUpForm> {
                   textAlign: TextAlign.center,
                 ),
               ),
+            ],
             const SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: () async {
                 FocusScope.of(context).unfocus();
-      
+
                 final String email = _emailController.text;
                 final String password = _passwordController.text;
                 final String passwordCheck = _passwordCheckController.text;
                 final String nickname = _nicknameController.text;
-      
+
                 // 필드 유효성 검증
-                signUpViewModel.validateAll(
+                widget._signUpViewModel.validateAll(
                   email: email,
                   password: password,
                   passwordCheck: passwordCheck,
                   nickname: nickname,
                 );
-                if (!signUpViewModel.allValidated) {
+                if (!widget._signUpViewModel.allValidated) {
                   return;
                 }
-      
+
                 // 유효성 검증 완료 시 회원가입 요청 전송
-                signUpViewModel.signUp.execute((email, password, nickname));
+                widget._signUpViewModel.signUp.execute((email, password, nickname));
               },
-              style: ElevatedButton.styleFrom(
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0)),
-              ),
+              style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(4.0))),
               child: const Text("회원가입"),
             ),
           ],
@@ -240,13 +236,13 @@ class _SignUpFormState extends State<SignUpForm> {
 
   void _validateOnEmailFocusLost() {
     if (!_emailFocusNode.hasFocus) {
-      signUpViewModel.validateEmail(email: _emailController.text);
+      widget._signUpViewModel.validateEmail(email: _emailController.text);
     }
   }
 
   void _validateOnPasswordFocusLost() {
     if (!_passwordFocusNode.hasFocus) {
-      signUpViewModel.validatePassword(
+      widget._signUpViewModel.validatePassword(
         password: _passwordController.text,
         passwordCheck: _passwordCheckController.text,
       );
@@ -255,7 +251,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   void _validateOnPasswordCheckFocusLost() {
     if (!_passwordCheckFocusNode.hasFocus) {
-      signUpViewModel.validatePassword(
+      widget._signUpViewModel.validatePassword(
         password: _passwordController.text,
         passwordCheck: _passwordCheckController.text,
       );
@@ -264,7 +260,7 @@ class _SignUpFormState extends State<SignUpForm> {
 
   void _validateOnNicknameFocusLost() {
     if (!_nicknameFocusNode.hasFocus) {
-      signUpViewModel.validateNickname(nickname: _nicknameController.text);
+      widget._signUpViewModel.validateNickname(nickname: _nicknameController.text);
     }
   }
 }

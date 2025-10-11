@@ -6,7 +6,7 @@ import 'package:mobile/result.dart';
 
 class SignUpViewModel extends ChangeNotifier {
   final AuthRepository _authRepository;
-  late Command1<void, (String email, String password, String nickname)> signUp;
+  late final Command1<void, (String email, String password, String nickname)> signUp;
 
   String? _emailErrorText;
   bool _passwordErrorState = false;
