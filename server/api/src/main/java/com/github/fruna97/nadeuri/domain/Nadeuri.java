@@ -1,7 +1,7 @@
 package com.github.fruna97.nadeuri.domain;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,5 +39,5 @@ public class Nadeuri {
             joinColumns = @JoinColumn(name = "nadeuri_id"),
             inverseJoinColumns = @JoinColumn(name = "member_id"))
     @Builder.Default
-    private Set<Member> members = new HashSet<>();
+    private List<Member> members = new ArrayList<>();
 }

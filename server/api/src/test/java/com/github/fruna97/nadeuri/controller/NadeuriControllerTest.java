@@ -5,7 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.util.Set;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -56,7 +56,7 @@ class NadeuriControllerTest {
     @Test
     void participatingNadeuris() {
         // Given
-        Set<ParticipatingNadeuriDto> participatingNadeuris = Set.of(
+        List<ParticipatingNadeuriDto> participatingNadeuris = List.of(
             ParticipatingNadeuriDto.builder().title("test_title_1").build(), 
             ParticipatingNadeuriDto.builder().title("test_title_2").build(), 
             ParticipatingNadeuriDto.builder().title("test_title_3").build()
@@ -64,11 +64,11 @@ class NadeuriControllerTest {
         when(nadeuriService.getParticipatingNadeuris(any(PrincipalDetails.class))).thenReturn(participatingNadeuris);
 
         // When
-        ResponseEntity<ResponseDto<Set<ParticipatingNadeuriDto>>> result = nadeuriController.participatingNadeuris(principalDetails);
+        ResponseEntity<ResponseDto<List<ParticipatingNadeuriDto>>> result = nadeuriController.participatingNadeuris(principalDetails);
 
         // Then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환 하는지
-        ResponseDto<Set<ParticipatingNadeuriDto>> body = result.getBody();
+        ResponseDto<List<ParticipatingNadeuriDto>> body = result.getBody();
         assertNotNull(body); // 응답에 본문을 담고 있는지
         assertThat(body.getData()).containsExactlyInAnyOrderElementsOf(participatingNadeuris); // 응답 본문의 데이터가 주어진 Nadeuri 목록과 같은지
     }

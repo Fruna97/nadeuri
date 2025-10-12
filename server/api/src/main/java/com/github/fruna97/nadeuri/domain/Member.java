@@ -1,8 +1,8 @@
 package com.github.fruna97.nadeuri.domain;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.uuid.Generators;
@@ -51,11 +51,11 @@ public class Member {
 
     @OneToMany(mappedBy = "owner")
     @Builder.Default
-    private Set<Nadeuri> createdNadeuris = new HashSet<>();
+    private List<Nadeuri> createdNadeuris = new ArrayList<>();
 
     @ManyToMany(mappedBy = "members")
     @Builder.Default
-    private Set<Nadeuri> participatingNadeuris = new HashSet<>();
+    private List<Nadeuri> participatingNadeuris = new ArrayList<>();
 
     // TODO: Spring Data JPA 4.0.0 이상에서 Hibernate의 @UuidGenerator 사용으로 리팩터링할 것 (GitHub Issue #6)
     @PrePersist

@@ -4,10 +4,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.util.HashSet;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -72,7 +71,7 @@ class NadeuriServiceImplTest {
     @Test
     void getParticipatingNadeuris() {
         // Given
-        Set<Nadeuri> participatingNadeuris = new HashSet<>();
+        List<Nadeuri> participatingNadeuris = new ArrayList<>();
         Member member = Member.builder()
                 .id(1L)
                 .email("test_email@test.com")
@@ -87,26 +86,26 @@ class NadeuriServiceImplTest {
                 .id(97L)
                 .title(title1)
                 .owner(member)
-                .members(Set.of(member)).build();
+                .members(List.of(member)).build();
         Nadeuri nadeuri2 = Nadeuri.builder()
                 .id(98L)
                 .title(title2)
                 .owner(member)
-                .members(Set.of(member)).build();
+                .members(List.of(member)).build();
         participatingNadeuris.add(nadeuri1);
         participatingNadeuris.add(nadeuri2);
 
         when(memberRepository.findById(1L)).thenReturn(Optional.of(member));
 
         // When
-        Set<ParticipatingNadeuriDto> result = nadeuriServiceImpl.getParticipatingNadeuris(principalDetails);
+        List<ParticipatingNadeuriDto> result = nadeuriServiceImpl.getParticipatingNadeuris(principalDetails);
 
         // Then
         assertThat(result).hasSize(2); // 참가 Nadeuri 목록의 개수가 정확한지
 
-        Set<String> titles = result.stream()
+        List<String> titles = result.stream()
                 .map(ParticipatingNadeuriDto::getTitle)
-                .collect(Collectors.toSet());
+                .toList();
         assertThat(titles).containsExactlyInAnyOrder(title1, title2); // 변환된 DTO가 제목을 그대로 가지고 있는지
     }
 }

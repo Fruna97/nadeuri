@@ -1,6 +1,6 @@
 package com.github.fruna97.nadeuri.controller;
 
-import java.util.Set;
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -40,12 +40,12 @@ public class NadeuriController {
     }
 
     @GetMapping("/nadeuri/participating")
-    public ResponseEntity<ResponseDto<Set<ParticipatingNadeuriDto>>> participatingNadeuris(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        Set<ParticipatingNadeuriDto> participatingNadeuris = nadeuriService.getParticipatingNadeuris(principalDetails);
+    public ResponseEntity<ResponseDto<List<ParticipatingNadeuriDto>>> participatingNadeuris(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<ParticipatingNadeuriDto> participatingNadeuris = nadeuriService.getParticipatingNadeuris(principalDetails);
 
         return ResponseEntity
                 .ok()
-                .body(ResponseDto.<Set<ParticipatingNadeuriDto>>builder()
+                .body(ResponseDto.<List<ParticipatingNadeuriDto>>builder()
                         .message("성공적으로 Nadeuri가 조회되었습니다.")
                         .data(participatingNadeuris).build());
     }
