@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'sign_up_response.dart';
+part of 'api_error.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -11,20 +11,20 @@ part of 'sign_up_response.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-SignUpResponse _$SignUpResponseFromJson(
+ApiError _$ApiErrorFromJson(
   Map<String, dynamic> json
 ) {
         switch (json['runtimeType']) {
-                  case 'registered':
-          return Registered.fromJson(
+                  case 'unauthorized':
+          return Unauthorized.fromJson(
             json
           );
-                case 'requestTimeoutError':
+                case 'requestTimeout':
           return RequestTimeout.fromJson(
             json
           );
-                case 'duplicateEmailError':
-          return DuplicateEmailError.fromJson(
+                case 'duplicateEmail':
+          return DuplicateEmail.fromJson(
             json
           );
                 case 'validationError':
@@ -40,7 +40,7 @@ SignUpResponse _$SignUpResponseFromJson(
             throw CheckedFromJsonException(
   json,
   'runtimeType',
-  'SignUpResponse',
+  'ApiError',
   'Invalid union type "${json['runtimeType']}"!'
 );
         }
@@ -48,17 +48,17 @@ SignUpResponse _$SignUpResponseFromJson(
 }
 
 /// @nodoc
-mixin _$SignUpResponse {
+mixin _$ApiError {
 
 
 
-  /// Serializes this SignUpResponse to a JSON map.
+  /// Serializes this ApiError to a JSON map.
   Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignUpResponse);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ApiError);
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -67,20 +67,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SignUpResponse()';
+  return 'ApiError()';
 }
 
 
 }
 
 /// @nodoc
-class $SignUpResponseCopyWith<$Res>  {
-$SignUpResponseCopyWith(SignUpResponse _, $Res Function(SignUpResponse) __);
+class $ApiErrorCopyWith<$Res>  {
+$ApiErrorCopyWith(ApiError _, $Res Function(ApiError) __);
 }
 
 
-/// Adds pattern-matching-related methods to [SignUpResponse].
-extension SignUpResponsePatterns on SignUpResponse {
+/// Adds pattern-matching-related methods to [ApiError].
+extension ApiErrorPatterns on ApiError {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -93,13 +93,13 @@ extension SignUpResponsePatterns on SignUpResponse {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Registered value)?  registered,TResult Function( RequestTimeout value)?  requestTimeoutError,TResult Function( DuplicateEmailError value)?  duplicateEmailError,TResult Function( ValidationError value)?  validationError,TResult Function( UnknownError value)?  unknownError,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Unauthorized value)?  unauthorized,TResult Function( RequestTimeout value)?  requestTimeout,TResult Function( DuplicateEmail value)?  duplicateEmail,TResult Function( ValidationError value)?  validationError,TResult Function( UnknownError value)?  unknownError,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case Registered() when registered != null:
-return registered(_that);case RequestTimeout() when requestTimeoutError != null:
-return requestTimeoutError(_that);case DuplicateEmailError() when duplicateEmailError != null:
-return duplicateEmailError(_that);case ValidationError() when validationError != null:
+case Unauthorized() when unauthorized != null:
+return unauthorized(_that);case RequestTimeout() when requestTimeout != null:
+return requestTimeout(_that);case DuplicateEmail() when duplicateEmail != null:
+return duplicateEmail(_that);case ValidationError() when validationError != null:
 return validationError(_that);case UnknownError() when unknownError != null:
 return unknownError(_that);case _:
   return orElse();
@@ -119,13 +119,13 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Registered value)  registered,required TResult Function( RequestTimeout value)  requestTimeoutError,required TResult Function( DuplicateEmailError value)  duplicateEmailError,required TResult Function( ValidationError value)  validationError,required TResult Function( UnknownError value)  unknownError,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Unauthorized value)  unauthorized,required TResult Function( RequestTimeout value)  requestTimeout,required TResult Function( DuplicateEmail value)  duplicateEmail,required TResult Function( ValidationError value)  validationError,required TResult Function( UnknownError value)  unknownError,}){
 final _that = this;
 switch (_that) {
-case Registered():
-return registered(_that);case RequestTimeout():
-return requestTimeoutError(_that);case DuplicateEmailError():
-return duplicateEmailError(_that);case ValidationError():
+case Unauthorized():
+return unauthorized(_that);case RequestTimeout():
+return requestTimeout(_that);case DuplicateEmail():
+return duplicateEmail(_that);case ValidationError():
 return validationError(_that);case UnknownError():
 return unknownError(_that);case _:
   throw StateError('Unexpected subclass');
@@ -144,13 +144,13 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Registered value)?  registered,TResult? Function( RequestTimeout value)?  requestTimeoutError,TResult? Function( DuplicateEmailError value)?  duplicateEmailError,TResult? Function( ValidationError value)?  validationError,TResult? Function( UnknownError value)?  unknownError,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Unauthorized value)?  unauthorized,TResult? Function( RequestTimeout value)?  requestTimeout,TResult? Function( DuplicateEmail value)?  duplicateEmail,TResult? Function( ValidationError value)?  validationError,TResult? Function( UnknownError value)?  unknownError,}){
 final _that = this;
 switch (_that) {
-case Registered() when registered != null:
-return registered(_that);case RequestTimeout() when requestTimeoutError != null:
-return requestTimeoutError(_that);case DuplicateEmailError() when duplicateEmailError != null:
-return duplicateEmailError(_that);case ValidationError() when validationError != null:
+case Unauthorized() when unauthorized != null:
+return unauthorized(_that);case RequestTimeout() when requestTimeout != null:
+return requestTimeout(_that);case DuplicateEmail() when duplicateEmail != null:
+return duplicateEmail(_that);case ValidationError() when validationError != null:
 return validationError(_that);case UnknownError() when unknownError != null:
 return unknownError(_that);case _:
   return null;
@@ -169,12 +169,12 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  registered,TResult Function()?  requestTimeoutError,TResult Function()?  duplicateEmailError,TResult Function( List<String>? email,  List<String>? password,  List<String>? nickname)?  validationError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  unauthorized,TResult Function()?  requestTimeout,TResult Function()?  duplicateEmail,TResult Function( List<String>? email,  List<String>? password,  List<String>? nickname)?  validationError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case Registered() when registered != null:
-return registered();case RequestTimeout() when requestTimeoutError != null:
-return requestTimeoutError();case DuplicateEmailError() when duplicateEmailError != null:
-return duplicateEmailError();case ValidationError() when validationError != null:
+case Unauthorized() when unauthorized != null:
+return unauthorized();case RequestTimeout() when requestTimeout != null:
+return requestTimeout();case DuplicateEmail() when duplicateEmail != null:
+return duplicateEmail();case ValidationError() when validationError != null:
 return validationError(_that.email,_that.password,_that.nickname);case UnknownError() when unknownError != null:
 return unknownError();case _:
   return orElse();
@@ -194,12 +194,12 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  registered,required TResult Function()  requestTimeoutError,required TResult Function()  duplicateEmailError,required TResult Function( List<String>? email,  List<String>? password,  List<String>? nickname)  validationError,required TResult Function()  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  unauthorized,required TResult Function()  requestTimeout,required TResult Function()  duplicateEmail,required TResult Function( List<String>? email,  List<String>? password,  List<String>? nickname)  validationError,required TResult Function()  unknownError,}) {final _that = this;
 switch (_that) {
-case Registered():
-return registered();case RequestTimeout():
-return requestTimeoutError();case DuplicateEmailError():
-return duplicateEmailError();case ValidationError():
+case Unauthorized():
+return unauthorized();case RequestTimeout():
+return requestTimeout();case DuplicateEmail():
+return duplicateEmail();case ValidationError():
 return validationError(_that.email,_that.password,_that.nickname);case UnknownError():
 return unknownError();case _:
   throw StateError('Unexpected subclass');
@@ -218,12 +218,12 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  registered,TResult? Function()?  requestTimeoutError,TResult? Function()?  duplicateEmailError,TResult? Function( List<String>? email,  List<String>? password,  List<String>? nickname)?  validationError,TResult? Function()?  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  unauthorized,TResult? Function()?  requestTimeout,TResult? Function()?  duplicateEmail,TResult? Function( List<String>? email,  List<String>? password,  List<String>? nickname)?  validationError,TResult? Function()?  unknownError,}) {final _that = this;
 switch (_that) {
-case Registered() when registered != null:
-return registered();case RequestTimeout() when requestTimeoutError != null:
-return requestTimeoutError();case DuplicateEmailError() when duplicateEmailError != null:
-return duplicateEmailError();case ValidationError() when validationError != null:
+case Unauthorized() when unauthorized != null:
+return unauthorized();case RequestTimeout() when requestTimeout != null:
+return requestTimeout();case DuplicateEmail() when duplicateEmail != null:
+return duplicateEmail();case ValidationError() when validationError != null:
 return validationError(_that.email,_that.password,_that.nickname);case UnknownError() when unknownError != null:
 return unknownError();case _:
   return null;
@@ -236,9 +236,9 @@ return unknownError();case _:
 /// @nodoc
 @JsonSerializable()
 
-class Registered implements SignUpResponse {
-  const Registered({final  String? $type}): $type = $type ?? 'registered';
-  factory Registered.fromJson(Map<String, dynamic> json) => _$RegisteredFromJson(json);
+class Unauthorized implements ApiError {
+  const Unauthorized({final  String? $type}): $type = $type ?? 'unauthorized';
+  factory Unauthorized.fromJson(Map<String, dynamic> json) => _$UnauthorizedFromJson(json);
 
 
 
@@ -249,12 +249,12 @@ final String $type;
 
 @override
 Map<String, dynamic> toJson() {
-  return _$RegisteredToJson(this, );
+  return _$UnauthorizedToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Registered);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Unauthorized);
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -263,7 +263,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SignUpResponse.registered()';
+  return 'ApiError.unauthorized()';
 }
 
 
@@ -275,8 +275,8 @@ String toString() {
 /// @nodoc
 @JsonSerializable()
 
-class RequestTimeout implements SignUpResponse {
-  const RequestTimeout({final  String? $type}): $type = $type ?? 'requestTimeoutError';
+class RequestTimeout implements ApiError {
+  const RequestTimeout({final  String? $type}): $type = $type ?? 'requestTimeout';
   factory RequestTimeout.fromJson(Map<String, dynamic> json) => _$RequestTimeoutFromJson(json);
 
 
@@ -302,7 +302,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SignUpResponse.requestTimeoutError()';
+  return 'ApiError.requestTimeout()';
 }
 
 
@@ -314,9 +314,9 @@ String toString() {
 /// @nodoc
 @JsonSerializable()
 
-class DuplicateEmailError implements SignUpResponse {
-  const DuplicateEmailError({final  String? $type}): $type = $type ?? 'duplicateEmailError';
-  factory DuplicateEmailError.fromJson(Map<String, dynamic> json) => _$DuplicateEmailErrorFromJson(json);
+class DuplicateEmail implements ApiError {
+  const DuplicateEmail({final  String? $type}): $type = $type ?? 'duplicateEmail';
+  factory DuplicateEmail.fromJson(Map<String, dynamic> json) => _$DuplicateEmailFromJson(json);
 
 
 
@@ -327,12 +327,12 @@ final String $type;
 
 @override
 Map<String, dynamic> toJson() {
-  return _$DuplicateEmailErrorToJson(this, );
+  return _$DuplicateEmailToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is DuplicateEmailError);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is DuplicateEmail);
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -341,7 +341,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SignUpResponse.duplicateEmailError()';
+  return 'ApiError.duplicateEmail()';
 }
 
 
@@ -353,8 +353,8 @@ String toString() {
 /// @nodoc
 @JsonSerializable()
 
-class ValidationError implements SignUpResponse {
-  const ValidationError({required final  List<String>? email, required final  List<String>? password, required final  List<String>? nickname, final  String? $type}): _email = email,_password = password,_nickname = nickname,$type = $type ?? 'validationError';
+class ValidationError implements ApiError {
+  const ValidationError({final  List<String>? email, final  List<String>? password, final  List<String>? nickname, final  String? $type}): _email = email,_password = password,_nickname = nickname,$type = $type ?? 'validationError';
   factory ValidationError.fromJson(Map<String, dynamic> json) => _$ValidationErrorFromJson(json);
 
  final  List<String>? _email;
@@ -389,7 +389,7 @@ class ValidationError implements SignUpResponse {
 final String $type;
 
 
-/// Create a copy of SignUpResponse
+/// Create a copy of ApiError
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -411,14 +411,14 @@ int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(
 
 @override
 String toString() {
-  return 'SignUpResponse.validationError(email: $email, password: $password, nickname: $nickname)';
+  return 'ApiError.validationError(email: $email, password: $password, nickname: $nickname)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $ValidationErrorCopyWith<$Res> implements $SignUpResponseCopyWith<$Res> {
+abstract mixin class $ValidationErrorCopyWith<$Res> implements $ApiErrorCopyWith<$Res> {
   factory $ValidationErrorCopyWith(ValidationError value, $Res Function(ValidationError) _then) = _$ValidationErrorCopyWithImpl;
 @useResult
 $Res call({
@@ -437,7 +437,7 @@ class _$ValidationErrorCopyWithImpl<$Res>
   final ValidationError _self;
   final $Res Function(ValidationError) _then;
 
-/// Create a copy of SignUpResponse
+/// Create a copy of ApiError
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? email = freezed,Object? password = freezed,Object? nickname = freezed,}) {
   return _then(ValidationError(
@@ -454,7 +454,7 @@ as List<String>?,
 /// @nodoc
 @JsonSerializable()
 
-class UnknownError implements SignUpResponse {
+class UnknownError implements ApiError {
   const UnknownError({final  String? $type}): $type = $type ?? 'unknownError';
   factory UnknownError.fromJson(Map<String, dynamic> json) => _$UnknownErrorFromJson(json);
 
@@ -481,7 +481,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'SignUpResponse.unknownError()';
+  return 'ApiError.unknownError()';
 }
 
 

@@ -9,7 +9,7 @@ sealed class Result<T> {
 
   const factory Result.ok(T value) = Ok._;
 
-  const factory Result.error(T error) = Error._;
+  const factory Result.error(Exception error) = Error._;
 }
 
 final class Ok<T> extends Result<T> {
@@ -19,7 +19,7 @@ final class Ok<T> extends Result<T> {
 }
 
 final class Error<T> extends Result<T> {
-  final T error;
+  final Exception error;
 
   const Error._(this.error);
 }

@@ -1,15 +1,15 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sign_up_response.dart';
+part of 'api_error.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Registered _$RegisteredFromJson(Map<String, dynamic> json) =>
-    Registered($type: json['runtimeType'] as String?);
+Unauthorized _$UnauthorizedFromJson(Map<String, dynamic> json) =>
+    Unauthorized($type: json['runtimeType'] as String?);
 
-Map<String, dynamic> _$RegisteredToJson(Registered instance) =>
+Map<String, dynamic> _$UnauthorizedToJson(Unauthorized instance) =>
     <String, dynamic>{'runtimeType': instance.$type};
 
 RequestTimeout _$RequestTimeoutFromJson(Map<String, dynamic> json) =>
@@ -18,12 +18,11 @@ RequestTimeout _$RequestTimeoutFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$RequestTimeoutToJson(RequestTimeout instance) =>
     <String, dynamic>{'runtimeType': instance.$type};
 
-DuplicateEmailError _$DuplicateEmailErrorFromJson(Map<String, dynamic> json) =>
-    DuplicateEmailError($type: json['runtimeType'] as String?);
+DuplicateEmail _$DuplicateEmailFromJson(Map<String, dynamic> json) =>
+    DuplicateEmail($type: json['runtimeType'] as String?);
 
-Map<String, dynamic> _$DuplicateEmailErrorToJson(
-  DuplicateEmailError instance,
-) => <String, dynamic>{'runtimeType': instance.$type};
+Map<String, dynamic> _$DuplicateEmailToJson(DuplicateEmail instance) =>
+    <String, dynamic>{'runtimeType': instance.$type};
 
 ValidationError _$ValidationErrorFromJson(Map<String, dynamic> json) =>
     ValidationError(

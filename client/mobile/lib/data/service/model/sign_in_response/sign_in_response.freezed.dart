@@ -11,46 +11,16 @@ part of 'sign_in_response.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-SignInResponse _$SignInResponseFromJson(
-  Map<String, dynamic> json
-) {
-        switch (json['runtimeType']) {
-                  case 'authenticated':
-          return Authenticated.fromJson(
-            json
-          );
-                case 'unAuthorized':
-          return UnAuthorized.fromJson(
-            json
-          );
-                case 'requestTimeoutError':
-          return RequestTimeout.fromJson(
-            json
-          );
-                case 'validationError':
-          return ValidationError.fromJson(
-            json
-          );
-                case 'unknownError':
-          return UnknownError.fromJson(
-            json
-          );
-        
-          default:
-            throw CheckedFromJsonException(
-  json,
-  'runtimeType',
-  'SignInResponse',
-  'Invalid union type "${json['runtimeType']}"!'
-);
-        }
-      
-}
 
 /// @nodoc
 mixin _$SignInResponse {
 
-
+ String get accessToken; String get refreshToken;
+/// Create a copy of SignInResponse
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SignInResponseCopyWith<SignInResponse> get copyWith => _$SignInResponseCopyWithImpl<SignInResponse>(this as SignInResponse, _$identity);
 
   /// Serializes this SignInResponse to a JSON map.
   Map<String, dynamic> toJson();
@@ -58,24 +28,51 @@ mixin _$SignInResponse {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignInResponse);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SignInResponse&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,accessToken,refreshToken);
 
 @override
 String toString() {
-  return 'SignInResponse()';
+  return 'SignInResponse(accessToken: $accessToken, refreshToken: $refreshToken)';
 }
 
 
 }
 
 /// @nodoc
-class $SignInResponseCopyWith<$Res>  {
-$SignInResponseCopyWith(SignInResponse _, $Res Function(SignInResponse) __);
+abstract mixin class $SignInResponseCopyWith<$Res>  {
+  factory $SignInResponseCopyWith(SignInResponse value, $Res Function(SignInResponse) _then) = _$SignInResponseCopyWithImpl;
+@useResult
+$Res call({
+ String accessToken, String refreshToken
+});
+
+
+
+
+}
+/// @nodoc
+class _$SignInResponseCopyWithImpl<$Res>
+    implements $SignInResponseCopyWith<$Res> {
+  _$SignInResponseCopyWithImpl(this._self, this._then);
+
+  final SignInResponse _self;
+  final $Res Function(SignInResponse) _then;
+
+/// Create a copy of SignInResponse
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? accessToken = null,Object? refreshToken = null,}) {
+  return _then(_self.copyWith(
+accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
+as String,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
 }
 
 
@@ -93,15 +90,11 @@ extension SignInResponsePatterns on SignInResponse {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Authenticated value)?  authenticated,TResult Function( UnAuthorized value)?  unAuthorized,TResult Function( RequestTimeout value)?  requestTimeoutError,TResult Function( ValidationError value)?  validationError,TResult Function( UnknownError value)?  unknownError,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SignInResponse value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case Authenticated() when authenticated != null:
-return authenticated(_that);case UnAuthorized() when unAuthorized != null:
-return unAuthorized(_that);case RequestTimeout() when requestTimeoutError != null:
-return requestTimeoutError(_that);case ValidationError() when validationError != null:
-return validationError(_that);case UnknownError() when unknownError != null:
-return unknownError(_that);case _:
+case _SignInResponse() when $default != null:
+return $default(_that);case _:
   return orElse();
 
 }
@@ -119,15 +112,11 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Authenticated value)  authenticated,required TResult Function( UnAuthorized value)  unAuthorized,required TResult Function( RequestTimeout value)  requestTimeoutError,required TResult Function( ValidationError value)  validationError,required TResult Function( UnknownError value)  unknownError,}){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SignInResponse value)  $default,){
 final _that = this;
 switch (_that) {
-case Authenticated():
-return authenticated(_that);case UnAuthorized():
-return unAuthorized(_that);case RequestTimeout():
-return requestTimeoutError(_that);case ValidationError():
-return validationError(_that);case UnknownError():
-return unknownError(_that);case _:
+case _SignInResponse():
+return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -144,15 +133,11 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Authenticated value)?  authenticated,TResult? Function( UnAuthorized value)?  unAuthorized,TResult? Function( RequestTimeout value)?  requestTimeoutError,TResult? Function( ValidationError value)?  validationError,TResult? Function( UnknownError value)?  unknownError,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SignInResponse value)?  $default,){
 final _that = this;
 switch (_that) {
-case Authenticated() when authenticated != null:
-return authenticated(_that);case UnAuthorized() when unAuthorized != null:
-return unAuthorized(_that);case RequestTimeout() when requestTimeoutError != null:
-return requestTimeoutError(_that);case ValidationError() when validationError != null:
-return validationError(_that);case UnknownError() when unknownError != null:
-return unknownError(_that);case _:
+case _SignInResponse() when $default != null:
+return $default(_that);case _:
   return null;
 
 }
@@ -169,14 +154,10 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( String accessToken,  String refreshToken)?  authenticated,TResult Function()?  unAuthorized,TResult Function()?  requestTimeoutError,TResult Function( List<String>? email,  List<String>? password)?  validationError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String accessToken,  String refreshToken)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case Authenticated() when authenticated != null:
-return authenticated(_that.accessToken,_that.refreshToken);case UnAuthorized() when unAuthorized != null:
-return unAuthorized();case RequestTimeout() when requestTimeoutError != null:
-return requestTimeoutError();case ValidationError() when validationError != null:
-return validationError(_that.email,_that.password);case UnknownError() when unknownError != null:
-return unknownError();case _:
+case _SignInResponse() when $default != null:
+return $default(_that.accessToken,_that.refreshToken);case _:
   return orElse();
 
 }
@@ -194,14 +175,10 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( String accessToken,  String refreshToken)  authenticated,required TResult Function()  unAuthorized,required TResult Function()  requestTimeoutError,required TResult Function( List<String>? email,  List<String>? password)  validationError,required TResult Function()  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String accessToken,  String refreshToken)  $default,) {final _that = this;
 switch (_that) {
-case Authenticated():
-return authenticated(_that.accessToken,_that.refreshToken);case UnAuthorized():
-return unAuthorized();case RequestTimeout():
-return requestTimeoutError();case ValidationError():
-return validationError(_that.email,_that.password);case UnknownError():
-return unknownError();case _:
+case _SignInResponse():
+return $default(_that.accessToken,_that.refreshToken);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -218,14 +195,10 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( String accessToken,  String refreshToken)?  authenticated,TResult? Function()?  unAuthorized,TResult? Function()?  requestTimeoutError,TResult? Function( List<String>? email,  List<String>? password)?  validationError,TResult? Function()?  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String accessToken,  String refreshToken)?  $default,) {final _that = this;
 switch (_that) {
-case Authenticated() when authenticated != null:
-return authenticated(_that.accessToken,_that.refreshToken);case UnAuthorized() when unAuthorized != null:
-return unAuthorized();case RequestTimeout() when requestTimeoutError != null:
-return requestTimeoutError();case ValidationError() when validationError != null:
-return validationError(_that.email,_that.password);case UnknownError() when unknownError != null:
-return unknownError();case _:
+case _SignInResponse() when $default != null:
+return $default(_that.accessToken,_that.refreshToken);case _:
   return null;
 
 }
@@ -236,31 +209,27 @@ return unknownError();case _:
 /// @nodoc
 @JsonSerializable()
 
-class Authenticated implements SignInResponse {
-  const Authenticated({required this.accessToken, required this.refreshToken, final  String? $type}): $type = $type ?? 'authenticated';
-  factory Authenticated.fromJson(Map<String, dynamic> json) => _$AuthenticatedFromJson(json);
+class _SignInResponse implements SignInResponse {
+  const _SignInResponse({required this.accessToken, required this.refreshToken});
+  factory _SignInResponse.fromJson(Map<String, dynamic> json) => _$SignInResponseFromJson(json);
 
- final  String accessToken;
- final  String refreshToken;
-
-@JsonKey(name: 'runtimeType')
-final String $type;
-
+@override final  String accessToken;
+@override final  String refreshToken;
 
 /// Create a copy of SignInResponse
 /// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
+@override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$AuthenticatedCopyWith<Authenticated> get copyWith => _$AuthenticatedCopyWithImpl<Authenticated>(this, _$identity);
+_$SignInResponseCopyWith<_SignInResponse> get copyWith => __$SignInResponseCopyWithImpl<_SignInResponse>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
-  return _$AuthenticatedToJson(this, );
+  return _$SignInResponseToJson(this, );
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Authenticated&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SignInResponse&&(identical(other.accessToken, accessToken) || other.accessToken == accessToken)&&(identical(other.refreshToken, refreshToken) || other.refreshToken == refreshToken));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -269,16 +238,16 @@ int get hashCode => Object.hash(runtimeType,accessToken,refreshToken);
 
 @override
 String toString() {
-  return 'SignInResponse.authenticated(accessToken: $accessToken, refreshToken: $refreshToken)';
+  return 'SignInResponse(accessToken: $accessToken, refreshToken: $refreshToken)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $AuthenticatedCopyWith<$Res> implements $SignInResponseCopyWith<$Res> {
-  factory $AuthenticatedCopyWith(Authenticated value, $Res Function(Authenticated) _then) = _$AuthenticatedCopyWithImpl;
-@useResult
+abstract mixin class _$SignInResponseCopyWith<$Res> implements $SignInResponseCopyWith<$Res> {
+  factory _$SignInResponseCopyWith(_SignInResponse value, $Res Function(_SignInResponse) _then) = __$SignInResponseCopyWithImpl;
+@override @useResult
 $Res call({
  String accessToken, String refreshToken
 });
@@ -288,17 +257,17 @@ $Res call({
 
 }
 /// @nodoc
-class _$AuthenticatedCopyWithImpl<$Res>
-    implements $AuthenticatedCopyWith<$Res> {
-  _$AuthenticatedCopyWithImpl(this._self, this._then);
+class __$SignInResponseCopyWithImpl<$Res>
+    implements _$SignInResponseCopyWith<$Res> {
+  __$SignInResponseCopyWithImpl(this._self, this._then);
 
-  final Authenticated _self;
-  final $Res Function(Authenticated) _then;
+  final _SignInResponse _self;
+  final $Res Function(_SignInResponse) _then;
 
 /// Create a copy of SignInResponse
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? accessToken = null,Object? refreshToken = null,}) {
-  return _then(Authenticated(
+@override @pragma('vm:prefer-inline') $Res call({Object? accessToken = null,Object? refreshToken = null,}) {
+  return _then(_SignInResponse(
 accessToken: null == accessToken ? _self.accessToken : accessToken // ignore: cast_nullable_to_non_nullable
 as String,refreshToken: null == refreshToken ? _self.refreshToken : refreshToken // ignore: cast_nullable_to_non_nullable
 as String,
@@ -307,213 +276,5 @@ as String,
 
 
 }
-
-/// @nodoc
-@JsonSerializable()
-
-class UnAuthorized implements SignInResponse {
-  const UnAuthorized({final  String? $type}): $type = $type ?? 'unAuthorized';
-  factory UnAuthorized.fromJson(Map<String, dynamic> json) => _$UnAuthorizedFromJson(json);
-
-
-
-@JsonKey(name: 'runtimeType')
-final String $type;
-
-
-
-@override
-Map<String, dynamic> toJson() {
-  return _$UnAuthorizedToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UnAuthorized);
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SignInResponse.unAuthorized()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-@JsonSerializable()
-
-class RequestTimeout implements SignInResponse {
-  const RequestTimeout({final  String? $type}): $type = $type ?? 'requestTimeoutError';
-  factory RequestTimeout.fromJson(Map<String, dynamic> json) => _$RequestTimeoutFromJson(json);
-
-
-
-@JsonKey(name: 'runtimeType')
-final String $type;
-
-
-
-@override
-Map<String, dynamic> toJson() {
-  return _$RequestTimeoutToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RequestTimeout);
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SignInResponse.requestTimeoutError()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-@JsonSerializable()
-
-class ValidationError implements SignInResponse {
-  const ValidationError({required final  List<String>? email, required final  List<String>? password, final  String? $type}): _email = email,_password = password,$type = $type ?? 'validationError';
-  factory ValidationError.fromJson(Map<String, dynamic> json) => _$ValidationErrorFromJson(json);
-
- final  List<String>? _email;
- List<String>? get email {
-  final value = _email;
-  if (value == null) return null;
-  if (_email is EqualUnmodifiableListView) return _email;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
-}
-
- final  List<String>? _password;
- List<String>? get password {
-  final value = _password;
-  if (value == null) return null;
-  if (_password is EqualUnmodifiableListView) return _password;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
-}
-
-
-@JsonKey(name: 'runtimeType')
-final String $type;
-
-
-/// Create a copy of SignInResponse
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-$ValidationErrorCopyWith<ValidationError> get copyWith => _$ValidationErrorCopyWithImpl<ValidationError>(this, _$identity);
-
-@override
-Map<String, dynamic> toJson() {
-  return _$ValidationErrorToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ValidationError&&const DeepCollectionEquality().equals(other._email, _email)&&const DeepCollectionEquality().equals(other._password, _password));
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_email),const DeepCollectionEquality().hash(_password));
-
-@override
-String toString() {
-  return 'SignInResponse.validationError(email: $email, password: $password)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class $ValidationErrorCopyWith<$Res> implements $SignInResponseCopyWith<$Res> {
-  factory $ValidationErrorCopyWith(ValidationError value, $Res Function(ValidationError) _then) = _$ValidationErrorCopyWithImpl;
-@useResult
-$Res call({
- List<String>? email, List<String>? password
-});
-
-
-
-
-}
-/// @nodoc
-class _$ValidationErrorCopyWithImpl<$Res>
-    implements $ValidationErrorCopyWith<$Res> {
-  _$ValidationErrorCopyWithImpl(this._self, this._then);
-
-  final ValidationError _self;
-  final $Res Function(ValidationError) _then;
-
-/// Create a copy of SignInResponse
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? email = freezed,Object? password = freezed,}) {
-  return _then(ValidationError(
-email: freezed == email ? _self._email : email // ignore: cast_nullable_to_non_nullable
-as List<String>?,password: freezed == password ? _self._password : password // ignore: cast_nullable_to_non_nullable
-as List<String>?,
-  ));
-}
-
-
-}
-
-/// @nodoc
-@JsonSerializable()
-
-class UnknownError implements SignInResponse {
-  const UnknownError({final  String? $type}): $type = $type ?? 'unknownError';
-  factory UnknownError.fromJson(Map<String, dynamic> json) => _$UnknownErrorFromJson(json);
-
-
-
-@JsonKey(name: 'runtimeType')
-final String $type;
-
-
-
-@override
-Map<String, dynamic> toJson() {
-  return _$UnknownErrorToJson(this, );
-}
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UnknownError);
-}
-
-@JsonKey(includeFromJson: false, includeToJson: false)
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'SignInResponse.unknownError()';
-}
-
-
-}
-
-
-
 
 // dart format on

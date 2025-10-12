@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
-import 'package:mobile/data/service/model/sign_up_response/sign_up_response.dart';
+import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/utils/command.dart';
 import 'package:mobile/utils/result.dart';
 
@@ -73,11 +73,11 @@ class SignUpViewModel extends ChangeNotifier {
     final Result result = await _authRepository.signUp(email: email, password: password, nickname: nickname);
 
     if (result is Error) {
-      SignUpResponse error = result.error;
+      Exception error = result.error;
       switch (error) {
         case RequestTimeout _:
           _commonErrorText = "문제가 발생했습니다.\n잠시 후 다시 시도해 주세요.";
-        case DuplicateEmailError _:
+        case DuplicateEmail _:
           _emailErrorText = "이미 가입된 이메일 입니다.";
         case ValidationError _:
           _emailErrorText = error.email?.join("\n");

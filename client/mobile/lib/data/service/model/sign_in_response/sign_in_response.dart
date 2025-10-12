@@ -5,21 +5,10 @@ part 'sign_in_response.g.dart';
 
 @freezed
 abstract class SignInResponse with _$SignInResponse {
-  const factory SignInResponse.authenticated({
+  const factory SignInResponse({
     required String accessToken,
     required String refreshToken
-  }) = Authenticated;
-
-  const factory SignInResponse.unAuthorized() = UnAuthorized;
-
-  const factory SignInResponse.requestTimeoutError() = RequestTimeout;
-
-  const factory SignInResponse.validationError({
-    required List<String>? email,
-    required List<String>? password,
-  }) = ValidationError;
-
-  const factory SignInResponse.unknownError() = UnknownError;
+  }) = _SignInResponse;
 
   factory SignInResponse.fromJson(Map<String, dynamic> json) => _$SignInResponseFromJson(json);
 }
