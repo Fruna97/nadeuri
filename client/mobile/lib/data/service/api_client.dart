@@ -5,7 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/sign_in_request/sign_in_request.dart';
-import 'package:mobile/data/service/model/sign_in_response/sign_in_response.dart';
+import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
 import 'package:mobile/utils/result.dart';
 
@@ -52,7 +52,7 @@ class ApiClient {
     }
   }
 
-  Future<Result<SignInResponse>> signIn(SignInRequest signInRequest) async {
+  Future<Result<TokenApiModel>> signIn(SignInRequest signInRequest) async {
     final String endpoint = "/member/signin";
     try {
       final Response response = await _dioWithoutToken.post(endpoint, data: signInRequest.toJson());
@@ -62,10 +62,10 @@ class ApiClient {
       log("${RequestMethod.signIn.name} response summary (StatusCode: $statusCode, Message: $message)");
 
       final Map<String, dynamic> data = body["data"];
-      final SignInResponse signInResponse = SignInResponse.fromJson(data);
+      final TokenApiModel signInResponse = TokenApiModel.fromJson(data);
       return Result.ok(signInResponse);
     } on DioException catch (e) {
-      return _handleOnDioException<SignInResponse>(e, RequestMethod.signIn);
+      return _handleOnDioException<TokenApiModel>(e, RequestMethod.signIn);
     } catch (e) {
       log(e.toString());
       return Result.error(ApiError.unknownError());

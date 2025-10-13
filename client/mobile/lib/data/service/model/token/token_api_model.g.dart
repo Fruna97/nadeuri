@@ -1,18 +1,18 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'sign_in_response.dart';
+part of 'token_api_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-_SignInResponse _$SignInResponseFromJson(Map<String, dynamic> json) =>
-    _SignInResponse(
-      accessToken: json['accessToken'] as String,
-      refreshToken: json['refreshToken'] as String,
+_TokenApiModel _$TokenApiModelFromJson(Map<String, dynamic> json) =>
+    _TokenApiModel(
+      accessToken: json['accessToken'] as String?,
+      refreshToken: json['refreshToken'] as String?,
     );
 
-Map<String, dynamic> _$SignInResponseToJson(_SignInResponse instance) =>
+Map<String, dynamic> _$TokenApiModelToJson(_TokenApiModel instance) =>
     <String, dynamic>{
       'accessToken': instance.accessToken,
       'refreshToken': instance.refreshToken,

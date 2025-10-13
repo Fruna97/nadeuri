@@ -4,7 +4,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/data/service/api_client.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/sign_in_request/sign_in_request.dart';
-import 'package:mobile/data/service/model/sign_in_response/sign_in_response.dart';
+import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
 import 'package:mobile/utils/result.dart';
 
@@ -39,17 +39,17 @@ class AuthRepository {
     return result;
   }
 
-  Future<Result<SignInResponse>> signIn({required String email, required String password}) async {
+  Future<Result<void>> signIn({required String email, required String password}) async {
     SignInRequest signInRequest = SignInRequest(email: email, password: password);
 
-    final Result<SignInResponse> result = await _apiClient.signIn(signInRequest);
+    final Result<TokenApiModel> result = await _apiClient.signIn(signInRequest);
     switch (result) {
-      case Ok<SignInResponse> _:
-        SignInResponse value = result.value;
+      case Ok<TokenApiModel> _:
+        TokenApiModel value = result.value;
         log("Result is Ok: $value");
         await _flutterSecureStorage.write(key: "access_token", value: value.accessToken);
         await _flutterSecureStorage.write(key: "refresh_token", value: value.refreshToken);
-      case Error<SignInResponse> _:
+      case Error<TokenApiModel> _:
         Exception error = result.error;
         switch (error) {
           case Unauthorized _:
