@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
+import 'package:mobile/data/repository/nadeuri_repository.dart';
 import 'package:mobile/data/service/api_client.dart';
 import 'package:mobile/ui/home/home.dart';
 import 'package:mobile/ui/sign_in/sign_in.dart';
@@ -30,6 +31,7 @@ void main() {
             flutterSecureStorage: context.read<FlutterSecureStorage>(),
           ),
         ),
+        Provider(create: (context) => NadeuriRepository(apiClient: context.read<ApiClient>()))
       ],
       child: const MyApp(),
     ),
