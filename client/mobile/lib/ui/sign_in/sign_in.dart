@@ -16,11 +16,11 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   void initState() {
+    super.initState();
+    
     _signInViewModel = context.read<SignInViewModel>();
 
     _signInViewModel.signIn.addListener(_navigateOnSignInComplete);
-
-    super.initState();
   }
 
   @override
@@ -53,7 +53,7 @@ class _SignInPageState extends State<SignInPage> {
   }
 
   void _navigateOnSignInComplete() {
-    if (_signInViewModel.signIn.completed) {
+    if (_signInViewModel.signIn.completed && mounted) {
       _signInViewModel.signIn.clearResult();
       Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
     }
