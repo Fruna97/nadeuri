@@ -26,7 +26,7 @@ public class NadeuriController {
         this.nadeuriService = nadeuriService;
     }
 
-    @PostMapping("/nadeuri/create")
+    @PostMapping("/nadeuri")
     public ResponseEntity<ResponseDto<Void>> createNadeuri(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody CreateNadeuriDto createNadeuriDto) {
         String title = createNadeuriDto.getTitle();
         
