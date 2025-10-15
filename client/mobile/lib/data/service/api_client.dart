@@ -3,27 +3,31 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:mobile/data/service/interceptor/token_interceptor.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
+import 'package:mobile/data/service/model/local_error/local_error.dart';
+import 'package:mobile/data/service/model/nadeuri/nadeuri_api_model.dart';
 import 'package:mobile/data/service/model/sign_in_request/sign_in_request.dart';
-import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
+import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/utils/result.dart';
 
-enum RequestMethod { signUp, signIn }
+enum RequestMethod { signUp, signIn, getParticipatingNadeuris }
 
 class ApiClient {
-  final FlutterSecureStorage _flutterSecureStorage;
-  late final Dio _dioWithoutToken;
-
+  final String _logTag = "ApiClient";
   final Duration connectTimeout = Duration(seconds: 5);
   final Duration receiveTimeout = Duration(seconds: 5);
+
+  late final Dio _dioWithoutToken;
+  late final Dio _dioWithToken;
 
   ApiClient({
     required String host,
     required int port,
     required Map<String, String> baseHeaders,
     required FlutterSecureStorage flutterSecureStorage,
-  }) : _flutterSecureStorage = flutterSecureStorage {
+  }) {
     _dioWithoutToken = Dio(
       BaseOptions(
         baseUrl: "$host:$port",
@@ -32,6 +36,18 @@ class ApiClient {
         receiveTimeout: receiveTimeout,
       ),
     );
+    final TokenInterceptor tokenInterceptor = TokenInterceptor(
+      flutterSecureStorage: flutterSecureStorage,
+      dioWithoutTokenInterceptor: _dioWithoutToken,
+    );
+    _dioWithToken = Dio(
+      BaseOptions(
+        baseUrl: "$host:$port",
+        headers: baseHeaders,
+        connectTimeout: connectTimeout,
+        receiveTimeout: receiveTimeout,
+      ),
+    )..interceptors.add(tokenInterceptor);
   }
 
   Future<Result<void>> signUp(SignUpRequest signUpRequest) async {
@@ -41,13 +57,13 @@ class ApiClient {
       final int statusCode = response.statusCode!;
       final dynamic body = response.data;
       final String? message = body["message"];
-      log("${RequestMethod.signUp.name} response summary (StatusCode: $statusCode, Message: $message)");
+      log("${RequestMethod.signUp.name} response summary (StatusCode: $statusCode, Message: $message)", name: _logTag);
 
       return Result.ok(null);
     } on DioException catch (e) {
       return _handleOnDioException<void>(e, RequestMethod.signUp);
-    } catch (e) {
-      log(e.toString());
+    } catch (e, s) {
+      log("Unhandled Exception: $e\n$s", name: _logTag);
       return Result.error(ApiError.unknownError());
     }
   }
@@ -59,15 +75,41 @@ class ApiClient {
       final int statusCode = response.statusCode!;
       final dynamic body = response.data;
       final String? message = body["message"];
-      log("${RequestMethod.signIn.name} response summary (StatusCode: $statusCode, Message: $message)");
+      log("${RequestMethod.signIn.name} response summary (StatusCode: $statusCode, Message: $message)", name: _logTag);
 
       final Map<String, dynamic> data = body["data"];
       final TokenApiModel signInResponse = TokenApiModel.fromJson(data);
       return Result.ok(signInResponse);
     } on DioException catch (e) {
       return _handleOnDioException<TokenApiModel>(e, RequestMethod.signIn);
-    } catch (e) {
-      log(e.toString());
+    } catch (e, s) {
+      log("Unhandled Exception: $e\n$s", name: _logTag);
+      return Result.error(ApiError.unknownError());
+    }
+  }
+
+  Future<Result<List<NadeuriApiModel>>> getParticipatingNadeuris() async {
+    final String endpoint = "/nadeuri/participating";
+    try {
+      final Response response = await _dioWithToken.get(endpoint);
+      final int statusCode = response.statusCode!;
+      final dynamic body = response.data;
+      final String? message = body["message"];
+      log(
+        "${RequestMethod.getParticipatingNadeuris.name} response summary (StatusCode: $statusCode, Message: $message)",
+        name: _logTag,
+      );
+
+      final List<dynamic> data = body["data"];
+      final List<NadeuriApiModel> nadeuriApiModels = data
+          .cast<Map<String, dynamic>>()
+          .map((nadeuriApiModel) => NadeuriApiModel.fromJson(nadeuriApiModel))
+          .toList();
+      return Result.ok(nadeuriApiModels);
+    } on DioException catch (e) {
+      return _handleOnDioException<List<NadeuriApiModel>>(e, RequestMethod.getParticipatingNadeuris);
+    } catch (e, s) {
+      log("Unhandled Exception: $e\n$s", name: _logTag);
       return Result.error(ApiError.unknownError());
     }
   }
@@ -79,6 +121,11 @@ class ApiClient {
       return Result.error(ApiError.requestTimeout());
     }
 
+    final exception = e.error;
+    if (exception is TokenNotFound) {
+      return Result.error(LocalError.tokenNotFound(tokenType: exception.tokenType));
+    }
+
     final Response? response = e.response;
     if (response == null) {
       return Result.error(ApiError.unknownError());
@@ -87,7 +134,7 @@ class ApiClient {
     final int statusCode = response.statusCode!;
     final dynamic body = response.data;
     final String? message = body["message"];
-    log("${requestMethod.name} response summary (StatusCode: $statusCode, Message: $message)");
+    log("${requestMethod.name} response summary (StatusCode: $statusCode, Message: $message)", name: _logTag);
 
     Map<String, dynamic>? data = body["data"];
     data ??= <String, dynamic>{};
@@ -103,6 +150,11 @@ class ApiClient {
         data["runtimeType"] = switch (statusCode) {
           HttpStatus.unauthorized => "unauthorized",
           HttpStatus.unprocessableEntity => "validationError",
+          _ => "unknownError",
+        };
+      case RequestMethod.getParticipatingNadeuris:
+        data["runtimeType"] = switch (statusCode) {
+          HttpStatus.unauthorized => "unauthorized",
           _ => "unknownError",
         };
     }
