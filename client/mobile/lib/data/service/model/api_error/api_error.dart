@@ -12,9 +12,7 @@ abstract class ApiError with _$ApiError implements Exception {
   const factory ApiError.duplicateEmail() = DuplicateEmail;
 
   const factory ApiError.validationError({
-    List<String>? email, 
-    List<String>? password,
-    List<String>? nickname,
+    required Map<String, List<String>> info
   }) = ValidationError;
 
   const factory ApiError.unknownError() = UnknownError;

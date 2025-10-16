@@ -61,9 +61,10 @@ class ApiClient {
 
       return Result.ok(null);
     } on DioException catch (e) {
+      log("Handled Exception (${RequestMethod.signUp.name}): $e", name: _logTag);
       return _handleOnDioException<void>(e, RequestMethod.signUp);
     } catch (e, s) {
-      log("Unhandled Exception: $e\n$s", name: _logTag);
+      log("Unhandled Exception (${RequestMethod.signUp.name}): $e\n$s", name: _logTag);
       return Result.error(ApiError.unknownError());
     }
   }
@@ -81,9 +82,10 @@ class ApiClient {
       final TokenApiModel signInResponse = TokenApiModel.fromJson(data);
       return Result.ok(signInResponse);
     } on DioException catch (e) {
+      log("Handled Exception (${RequestMethod.signIn.name}): $e", name: _logTag);
       return _handleOnDioException<TokenApiModel>(e, RequestMethod.signIn);
     } catch (e, s) {
-      log("Unhandled Exception: $e\n$s", name: _logTag);
+      log("Unhandled Exception (${RequestMethod.signIn.name}): $e\n$s", name: _logTag);
       return Result.error(ApiError.unknownError());
     }
   }
@@ -107,9 +109,10 @@ class ApiClient {
           .toList();
       return Result.ok(nadeuriApiModels);
     } on DioException catch (e) {
+      log("Handled Exception (${RequestMethod.getParticipatingNadeuris.name}): $e", name: _logTag);
       return _handleOnDioException<List<NadeuriApiModel>>(e, RequestMethod.getParticipatingNadeuris);
     } catch (e, s) {
-      log("Unhandled Exception: $e\n$s", name: _logTag);
+      log("Unhandled Exception (${RequestMethod.getParticipatingNadeuris.name}): $e\n$s", name: _logTag);
       return Result.error(ApiError.unknownError());
     }
   }
@@ -134,10 +137,13 @@ class ApiClient {
     final int statusCode = response.statusCode!;
     final dynamic body = response.data;
     final String? message = body["message"];
-    log("${requestMethod.name} response summary (StatusCode: $statusCode, Message: $message)", name: _logTag);
 
-    Map<String, dynamic>? data = body["data"];
-    data ??= <String, dynamic>{};
+    Map<String, dynamic> data;
+    if (statusCode == HttpStatus.unprocessableEntity) {
+      data = {"info": body["data"]};
+    } else {
+      data = body["data"] ?? <String, dynamic>{};
+    }
 
     switch (requestMethod) {
       case RequestMethod.signUp:

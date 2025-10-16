@@ -169,13 +169,13 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  unauthorized,TResult Function()?  requestTimeout,TResult Function()?  duplicateEmail,TResult Function( List<String>? email,  List<String>? password,  List<String>? nickname)?  validationError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  unauthorized,TResult Function()?  requestTimeout,TResult Function()?  duplicateEmail,TResult Function( Map<String, List<String>> info)?  validationError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Unauthorized() when unauthorized != null:
 return unauthorized();case RequestTimeout() when requestTimeout != null:
 return requestTimeout();case DuplicateEmail() when duplicateEmail != null:
 return duplicateEmail();case ValidationError() when validationError != null:
-return validationError(_that.email,_that.password,_that.nickname);case UnknownError() when unknownError != null:
+return validationError(_that.info);case UnknownError() when unknownError != null:
 return unknownError();case _:
   return orElse();
 
@@ -194,13 +194,13 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  unauthorized,required TResult Function()  requestTimeout,required TResult Function()  duplicateEmail,required TResult Function( List<String>? email,  List<String>? password,  List<String>? nickname)  validationError,required TResult Function()  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  unauthorized,required TResult Function()  requestTimeout,required TResult Function()  duplicateEmail,required TResult Function( Map<String, List<String>> info)  validationError,required TResult Function()  unknownError,}) {final _that = this;
 switch (_that) {
 case Unauthorized():
 return unauthorized();case RequestTimeout():
 return requestTimeout();case DuplicateEmail():
 return duplicateEmail();case ValidationError():
-return validationError(_that.email,_that.password,_that.nickname);case UnknownError():
+return validationError(_that.info);case UnknownError():
 return unknownError();case _:
   throw StateError('Unexpected subclass');
 
@@ -218,13 +218,13 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  unauthorized,TResult? Function()?  requestTimeout,TResult? Function()?  duplicateEmail,TResult? Function( List<String>? email,  List<String>? password,  List<String>? nickname)?  validationError,TResult? Function()?  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  unauthorized,TResult? Function()?  requestTimeout,TResult? Function()?  duplicateEmail,TResult? Function( Map<String, List<String>> info)?  validationError,TResult? Function()?  unknownError,}) {final _that = this;
 switch (_that) {
 case Unauthorized() when unauthorized != null:
 return unauthorized();case RequestTimeout() when requestTimeout != null:
 return requestTimeout();case DuplicateEmail() when duplicateEmail != null:
 return duplicateEmail();case ValidationError() when validationError != null:
-return validationError(_that.email,_that.password,_that.nickname);case UnknownError() when unknownError != null:
+return validationError(_that.info);case UnknownError() when unknownError != null:
 return unknownError();case _:
   return null;
 
@@ -354,34 +354,14 @@ String toString() {
 @JsonSerializable()
 
 class ValidationError implements ApiError {
-  const ValidationError({final  List<String>? email, final  List<String>? password, final  List<String>? nickname, final  String? $type}): _email = email,_password = password,_nickname = nickname,$type = $type ?? 'validationError';
+  const ValidationError({required final  Map<String, List<String>> info, final  String? $type}): _info = info,$type = $type ?? 'validationError';
   factory ValidationError.fromJson(Map<String, dynamic> json) => _$ValidationErrorFromJson(json);
 
- final  List<String>? _email;
- List<String>? get email {
-  final value = _email;
-  if (value == null) return null;
-  if (_email is EqualUnmodifiableListView) return _email;
+ final  Map<String, List<String>> _info;
+ Map<String, List<String>> get info {
+  if (_info is EqualUnmodifiableMapView) return _info;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
-}
-
- final  List<String>? _password;
- List<String>? get password {
-  final value = _password;
-  if (value == null) return null;
-  if (_password is EqualUnmodifiableListView) return _password;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
-}
-
- final  List<String>? _nickname;
- List<String>? get nickname {
-  final value = _nickname;
-  if (value == null) return null;
-  if (_nickname is EqualUnmodifiableListView) return _nickname;
-  // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
+  return EqualUnmodifiableMapView(_info);
 }
 
 
@@ -402,16 +382,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is ValidationError&&const DeepCollectionEquality().equals(other._email, _email)&&const DeepCollectionEquality().equals(other._password, _password)&&const DeepCollectionEquality().equals(other._nickname, _nickname));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is ValidationError&&const DeepCollectionEquality().equals(other._info, _info));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_email),const DeepCollectionEquality().hash(_password),const DeepCollectionEquality().hash(_nickname));
+int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_info));
 
 @override
 String toString() {
-  return 'ApiError.validationError(email: $email, password: $password, nickname: $nickname)';
+  return 'ApiError.validationError(info: $info)';
 }
 
 
@@ -422,7 +402,7 @@ abstract mixin class $ValidationErrorCopyWith<$Res> implements $ApiErrorCopyWith
   factory $ValidationErrorCopyWith(ValidationError value, $Res Function(ValidationError) _then) = _$ValidationErrorCopyWithImpl;
 @useResult
 $Res call({
- List<String>? email, List<String>? password, List<String>? nickname
+ Map<String, List<String>> info
 });
 
 
@@ -439,12 +419,10 @@ class _$ValidationErrorCopyWithImpl<$Res>
 
 /// Create a copy of ApiError
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? email = freezed,Object? password = freezed,Object? nickname = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? info = null,}) {
   return _then(ValidationError(
-email: freezed == email ? _self._email : email // ignore: cast_nullable_to_non_nullable
-as List<String>?,password: freezed == password ? _self._password : password // ignore: cast_nullable_to_non_nullable
-as List<String>?,nickname: freezed == nickname ? _self._nickname : nickname // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+info: null == info ? _self._info : info // ignore: cast_nullable_to_non_nullable
+as Map<String, List<String>>,
   ));
 }
 

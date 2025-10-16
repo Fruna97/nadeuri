@@ -80,9 +80,9 @@ class SignUpViewModel extends ChangeNotifier {
         case DuplicateEmail _:
           _emailErrorText = "이미 가입된 이메일 입니다.";
         case ValidationError _:
-          _emailErrorText = error.email?.join("\n");
-          _passwordCheckErrorText = error.password?.join("\n");
-          _nicknameErrorText = error.nickname?.join("\n");
+          _emailErrorText = error.info["email"]?.join("\n");
+          _passwordCheckErrorText = error.info["password"]?.join("\n");
+          _nicknameErrorText = error.info["nickname"]?.join("\n");
         case UnknownError _:
           _commonErrorText = "문제가 발생했습니다.\n문제가 반복된다면, 고객센터에 문의해주세요.";
       }
