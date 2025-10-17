@@ -12,7 +12,7 @@ import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
 import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/utils/result.dart';
 
-enum RequestMethod { signUp, signIn, getParticipatingNadeuris }
+enum RequestMethod { signUp, signIn, getParticipatingNadeuris, postNadeuri }
 
 class ApiClient {
   final String _logTag = "ApiClient";
@@ -117,6 +117,27 @@ class ApiClient {
     }
   }
 
+  Future<Result<void>> postNadeuri(NadeuriApiModel nadeuriApiModel) async {
+    final String endpoint = "/nadeuri";
+    try {
+      final Response response = await _dioWithToken.post(endpoint, data: nadeuriApiModel.toJson());
+      final int statusCode = response.statusCode!;
+      final dynamic body = response.data;
+      final String? message = body["message"];
+      log(
+        "${RequestMethod.postNadeuri.name} response summary (StatusCode: $statusCode, Message: $message)",
+        name: _logTag,
+      );
+      return Result.ok(null);
+    } on DioException catch (e) {
+      log("Handled Exception (${RequestMethod.postNadeuri.name}): $e", name: _logTag);
+      return _handleOnDioException(e, RequestMethod.postNadeuri);
+    } catch (e, s) {
+      log("Unhandled Exception (${RequestMethod.postNadeuri.name}): $e\n$s", name: _logTag);
+      return Result.error(ApiError.unknownError());
+    }
+  }
+
   Result<T> _handleOnDioException<T>(DioException e, RequestMethod requestMethod) {
     if (e.type == DioExceptionType.connectionTimeout ||
         e.type == DioExceptionType.receiveTimeout ||
@@ -163,6 +184,13 @@ class ApiClient {
           HttpStatus.unauthorized => "unauthorized",
           _ => "unknownError",
         };
+      case RequestMethod.postNadeuri:
+        data["runtimeType"] = switch (statusCode) {
+          HttpStatus.unauthorized => "unauthorized",
+          HttpStatus.unprocessableEntity => "validationError",
+          _ => "unknownError",
+        };
+        break;
     }
     final ApiError apiError = ApiError.fromJson(data);
     return Result.error(apiError);
