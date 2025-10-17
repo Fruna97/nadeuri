@@ -11,11 +11,13 @@ class HomeViewModel extends ChangeNotifier {
 
   final NadeuriRepository _nadeuriRepository;
   late final Command0<List<Nadeuri>> load;
+  late final Command1<void, String> createNadeuri;
 
   List<Nadeuri> _nadeuris = [];
 
   HomeViewModel({required NadeuriRepository nadeuriRepository}) : _nadeuriRepository = nadeuriRepository {
     load = Command0<List<Nadeuri>>(_load)..execute();
+    createNadeuri = Command1<void, String>(_createNadeuri);
   }
 
   List<Nadeuri> get nadeuris => _nadeuris;
@@ -32,6 +34,24 @@ class HomeViewModel extends ChangeNotifier {
     }
 
     notifyListeners();
+
+    return result;
+  }
+
+  Future<Result> _createNadeuri(String title) async {
+    Nadeuri nadeuri = Nadeuri(title: title);
+    nadeuris.add(nadeuri);
+    notifyListeners(); // Optimistic Update
+
+    final Result result = await _nadeuriRepository.createNadeuri(nadeuri);
+
+    switch (result) {
+      case Ok _:
+        break;
+      case Error _:
+        nadeuris.remove(nadeuri);
+        notifyListeners();
+    }
 
     return result;
   }
