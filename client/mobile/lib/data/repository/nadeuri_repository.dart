@@ -19,15 +19,15 @@ class NadeuriRepository {
   
     switch (result) {
       case Ok<List<NadeuriApiModel>> _:
+        log("Result is Ok", name: _logTag);
         List<NadeuriApiModel> value = result.value;
         List<Nadeuri> nadeuris = value.map((nadeuriApiModel) => Nadeuri(title: nadeuriApiModel.title)).toList();
-        
         return Result.ok(nadeuris);
       case Error<List<NadeuriApiModel>> _:
         Exception error = result.error;
         switch (error) {
           case Unauthorized _:
-            log("Result is UnAuthorized", name: _logTag);
+            log("Result is Unauthorized", name: _logTag);
           case RequestTimeout _:
             log("Result is RequestTimeout", name: _logTag);
           case UnknownError _:
@@ -38,5 +38,28 @@ class NadeuriRepository {
         
         return Result.error(error);
     }
+  }
+
+  Future<Result<void>> createNadeuri(Nadeuri nadeuri) async {
+    NadeuriApiModel nadeuriApiModel = nadeuri.map((nadeuri) => NadeuriApiModel(title: nadeuri.title));
+    Result result = await _apiClient.postNadeuri(nadeuriApiModel);
+  
+    switch (result) {
+      case Ok _:
+        log("Result is Ok", name: _logTag);
+      case Error _:
+        Exception error = result.error;
+        switch (error) {
+          case Unauthorized _:
+            log("Result is Unauthorized", name: _logTag);
+          case RequestTimeout _:
+            log("Result is RequestTimeout", name: _logTag);
+          case ValidationError _:
+            log("Result is ValidationError: $error", name: _logTag);
+          case UnknownError _:
+            log("Result is UnknownError", name: _logTag);
+        }
+    }
+    return result;
   }
 }
