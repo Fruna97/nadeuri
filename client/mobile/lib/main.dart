@@ -3,6 +3,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
 import 'package:mobile/data/repository/nadeuri_repository.dart';
 import 'package:mobile/data/service/api_client.dart';
+import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/home/home.dart';
 import 'package:mobile/ui/home/home_view_model.dart';
 import 'package:mobile/ui/sign_in/sign_in.dart';
@@ -18,6 +19,7 @@ void main() {
         Provider<FlutterSecureStorage>(
           create: (_) => const FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true)),
         ),
+        Provider<AppSnackBar>(create: (_) => AppSnackBar()),
         Provider<ApiClient>(
           create: (context) => ApiClient(
             host: "http://10.0.2.2",
@@ -46,6 +48,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: context.read<AppSnackBar>().scaffoldMessengerKey,
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.

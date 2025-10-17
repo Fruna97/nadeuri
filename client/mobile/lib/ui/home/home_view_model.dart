@@ -40,7 +40,8 @@ class HomeViewModel extends ChangeNotifier {
 
   Future<Result> _createNadeuri(String title) async {
     Nadeuri nadeuri = Nadeuri(title: title);
-    nadeuris.add(nadeuri);
+    List<Nadeuri> oldNadeuris = _nadeuris;
+    _nadeuris = [nadeuri, ..._nadeuris];
     notifyListeners(); // Optimistic Update
 
     final Result result = await _nadeuriRepository.createNadeuri(nadeuri);
@@ -49,7 +50,7 @@ class HomeViewModel extends ChangeNotifier {
       case Ok _:
         break;
       case Error _:
-        nadeuris.remove(nadeuri);
+        _nadeuris = oldNadeuris;
         notifyListeners();
     }
 

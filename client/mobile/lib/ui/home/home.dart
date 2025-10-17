@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
+import 'package:mobile/domain/model/nadeuri.dart';
+import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/home/home_view_model.dart';
 import 'package:mobile/utils/result.dart';
 import 'package:provider/provider.dart';
@@ -21,7 +23,8 @@ class _HomePageState extends State<HomePage> {
 
     _homeViewModel = context.read<HomeViewModel>();
 
-    _homeViewModel.load.addListener(_navigateOnLoadError);
+    _homeViewModel.load.addListener(_onLoadNadeuriResult);
+    _homeViewModel.createNadeuri.addListener(_onCreateResult);
   }
 
   @override
@@ -31,8 +34,8 @@ class _HomePageState extends State<HomePage> {
         child: ListenableBuilder(
           listenable: _homeViewModel.load,
           builder: (context, child) {
-            if (_homeViewModel.load.running) {
-              return const Center(child: CircularProgressIndicator());
+            if (_homeViewModel.load.completed) {
+              return child!;
             }
 
             if (_homeViewModel.load.error) {
@@ -44,7 +47,7 @@ class _HomePageState extends State<HomePage> {
               return _PleaseRetryScreen(homeViewModel: _homeViewModel);
             }
 
-            return child!;
+            return const Center(child: CircularProgressIndicator()); // load.running
           },
           child: _HomeScreen(homeViewModel: _homeViewModel),
         ),
@@ -54,18 +57,38 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _homeViewModel.load.removeListener(_navigateOnLoadError);
+    _homeViewModel.createNadeuri.removeListener(_onCreateResult);
+    _homeViewModel.load.removeListener(_onLoadNadeuriResult);
 
     super.dispose();
   }
 
-  void _navigateOnLoadError() {
+  void _onLoadNadeuriResult() {
     if (_homeViewModel.load.error && mounted) {
-      Error result = _homeViewModel.load.result! as Error; // error == true 이면 result != null
+      final Error result = _homeViewModel.load.result! as Error;
       final Exception error = result.error;
 
+      // 인증 정보에 문제가 있으면 로그인 페이지로 이동
       if (error is Unauthorized || error is TokenNotFound) {
+        _homeViewModel.load.clearResult();
+        context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
         Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
+      }
+    }
+  }
+
+  void _onCreateResult() {
+    if (_homeViewModel.createNadeuri.error && mounted) {
+      final Error result = _homeViewModel.createNadeuri.result! as Error;
+      final Exception error = result.error;
+
+      _homeViewModel.createNadeuri.clearResult();
+      if (error is Unauthorized || error is TokenNotFound) {
+        // 인증 정보에 문제가 있으면 로그인 페이지로 이동
+        context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
+        Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
+      } else {
+        context.read<AppSnackBar>().showSnackBar("죄송합니다!\n나들이를 추가하는데 실패했습니다!\n나중에 다시 시도해보세요.");
       }
     }
   }
@@ -81,6 +104,8 @@ class _HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final List<Nadeuri> nadeuris = context.select((HomeViewModel homeViewModel) => homeViewModel.nadeuris);
+
     return ListView(
       children: <Widget>[
         SizedBox(height: 16.0),
@@ -90,7 +115,10 @@ class _HomeScreen extends StatelessWidget {
               context: context,
               isScrollControlled: true,
               builder: (BuildContext context) {
-                return Padding(padding: MediaQuery.of(context).viewInsets, child: _CreateNadeuriSheet());
+                return Padding(
+                  padding: MediaQuery.of(context).viewInsets,
+                  child: _CreateNadeuriSheet(homeViewModel: _homeViewModel),
+                );
               },
             );
           },
@@ -118,35 +146,24 @@ class _HomeScreen extends StatelessWidget {
             ),
             child: Row(
               children: <Widget>[
-                ListenableBuilder(
-                  listenable: _homeViewModel.load,
-                  builder: (context, child) {
-                    return Text(
-                      "예정된 일정 (${_homeViewModel.nadeuris.length})",
-                      style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
-                    );
-                  },
-                ),
+                Text("예정된 일정 (${nadeuris.length})", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
               ],
             ),
           ),
         ),
         SizedBox(height: 16.0),
         SizedBox(
-          height: 260, // 카드 내부의 위젯을 다룰 때, 카드의 높이를 조정해야 함.
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(_paddingHorizontal, 0, 0, 0),
-            child: ListenableBuilder(
-              listenable: _homeViewModel,
-              builder: (context, child) {
-                return ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: _homeViewModel.nadeuris.length,
-                  itemBuilder: (context, index) {
-                    return _NadeuriCard(title: _homeViewModel.nadeuris[index].title ?? "");
-                  },
-                );
-              },
+          height: 270, // 카드 내부의 위젯을 다룰 때, 카드의 높이를 조정해야 함.
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(_paddingHorizontal, 0, 0, 0),
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: nadeuris.length,
+                itemBuilder: (_, index) {
+                  return _NadeuriCard(title: nadeuris[index].title ?? "");
+                },
+              ),
             ),
           ),
         ),
@@ -165,15 +182,17 @@ class _HomeScreen extends StatelessWidget {
         ),
         SizedBox(height: 16.0),
         SizedBox(
-          height: 260, // 카드 내부의 위젯을 다룰 때, 카드의 높이를 조정해야 함.
-          child: Padding(
-            padding: EdgeInsets.fromLTRB(_paddingHorizontal, 0, 0, 0),
-            child: ListView.builder(
-              scrollDirection: Axis.horizontal,
-              itemCount: 5,
-              itemBuilder: (context, index) {
-                return _NadeuriCard(title: "나들이 제목");
-              },
+          height: 270, // 카드 내부의 위젯을 다룰 때, 카드의 높이를 조정해야 함.
+          child: Center(
+            child: Padding(
+              padding: EdgeInsets.fromLTRB(_paddingHorizontal, 0, 0, 0),
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: 5,
+                itemBuilder: (context, index) {
+                  return _NadeuriCard(title: "나들이 제목");
+                },
+              ),
             ),
           ),
         ),
@@ -200,6 +219,7 @@ class _NadeuriCard extends StatelessWidget {
         customBorder: _border,
         child: SizedBox(
           width: 180,
+          height: 260, // 카드 내부의 위젯을 다룰 때, 카드의 높이를 조정해야 함.
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -279,14 +299,18 @@ class _NadeuriCard extends StatelessWidget {
 }
 
 class _CreateNadeuriSheet extends StatefulWidget {
-  const _CreateNadeuriSheet({super.key});
+  final HomeViewModel _homeViewModel;
+
+  const _CreateNadeuriSheet({super.key, required HomeViewModel homeViewModel}) : _homeViewModel = homeViewModel;
 
   @override
   State<_CreateNadeuriSheet> createState() => _CreateNadeuriSheetState();
 }
 
 class _CreateNadeuriSheetState extends State<_CreateNadeuriSheet> {
-  String _createNadeuriText = "나중에 정하기";
+  final TextEditingController _nadeuriTitleController = TextEditingController();
+
+  String _createNadeuriButtonText = "나중에 정하기";
 
   @override
   Widget build(BuildContext context) {
@@ -301,10 +325,11 @@ class _CreateNadeuriSheetState extends State<_CreateNadeuriSheet> {
           ),
           SizedBox(height: 32.0),
           TextField(
+            controller: _nadeuriTitleController,
             autofocus: true,
             onChanged: (value) {
               setState(() {
-                _createNadeuriText = value.isEmpty ? "나중에 정하기" : "나들이 추가하기";
+                _createNadeuriButtonText = value.isEmpty ? "나중에 정하기" : "나들이 추가하기";
               });
             },
           ),
@@ -313,10 +338,11 @@ class _CreateNadeuriSheetState extends State<_CreateNadeuriSheet> {
             alignment: Alignment.bottomRight,
             child: FilledButton(
               onPressed: () {
-                // TODO: 나들이 생성 요청
+                widget._homeViewModel.createNadeuri.execute(_nadeuriTitleController.text);
+                Navigator.pop(context);
                 // TODO: 나들이 상세 정보 페이지로 이동
               },
-              child: Text(_createNadeuriText),
+              child: Text(_createNadeuriButtonText),
             ),
           ),
         ],
