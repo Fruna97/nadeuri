@@ -92,6 +92,13 @@ class TokenInterceptor extends Interceptor {
       await _reissueAndSaveToken();
       _completeAndResetCompleter(); // 토큰 재발급 완료 시 await 중인 다른 요청들을 깨움
     } on DioException catch (e) {
+      // Unauthorized 응답 시 기기의 토큰 삭제
+      if (e.response?.statusCode == HttpStatus.unauthorized) {
+        _flutterSecureStorage.delete(key: "access_token");
+        _flutterSecureStorage.delete(key: "refresh_token");
+        log("토큰 삭제 완료: Unauthorized", name: _logTag);
+      }
+
       _completeErrorAndResetCompleter(e);
       return handler.reject(e);
     } catch (e) {
