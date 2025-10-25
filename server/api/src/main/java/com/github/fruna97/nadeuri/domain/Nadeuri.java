@@ -2,6 +2,8 @@ package com.github.fruna97.nadeuri.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -39,5 +41,6 @@ public class Nadeuri {
             joinColumns = @JoinColumn(name = "nadeuri_id"),
             inverseJoinColumns = @JoinColumn(name = "member_id"))
     @Builder.Default
+    @Fetch(FetchMode.SUBSELECT)
     private List<Member> members = new ArrayList<>();
 }

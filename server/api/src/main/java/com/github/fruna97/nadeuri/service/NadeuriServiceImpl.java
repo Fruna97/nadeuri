@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.fruna97.nadeuri.domain.Member;
 import com.github.fruna97.nadeuri.domain.Nadeuri;
+import com.github.fruna97.nadeuri.dto.MemberSummaryResponse;
 import com.github.fruna97.nadeuri.dto.ParticipatingNadeuriDto;
 import com.github.fruna97.nadeuri.repository.MemberRepository;
 import com.github.fruna97.nadeuri.repository.NadeuriRepository;
@@ -41,13 +42,12 @@ public class NadeuriServiceImpl implements NadeuriService {
     @Override
     @Transactional
     public List<ParticipatingNadeuriDto> getParticipatingNadeuris(PrincipalDetails principalDetails) {
-        Member member = memberRepository.findById(principalDetails.getId()).orElseThrow();
-        List<Nadeuri> participatingNadeuris = member.getParticipatingNadeuris();
+        List<Nadeuri> participatingNadeuris = nadeuriRepository.findByMembers_Id(principalDetails.getId());
 
         return participatingNadeuris.stream()
                 .map(nadeuri -> ParticipatingNadeuriDto.builder()
                         .title(nadeuri.getTitle())
-                        .build())
-                .toList();
+                        .members(nadeuri.getMembers().stream()
+                                .map(MemberSummaryResponse::from).toList()).build()).toList();
     }
 }
