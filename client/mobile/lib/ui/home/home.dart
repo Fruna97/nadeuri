@@ -157,13 +157,15 @@ class _HomeScreen extends StatelessWidget {
           child: Center(
             child: Padding(
               padding: EdgeInsets.fromLTRB(_paddingHorizontal, 0, 0, 0),
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: nadeuris.length,
-                itemBuilder: (_, index) {
-                  return _NadeuriCard(title: nadeuris[index].title ?? "");
-                },
-              ),
+              child: nadeuris.isEmpty
+                  ? Row(children: [_CreateNadeuriCard(homeViewModel: _homeViewModel,)])
+                  : ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: nadeuris.length,
+                      itemBuilder: (_, index) {
+                        return _NadeuriCard(title: nadeuris[index].title ?? "");
+                      },
+                    ),
             ),
           ),
         ),
@@ -202,6 +204,53 @@ class _HomeScreen extends StatelessWidget {
   }
 }
 
+class _CreateNadeuriCard extends StatelessWidget {
+  static final ShapeBorder _border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0));
+
+  final HomeViewModel _homeViewModel;
+
+  const _CreateNadeuriCard({super.key, required HomeViewModel homeViewModel}) : _homeViewModel = homeViewModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 180,
+      height: 260,
+      child: Card(
+        shape: _border,
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          onTap: () {
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              builder: (BuildContext context) {
+                return Padding(
+                  padding: MediaQuery.of(context).viewInsets,
+                  child: _CreateNadeuriSheet(homeViewModel: _homeViewModel),
+                );
+              },
+            );
+          },
+          customBorder: _border,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text("예정된 나들이가 \n없습니다...\n", style: TextStyle(fontSize: 11.0), textAlign: TextAlign.center),
+                Text("이곳을 클릭해 \n나들이를 만들어보세요!\n", style: TextStyle(fontSize: 11.0), textAlign: TextAlign.center),
+                Center(child: Icon(Icons.add_box_outlined, color: Colors.blue)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _NadeuriCard extends StatelessWidget {
   static final ShapeBorder _border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0));
 
@@ -211,15 +260,15 @@ class _NadeuriCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      shape: _border,
-      clipBehavior: Clip.hardEdge,
-      child: InkWell(
-        onTap: () {},
-        customBorder: _border,
-        child: SizedBox(
-          width: 180,
-          height: 260, // 카드 내부의 위젯을 다룰 때, 카드의 높이를 조정해야 함.
+    return SizedBox(
+      width: 180,
+      height: 260,
+      child: Card(
+        shape: _border,
+        clipBehavior: Clip.hardEdge,
+        child: InkWell(
+          onTap: () {},
+          customBorder: _border,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
