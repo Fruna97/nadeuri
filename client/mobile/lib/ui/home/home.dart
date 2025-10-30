@@ -30,26 +30,32 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SafeArea(
-        child: ListenableBuilder(
-          listenable: _homeViewModel.load,
-          builder: (context, child) {
-            if (_homeViewModel.load.completed) {
-              return child!;
-            }
-
-            if (_homeViewModel.load.error) {
-              final Error result = _homeViewModel.load.result! as Error;
-              final Exception error = result.error;
-              if (error is Unauthorized || error is TokenNotFound) {
-                return SizedBox.shrink();
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await _homeViewModel.load.execute();
+        },
+        child: SafeArea(
+          child: ListenableBuilder(
+            listenable: _homeViewModel.load,
+            builder: (context, child) {
+              if (_homeViewModel.load.running && _homeViewModel.isFirstLoad) {
+                return const Center(child: CircularProgressIndicator());
               }
-              return _PleaseRetryScreen(homeViewModel: _homeViewModel);
-            }
 
-            return const Center(child: CircularProgressIndicator()); // load.running
-          },
-          child: _HomeScreen(homeViewModel: _homeViewModel),
+              if (_homeViewModel.load.error) {
+                final Error result = _homeViewModel.load.result! as Error;
+                final Exception error = result.error;
+                if (error is Unauthorized || error is TokenNotFound) {
+                  return SizedBox.shrink();
+                }
+                return _PleaseRetryScreen(homeViewModel: _homeViewModel);
+              }
+
+              _homeViewModel.isFirstLoad = false;
+              return child!;
+            },
+            child: _HomeScreen(homeViewModel: _homeViewModel),
+          ),
         ),
       ),
     );
@@ -159,7 +165,7 @@ class _HomeScreen extends StatelessWidget {
             child: Padding(
               padding: EdgeInsets.fromLTRB(_paddingHorizontal, 0, 0, 0),
               child: nadeuris.isEmpty
-                  ? Row(children: [_CreateNadeuriCard(homeViewModel: _homeViewModel,)])
+                  ? Row(children: [_CreateNadeuriCard(homeViewModel: _homeViewModel)])
                   : ListView.builder(
                       scrollDirection: Axis.horizontal,
                       itemCount: nadeuris.length,
@@ -273,6 +279,7 @@ class _NadeuriCard extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
@@ -322,23 +329,22 @@ class _NadeuriCard extends StatelessWidget {
                         child: Icon(Icons.person, color: Colors.blue),
                       ),
                     ),
-                    Expanded(
-                      child: Align(alignment: AlignmentDirectional.centerEnd, child: Icon(Icons.more_horiz, size: 16)),
-                    ),
+                    Spacer(),
+                    Icon(Icons.more_horiz, size: 16),
                   ],
                 ),
                 SizedBox(height: 12.0),
-                Row(
-                  children: <Widget>[Text(_title, style: TextStyle(fontWeight: FontWeight.bold))],
+                Text(
+                  _title,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                  overflow: TextOverflow.ellipsis,
                 ),
-                Row(
-                  children: <Widget>[Text("주소", style: TextStyle(color: Colors.black54))],
-                ),
+                Text("주소", style: TextStyle(color: Colors.black54)),
                 SizedBox(height: 12.0),
-                Row(children: [Text("장소1")]),
-                Row(children: [Text("장소2")]),
-                Row(children: [Text("장소3")]),
-                Row(children: [Text("...")]),
+                Text("장소1", style: TextStyle(fontSize: 12.0)),
+                Text("장소2", style: TextStyle(fontSize: 12.0)),
+                Text("장소3", style: TextStyle(fontSize: 12.0)),
+                Text("...", style: TextStyle(fontSize: 12.0)),
               ],
             ),
           ),

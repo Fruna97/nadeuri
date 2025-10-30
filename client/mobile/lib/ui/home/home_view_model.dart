@@ -14,6 +14,7 @@ class HomeViewModel extends ChangeNotifier {
   late final Command0<List<Nadeuri>> load;
   late final Command1<void, String> createNadeuri;
 
+  bool isFirstLoad = true;
   List<Nadeuri> _nadeuris = [];
 
   HomeViewModel({required NadeuriRepository nadeuriRepository}) : _nadeuriRepository = nadeuriRepository {
