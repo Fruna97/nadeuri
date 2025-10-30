@@ -10,6 +10,7 @@ class HomeViewModel extends ChangeNotifier {
   final String _logTag = "HomeViewModel";
 
   final NadeuriRepository _nadeuriRepository;
+  
   late final Command0<List<Nadeuri>> load;
   late final Command1<void, String> createNadeuri;
 

@@ -18,7 +18,7 @@ class _SignUpPageState extends State<SignUpPage> {
 
     _signUpViewModel = context.read<SignUpViewModel>();
 
-    _signUpViewModel.signUp.addListener(_navigateOnSignUpComplete);
+    _signUpViewModel.signUp.addListener(_onSignUp);
   }
 
   @override
@@ -45,12 +45,13 @@ class _SignUpPageState extends State<SignUpPage> {
 
   @override
   void dispose() {
-    _signUpViewModel.signUp.removeListener(_navigateOnSignUpComplete);
+    _signUpViewModel.signUp.removeListener(_onSignUp);
 
     super.dispose();
   }
 
-  void _navigateOnSignUpComplete() {
+  void _onSignUp() {
+    // 회원가입 완료 시 회원가입 완료 페이지로 이동
     if (_signUpViewModel.signUp.completed && mounted) {
       _signUpViewModel.signUp.clearResult();
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => SignUpCompletePage()));

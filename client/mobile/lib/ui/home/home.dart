@@ -23,8 +23,8 @@ class _HomePageState extends State<HomePage> {
 
     _homeViewModel = context.read<HomeViewModel>();
 
-    _homeViewModel.load.addListener(_onLoadNadeuriResult);
-    _homeViewModel.createNadeuri.addListener(_onCreateResult);
+    _homeViewModel.load.addListener(_onLoad);
+    _homeViewModel.createNadeuri.addListener(_onCreateNadeuri);
   }
 
   @override
@@ -57,18 +57,18 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void dispose() {
-    _homeViewModel.createNadeuri.removeListener(_onCreateResult);
-    _homeViewModel.load.removeListener(_onLoadNadeuriResult);
+    _homeViewModel.createNadeuri.removeListener(_onCreateNadeuri);
+    _homeViewModel.load.removeListener(_onLoad);
 
     super.dispose();
   }
 
-  void _onLoadNadeuriResult() {
+  /// 인증에 문제가 있으면 로그인 페이지로 이동.
+  void _onLoad() {
     if (_homeViewModel.load.error && mounted) {
       final Error result = _homeViewModel.load.result! as Error;
       final Exception error = result.error;
 
-      // 인증 정보에 문제가 있으면 로그인 페이지로 이동
       if (error is Unauthorized || error is TokenNotFound) {
         _homeViewModel.load.clearResult();
         context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
@@ -77,14 +77,15 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _onCreateResult() {
+  /// 인증에 문제가 있으면 로그인 페이지로 이동.
+  /// 그 외에 문제가 있으면 스낵바 표시.
+  void _onCreateNadeuri() {
     if (_homeViewModel.createNadeuri.error && mounted) {
       final Error result = _homeViewModel.createNadeuri.result! as Error;
       final Exception error = result.error;
 
       _homeViewModel.createNadeuri.clearResult();
       if (error is Unauthorized || error is TokenNotFound) {
-        // 인증 정보에 문제가 있으면 로그인 페이지로 이동
         context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
         Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
       } else {

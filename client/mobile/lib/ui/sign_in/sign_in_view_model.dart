@@ -6,6 +6,7 @@ import 'package:mobile/utils/result.dart';
 
 class SignInViewModel extends ChangeNotifier {
   final AuthRepository _authRepository;
+
   late final Command1<void, (String email, String password)> signIn;
 
   String commonErrorText = "";
