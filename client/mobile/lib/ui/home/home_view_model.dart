@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:mobile/data/repository/nadeuri_repository.dart';
+import 'package:mobile/domain/model/member/member.dart';
 import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
 import 'package:mobile/utils/command.dart';
 import 'package:mobile/utils/result.dart';
@@ -41,16 +42,17 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<Result> _createNadeuri(String title) async {
-    Nadeuri nadeuri = Nadeuri(title: title);
+    // Optimistic 상태를 위한 임의의 Nadeuri 생성
+    Nadeuri nadeuri = Nadeuri(title: title, members: <Member>[Member(uuid: "uuid", email: "email")]);// TODO: 로드 시 본인 정보 Fetch 및 기기 저장 후 그 값을 사용
     List<Nadeuri> oldNadeuris = _nadeuris;
     _nadeuris = [nadeuri, ..._nadeuris];
-    notifyListeners(); // Optimistic Update
+    notifyListeners();
 
     final Result result = await _nadeuriRepository.createNadeuri(nadeuri);
 
     switch (result) {
       case Ok _:
-        break;
+        load.execute(); // TODO: 위의 TODO 수행 후 load 삭제 고려
       case Error _:
         _nadeuris = oldNadeuris;
         notifyListeners();

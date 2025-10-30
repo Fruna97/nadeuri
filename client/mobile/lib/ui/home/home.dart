@@ -1,6 +1,9 @@
+import 'dart:math' show min;
+
 import 'package:flutter/material.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
+import 'package:mobile/domain/model/member/member.dart';
 import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/home/home_view_model.dart';
@@ -170,7 +173,7 @@ class _HomeScreen extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       itemCount: nadeuris.length,
                       itemBuilder: (_, index) {
-                        return _NadeuriCard(title: nadeuris[index].title ?? "");
+                        return _NadeuriCard(nadeuri: nadeuris[index]);
                       },
                     ),
             ),
@@ -199,7 +202,19 @@ class _HomeScreen extends StatelessWidget {
                 scrollDirection: Axis.horizontal,
                 itemCount: 5,
                 itemBuilder: (context, index) {
-                  return _NadeuriCard(title: "나들이 제목");
+                  return _NadeuriCard(
+                    nadeuri: Nadeuri(
+                      title: "나들이 제목",
+                      members: [
+                        Member(
+                          uuid: "uuid",
+                          email: "email",
+                          profileImageUrl: "https://sipi.usc.edu/database/preview/misc/5.3.01.png",
+                        ),
+                        for (int i = 0; i < 4; i++) Member(uuid: "uuid", email: "email"),
+                      ],
+                    ),
+                  );
                 },
               ),
             ),
@@ -261,9 +276,9 @@ class _CreateNadeuriCard extends StatelessWidget {
 class _NadeuriCard extends StatelessWidget {
   static final ShapeBorder _border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0));
 
-  final String _title;
+  final Nadeuri _nadeuri;
 
-  const _NadeuriCard({super.key, required String title}) : _title = title;
+  const _NadeuriCard({super.key, required Nadeuri nadeuri}) : _nadeuri = nadeuri;
 
   @override
   Widget build(BuildContext context) {
@@ -299,43 +314,22 @@ class _NadeuriCard extends StatelessWidget {
                 SizedBox(height: 12.0),
                 Row(
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 4.0, 0),
-                      child: Container(
-                        alignment: AlignmentGeometry.center,
-                        decoration: BoxDecoration(color: Colors.lightBlue[100], shape: BoxShape.circle),
-                        width: 30,
-                        height: 30,
-                        child: Icon(Icons.person, color: Colors.blue),
+                    for (int i = 0; i < min(_nadeuri.members!.length, 3); i++)
+                      Padding(
+                        padding: const EdgeInsets.fromLTRB(0, 0, 4.0, 0),
+                        child: CircleAvatar(
+                          foregroundImage: NetworkImage(_nadeuri.members![i].profileImageUrl ?? ""),
+                          radius: 15,
+                          child: Icon(Icons.person, color: Colors.blue),
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 4.0, 0),
-                      child: Container(
-                        alignment: AlignmentGeometry.center,
-                        decoration: BoxDecoration(color: Colors.lightBlue[100], shape: BoxShape.circle),
-                        width: 30,
-                        height: 30,
-                        child: Icon(Icons.person, color: Colors.blue),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(0, 0, 4.0, 0),
-                      child: Container(
-                        alignment: AlignmentGeometry.center,
-                        decoration: BoxDecoration(color: Colors.lightBlue[100], shape: BoxShape.circle),
-                        width: 30,
-                        height: 30,
-                        child: Icon(Icons.person, color: Colors.blue),
-                      ),
-                    ),
                     Spacer(),
-                    Icon(Icons.more_horiz, size: 16),
+                    if (_nadeuri.members!.length > 3) Icon(Icons.more_horiz, size: 16),
                   ],
                 ),
                 SizedBox(height: 12.0),
                 Text(
-                  _title,
+                  _nadeuri.title ?? "",
                   style: TextStyle(fontWeight: FontWeight.bold),
                   overflow: TextOverflow.ellipsis,
                 ),
