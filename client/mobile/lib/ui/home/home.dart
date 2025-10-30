@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
-import 'package:mobile/domain/model/nadeuri.dart';
+import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/home/home_view_model.dart';
 import 'package:mobile/utils/result.dart';

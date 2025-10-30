@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$NadeuriApiModel {
 
- String? get title;
+ String? get title; List<MemberApiModel>? get members;
 /// Create a copy of NadeuriApiModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $NadeuriApiModelCopyWith<NadeuriApiModel> get copyWith => _$NadeuriApiModelCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NadeuriApiModel&&(identical(other.title, title) || other.title == title));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NadeuriApiModel&&(identical(other.title, title) || other.title == title)&&const DeepCollectionEquality().equals(other.members, members));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title);
+int get hashCode => Object.hash(runtimeType,title,const DeepCollectionEquality().hash(members));
 
 @override
 String toString() {
-  return 'NadeuriApiModel(title: $title)';
+  return 'NadeuriApiModel(title: $title, members: $members)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $NadeuriApiModelCopyWith<$Res>  {
   factory $NadeuriApiModelCopyWith(NadeuriApiModel value, $Res Function(NadeuriApiModel) _then) = _$NadeuriApiModelCopyWithImpl;
 @useResult
 $Res call({
- String? title
+ String? title, List<MemberApiModel>? members
 });
 
 
@@ -65,10 +65,11 @@ class _$NadeuriApiModelCopyWithImpl<$Res>
 
 /// Create a copy of NadeuriApiModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,Object? members = freezed,}) {
   return _then(_self.copyWith(
 title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,members: freezed == members ? _self.members : members // ignore: cast_nullable_to_non_nullable
+as List<MemberApiModel>?,
   ));
 }
 
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? title)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? title,  List<MemberApiModel>? members)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _NadeuriApiModel() when $default != null:
-return $default(_that.title);case _:
+return $default(_that.title,_that.members);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.title);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? title)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? title,  List<MemberApiModel>? members)  $default,) {final _that = this;
 switch (_that) {
 case _NadeuriApiModel():
-return $default(_that.title);case _:
+return $default(_that.title,_that.members);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +195,10 @@ return $default(_that.title);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? title)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? title,  List<MemberApiModel>? members)?  $default,) {final _that = this;
 switch (_that) {
 case _NadeuriApiModel() when $default != null:
-return $default(_that.title);case _:
+return $default(_that.title,_that.members);case _:
   return null;
 
 }
@@ -208,11 +209,20 @@ return $default(_that.title);case _:
 /// @nodoc
 @JsonSerializable()
 
-class _NadeuriApiModel implements NadeuriApiModel {
-  const _NadeuriApiModel({required this.title});
+class _NadeuriApiModel extends NadeuriApiModel {
+  const _NadeuriApiModel({this.title, final  List<MemberApiModel>? members}): _members = members,super._();
   factory _NadeuriApiModel.fromJson(Map<String, dynamic> json) => _$NadeuriApiModelFromJson(json);
 
 @override final  String? title;
+ final  List<MemberApiModel>? _members;
+@override List<MemberApiModel>? get members {
+  final value = _members;
+  if (value == null) return null;
+  if (_members is EqualUnmodifiableListView) return _members;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of NadeuriApiModel
 /// with the given fields replaced by the non-null parameter values.
@@ -227,16 +237,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NadeuriApiModel&&(identical(other.title, title) || other.title == title));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _NadeuriApiModel&&(identical(other.title, title) || other.title == title)&&const DeepCollectionEquality().equals(other._members, _members));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title);
+int get hashCode => Object.hash(runtimeType,title,const DeepCollectionEquality().hash(_members));
 
 @override
 String toString() {
-  return 'NadeuriApiModel(title: $title)';
+  return 'NadeuriApiModel(title: $title, members: $members)';
 }
 
 
@@ -247,7 +257,7 @@ abstract mixin class _$NadeuriApiModelCopyWith<$Res> implements $NadeuriApiModel
   factory _$NadeuriApiModelCopyWith(_NadeuriApiModel value, $Res Function(_NadeuriApiModel) _then) = __$NadeuriApiModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? title
+ String? title, List<MemberApiModel>? members
 });
 
 
@@ -264,10 +274,11 @@ class __$NadeuriApiModelCopyWithImpl<$Res>
 
 /// Create a copy of NadeuriApiModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = freezed,Object? members = freezed,}) {
   return _then(_NadeuriApiModel(
 title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,members: freezed == members ? _self._members : members // ignore: cast_nullable_to_non_nullable
+as List<MemberApiModel>?,
   ));
 }
 

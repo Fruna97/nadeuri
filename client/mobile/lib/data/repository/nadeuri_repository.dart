@@ -4,7 +4,7 @@ import 'package:mobile/data/service/api_client.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/data/service/model/nadeuri/nadeuri_api_model.dart';
-import 'package:mobile/domain/model/nadeuri.dart';
+import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
 import 'package:mobile/utils/result.dart';
 
 class NadeuriRepository {
@@ -21,7 +21,7 @@ class NadeuriRepository {
       case Ok<List<NadeuriApiModel>> _:
         log("Result is Ok", name: _logTag);
         List<NadeuriApiModel> value = result.value;
-        List<Nadeuri> nadeuris = value.map((nadeuriApiModel) => Nadeuri(title: nadeuriApiModel.title)).toList();
+        List<Nadeuri> nadeuris = value.map((nadeuriApiModel) => nadeuriApiModel.toNadeuri()).toList();
         return Result.ok(nadeuris);
       case Error<List<NadeuriApiModel>> _:
         Exception error = result.error;

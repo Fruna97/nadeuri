@@ -2,7 +2,7 @@ import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
 import 'package:mobile/data/repository/nadeuri_repository.dart';
-import 'package:mobile/domain/model/nadeuri.dart';
+import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
 import 'package:mobile/utils/command.dart';
 import 'package:mobile/utils/result.dart';
 

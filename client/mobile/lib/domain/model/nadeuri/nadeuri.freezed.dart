@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Nadeuri {
 
- String? get title;
+ String? get title; List<Member>? get members;
 /// Create a copy of Nadeuri
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $NadeuriCopyWith<Nadeuri> get copyWith => _$NadeuriCopyWithImpl<Nadeuri>(this as
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Nadeuri&&(identical(other.title, title) || other.title == title));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Nadeuri&&(identical(other.title, title) || other.title == title)&&const DeepCollectionEquality().equals(other.members, members));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title);
+int get hashCode => Object.hash(runtimeType,title,const DeepCollectionEquality().hash(members));
 
 @override
 String toString() {
-  return 'Nadeuri(title: $title)';
+  return 'Nadeuri(title: $title, members: $members)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $NadeuriCopyWith<$Res>  {
   factory $NadeuriCopyWith(Nadeuri value, $Res Function(Nadeuri) _then) = _$NadeuriCopyWithImpl;
 @useResult
 $Res call({
- String? title
+ String? title, List<Member>? members
 });
 
 
@@ -65,10 +65,11 @@ class _$NadeuriCopyWithImpl<$Res>
 
 /// Create a copy of Nadeuri
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = freezed,Object? members = freezed,}) {
   return _then(_self.copyWith(
 title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,members: freezed == members ? _self.members : members // ignore: cast_nullable_to_non_nullable
+as List<Member>?,
   ));
 }
 
@@ -153,10 +154,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? title)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? title,  List<Member>? members)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Nadeuri() when $default != null:
-return $default(_that.title);case _:
+return $default(_that.title,_that.members);case _:
   return orElse();
 
 }
@@ -174,10 +175,10 @@ return $default(_that.title);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? title)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? title,  List<Member>? members)  $default,) {final _that = this;
 switch (_that) {
 case _Nadeuri():
-return $default(_that.title);case _:
+return $default(_that.title,_that.members);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -194,10 +195,10 @@ return $default(_that.title);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? title)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? title,  List<Member>? members)?  $default,) {final _that = this;
 switch (_that) {
 case _Nadeuri() when $default != null:
-return $default(_that.title);case _:
+return $default(_that.title,_that.members);case _:
   return null;
 
 }
@@ -209,10 +210,19 @@ return $default(_that.title);case _:
 @JsonSerializable()
 
 class _Nadeuri implements Nadeuri {
-  const _Nadeuri({required this.title});
+  const _Nadeuri({this.title, final  List<Member>? members}): _members = members;
   factory _Nadeuri.fromJson(Map<String, dynamic> json) => _$NadeuriFromJson(json);
 
 @override final  String? title;
+ final  List<Member>? _members;
+@override List<Member>? get members {
+  final value = _members;
+  if (value == null) return null;
+  if (_members is EqualUnmodifiableListView) return _members;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of Nadeuri
 /// with the given fields replaced by the non-null parameter values.
@@ -227,16 +237,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Nadeuri&&(identical(other.title, title) || other.title == title));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Nadeuri&&(identical(other.title, title) || other.title == title)&&const DeepCollectionEquality().equals(other._members, _members));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title);
+int get hashCode => Object.hash(runtimeType,title,const DeepCollectionEquality().hash(_members));
 
 @override
 String toString() {
-  return 'Nadeuri(title: $title)';
+  return 'Nadeuri(title: $title, members: $members)';
 }
 
 
@@ -247,7 +257,7 @@ abstract mixin class _$NadeuriCopyWith<$Res> implements $NadeuriCopyWith<$Res> {
   factory _$NadeuriCopyWith(_Nadeuri value, $Res Function(_Nadeuri) _then) = __$NadeuriCopyWithImpl;
 @override @useResult
 $Res call({
- String? title
+ String? title, List<Member>? members
 });
 
 
@@ -264,10 +274,11 @@ class __$NadeuriCopyWithImpl<$Res>
 
 /// Create a copy of Nadeuri
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = freezed,Object? members = freezed,}) {
   return _then(_Nadeuri(
 title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String?,
+as String?,members: freezed == members ? _self._members : members // ignore: cast_nullable_to_non_nullable
+as List<Member>?,
   ));
 }
 
