@@ -143,7 +143,7 @@ class MemberControllerIntegrationTest {
         String message = responseDto.getMessage();
         Map<String, List<String>> data = responseDto.getData();
 
-        assertThat(status).isEqualTo(HttpStatus.BAD_REQUEST.value()); // 요청 본문 검증 실패 시 BAD_REQUEST 코드를 응답 하는지
+        assertThat(status).isEqualTo(HttpStatus.UNPROCESSABLE_ENTITY.value()); // 요청 본문 유효성 검사 실패 시 UNPROCESSABLE_ENTITY 코드를 응답 하는지
         assertThat(message).isEqualTo(expectedMessage); // 응답 본문의 메시지가 "유효성 검사에 실패했습니다." 인지
         assertThat(data.keySet()).isEqualTo(expectedData); // 응답 본문의 데이터가 유효성 검증에 실패한 필드를 포함하는지
     }

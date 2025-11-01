@@ -1,17 +1,17 @@
 package com.github.fruna97.nadeuri.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@AllArgsConstructor
 @NoArgsConstructor
-@Getter
+@AllArgsConstructor
 @Builder
-public class ReissueTokenDto {
+@Getter
+public class ParticipatingNadeuriDto {
 
-    @NotBlank
-    private String refreshToken;
+    private String title;
+    private List<MemberSummaryResponse> members;
 }
