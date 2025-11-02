@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.service;
+package com.github.fruna97.nadeuri.domain.member.service;
 
 import java.util.Map;
 import java.util.UUID;
@@ -10,9 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.fruna97.nadeuri.domain.Member;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
+import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
-import com.github.fruna97.nadeuri.repository.MemberRepository;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
 @Service

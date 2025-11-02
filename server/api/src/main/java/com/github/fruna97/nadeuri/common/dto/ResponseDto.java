@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.dto;
+package com.github.fruna97.nadeuri.common.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

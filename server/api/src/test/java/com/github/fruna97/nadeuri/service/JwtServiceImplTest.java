@@ -17,10 +17,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.github.fruna97.nadeuri.domain.Member;
-import com.github.fruna97.nadeuri.repository.MemberRepository;
-import com.github.fruna97.nadeuri.repository.MemoryRefreshTokenRepository;
-import com.github.fruna97.nadeuri.repository.RefreshTokenRepository;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
+import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
+import com.github.fruna97.nadeuri.domain.member.repository.MemoryRefreshTokenRepository;
+import com.github.fruna97.nadeuri.domain.member.repository.RefreshTokenRepository;
+import com.github.fruna97.nadeuri.domain.member.service.JwtService;
+import com.github.fruna97.nadeuri.domain.member.service.JwtServiceImpl;
 
 @ExtendWith(MockitoExtension.class)
 class JwtServiceImplTest {

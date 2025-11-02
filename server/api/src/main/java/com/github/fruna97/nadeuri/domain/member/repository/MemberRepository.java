@@ -1,9 +1,9 @@
-package com.github.fruna97.nadeuri.repository;
+package com.github.fruna97.nadeuri.domain.member.repository;
 
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.github.fruna97.nadeuri.domain.Member;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
 
 public interface MemberRepository extends JpaRepository<Member, Long> {
 

@@ -1,7 +1,7 @@
-package com.github.fruna97.nadeuri.dto;
+package com.github.fruna97.nadeuri.domain.member.dto;
 
 import java.util.UUID;
-import com.github.fruna97.nadeuri.domain.Member;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

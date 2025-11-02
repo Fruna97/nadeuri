@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.repository;
+package com.github.fruna97.nadeuri.domain.member.repository;
 
 import java.time.Duration;
 import java.util.Map;

@@ -1,8 +1,8 @@
-package com.github.fruna97.nadeuri.service;
+package com.github.fruna97.nadeuri.domain.nadeuri.service;
 
 import java.util.List;
-import com.github.fruna97.nadeuri.domain.Nadeuri;
-import com.github.fruna97.nadeuri.dto.ParticipatingNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
 public interface NadeuriService {

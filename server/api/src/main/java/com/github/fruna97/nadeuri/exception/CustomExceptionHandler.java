@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.handler;
+package com.github.fruna97.nadeuri.exception;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -11,8 +11,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import com.github.fruna97.nadeuri.dto.ResponseDto;
-import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
+import com.github.fruna97.nadeuri.common.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice

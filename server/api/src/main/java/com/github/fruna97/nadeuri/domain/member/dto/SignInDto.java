@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.dto;
+package com.github.fruna97.nadeuri.domain.member.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

@@ -12,10 +12,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fruna97.nadeuri.dto.ResponseDto;
-import com.github.fruna97.nadeuri.repository.MemberRepository;
-import com.github.fruna97.nadeuri.security.JwtAuthorizationFilter;
-import com.github.fruna97.nadeuri.service.JwtService;
+import com.github.fruna97.nadeuri.common.dto.ResponseDto;
+import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
+import com.github.fruna97.nadeuri.domain.member.service.JwtService;
+import com.github.fruna97.nadeuri.security.filter.JwtAuthorizationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration

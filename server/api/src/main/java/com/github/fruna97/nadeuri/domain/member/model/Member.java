@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.domain;
+package com.github.fruna97.nadeuri.domain.member.model;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.UUID;
 import org.hibernate.annotations.CreationTimestamp;
 import com.fasterxml.uuid.Generators;
+import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

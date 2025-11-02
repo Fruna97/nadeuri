@@ -15,11 +15,12 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import com.github.fruna97.nadeuri.dto.CreateNadeuriDto;
-import com.github.fruna97.nadeuri.dto.ParticipatingNadeuriDto;
-import com.github.fruna97.nadeuri.dto.ResponseDto;
+import com.github.fruna97.nadeuri.common.dto.ResponseDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.controller.NadeuriController;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.service.NadeuriService;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
-import com.github.fruna97.nadeuri.service.NadeuriService;
 
 @ExtendWith(MockitoExtension.class)
 class NadeuriControllerTest {

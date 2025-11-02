@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.controller;
+package com.github.fruna97.nadeuri.domain.nadeuri.controller;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,11 +8,11 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import com.github.fruna97.nadeuri.dto.CreateNadeuriDto;
-import com.github.fruna97.nadeuri.dto.ParticipatingNadeuriDto;
-import com.github.fruna97.nadeuri.dto.ResponseDto;
+import com.github.fruna97.nadeuri.common.dto.ResponseDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.service.NadeuriService;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
-import com.github.fruna97.nadeuri.service.NadeuriService;
 
 
 

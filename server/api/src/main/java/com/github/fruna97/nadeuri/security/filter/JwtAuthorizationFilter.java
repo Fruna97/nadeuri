@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.security;
+package com.github.fruna97.nadeuri.security.filter;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -9,9 +9,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.github.fruna97.nadeuri.domain.Member;
-import com.github.fruna97.nadeuri.repository.MemberRepository;
-import com.github.fruna97.nadeuri.service.JwtService;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
+import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
+import com.github.fruna97.nadeuri.domain.member.service.JwtService;
+import com.github.fruna97.nadeuri.security.PrincipalDetails;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

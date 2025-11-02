@@ -1,8 +1,8 @@
-package com.github.fruna97.nadeuri.repository;
+package com.github.fruna97.nadeuri.domain.nadeuri.repository;
 
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.github.fruna97.nadeuri.domain.Nadeuri;
+import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 
 public interface NadeuriRepository extends JpaRepository<Nadeuri, Long> {
 

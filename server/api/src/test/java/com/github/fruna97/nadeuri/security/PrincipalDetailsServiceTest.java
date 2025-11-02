@@ -12,8 +12,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import com.github.fruna97.nadeuri.domain.Member;
-import com.github.fruna97.nadeuri.repository.MemberRepository;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
+import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 
 @ExtendWith(MockitoExtension.class)
 class PrincipalDetailsServiceTest {

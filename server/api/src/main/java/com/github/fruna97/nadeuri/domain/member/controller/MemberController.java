@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.controller;
+package com.github.fruna97.nadeuri.domain.member.controller;
 
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,11 +9,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
-import com.github.fruna97.nadeuri.dto.ResponseDto;
-import com.github.fruna97.nadeuri.dto.SignInDto;
-import com.github.fruna97.nadeuri.dto.SignUpDto;
-import com.github.fruna97.nadeuri.service.JwtService;
-import com.github.fruna97.nadeuri.service.MemberService;
+import com.github.fruna97.nadeuri.common.dto.ResponseDto;
+import com.github.fruna97.nadeuri.domain.member.dto.SignInDto;
+import com.github.fruna97.nadeuri.domain.member.dto.SignUpDto;
+import com.github.fruna97.nadeuri.domain.member.service.JwtService;
+import com.github.fruna97.nadeuri.domain.member.service.MemberService;
 import jakarta.validation.Valid;
 
 

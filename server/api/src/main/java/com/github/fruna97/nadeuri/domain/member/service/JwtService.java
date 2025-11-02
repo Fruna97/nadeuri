@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.service;
+package com.github.fruna97.nadeuri.domain.member.service;
 
 import java.util.Map;
 import java.util.Optional;

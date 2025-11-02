@@ -1,15 +1,15 @@
-package com.github.fruna97.nadeuri.service;
+package com.github.fruna97.nadeuri.domain.nadeuri.service;
 
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import com.github.fruna97.nadeuri.domain.Member;
-import com.github.fruna97.nadeuri.domain.Nadeuri;
-import com.github.fruna97.nadeuri.dto.MemberSummaryResponse;
-import com.github.fruna97.nadeuri.dto.ParticipatingNadeuriDto;
-import com.github.fruna97.nadeuri.repository.MemberRepository;
-import com.github.fruna97.nadeuri.repository.NadeuriRepository;
+import com.github.fruna97.nadeuri.domain.member.dto.MemberSummaryResponse;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
+import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
+import com.github.fruna97.nadeuri.domain.nadeuri.repository.NadeuriRepository;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
 @Service

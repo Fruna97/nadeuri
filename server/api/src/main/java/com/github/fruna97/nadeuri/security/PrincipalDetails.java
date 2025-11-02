@@ -5,8 +5,7 @@ import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import com.github.fruna97.nadeuri.domain.Member;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
 
 public class PrincipalDetails implements UserDetails {
 

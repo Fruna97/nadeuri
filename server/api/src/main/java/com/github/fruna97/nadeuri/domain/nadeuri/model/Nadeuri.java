@@ -1,9 +1,10 @@
-package com.github.fruna97.nadeuri.domain;
+package com.github.fruna97.nadeuri.domain.nadeuri.model;
 
 import java.util.ArrayList;
 import java.util.List;
 import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

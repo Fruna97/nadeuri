@@ -21,7 +21,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fruna97.nadeuri.dto.ResponseDto;
+import com.github.fruna97.nadeuri.common.dto.ResponseDto;
 
 @SpringBootTest
 @AutoConfigureMockMvc

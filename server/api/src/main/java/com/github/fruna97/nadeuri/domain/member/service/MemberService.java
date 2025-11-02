@@ -1,7 +1,7 @@
-package com.github.fruna97.nadeuri.service;
+package com.github.fruna97.nadeuri.domain.member.service;
 
 import java.util.Map;
-import com.github.fruna97.nadeuri.domain.Member;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
 
 public interface MemberService {
 

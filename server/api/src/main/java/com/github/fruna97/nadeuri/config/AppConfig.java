@@ -2,8 +2,8 @@ package com.github.fruna97.nadeuri.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import com.github.fruna97.nadeuri.repository.MemoryRefreshTokenRepository;
-import com.github.fruna97.nadeuri.repository.RefreshTokenRepository;
+import com.github.fruna97.nadeuri.domain.member.repository.MemoryRefreshTokenRepository;
+import com.github.fruna97.nadeuri.domain.member.repository.RefreshTokenRepository;
 
 @Configuration
 public class AppConfig {
