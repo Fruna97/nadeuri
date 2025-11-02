@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.controller;
+package com.github.fruna97.nadeuri.domain.nadeuri.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -16,7 +16,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
-import com.github.fruna97.nadeuri.domain.nadeuri.controller.NadeuriController;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriDto;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriDto;
 import com.github.fruna97.nadeuri.domain.nadeuri.service.NadeuriService;

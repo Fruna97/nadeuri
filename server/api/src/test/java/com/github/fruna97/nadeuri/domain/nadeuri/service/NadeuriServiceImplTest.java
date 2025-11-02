@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.service;
+package com.github.fruna97.nadeuri.domain.nadeuri.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,7 +21,6 @@ import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriDto;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import com.github.fruna97.nadeuri.domain.nadeuri.repository.NadeuriRepository;
-import com.github.fruna97.nadeuri.domain.nadeuri.service.NadeuriServiceImpl;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
 @ExtendWith(MockitoExtension.class)

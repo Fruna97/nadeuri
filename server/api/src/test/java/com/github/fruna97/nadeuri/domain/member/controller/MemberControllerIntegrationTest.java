@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.controller;
+package com.github.fruna97.nadeuri.domain.member.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;

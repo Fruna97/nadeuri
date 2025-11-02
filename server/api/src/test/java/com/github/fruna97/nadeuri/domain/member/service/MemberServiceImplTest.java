@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.service;
+package com.github.fruna97.nadeuri.domain.member.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -25,9 +25,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
-import com.github.fruna97.nadeuri.domain.member.service.JwtService;
-import com.github.fruna97.nadeuri.domain.member.service.MemberService;
-import com.github.fruna97.nadeuri.domain.member.service.MemberServiceImpl;
 import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 

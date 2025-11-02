@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.repository;
+package com.github.fruna97.nadeuri.domain.member.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Optional;
@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import com.github.fruna97.nadeuri.domain.member.repository.MemoryRefreshTokenRepository;
 
 class MemoryRefreshTokenRepositoryTest {
 
