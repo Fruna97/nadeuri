@@ -1,6 +1,5 @@
 package com.github.fruna97.nadeuri.domain.member.service;
 
-import java.util.Map;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -10,6 +9,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.github.fruna97.nadeuri.domain.member.dto.SignInRequest;
+import com.github.fruna97.nadeuri.domain.member.dto.SignUpRequest;
+import com.github.fruna97.nadeuri.domain.member.dto.TokenResponse;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
@@ -36,24 +38,27 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public Member signUp(String email, String password, String nickname) {
-        String encPassword = bCryptPasswordEncoder.encode(password);
+    public void signUp(SignUpRequest signUpRequest) {
+        String email = signUpRequest.getEmail();
+        String encryptedPassword = bCryptPasswordEncoder.encode(signUpRequest.getPassword());
+        String nickname = signUpRequest.getNickname();
 
         Member member = Member.builder()
                 .email(email)
-                .password(encPassword)
-                .nickname(nickname)
-                .build();
-
+                .password(encryptedPassword)
+                .nickname(nickname).build();
         try {
-            return memberRepository.saveAndFlush(member);
+            memberRepository.saveAndFlush(member);
         } catch (DataIntegrityViolationException e) {
             throw new DuplicateEmailException(email);
         }
     }
 
     @Override
-    public Map<String, String> signIn(String email, String password) {
+    public TokenResponse signIn(SignInRequest signInRequest) {
+        String email = signInRequest.getEmail();
+        String password = signInRequest.getPassword();
+
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(email, password);
         Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
 
@@ -63,7 +68,8 @@ public class MemberServiceImpl implements MemberService {
         String accessToken = jwtService.createAccessToken(uuid);
         String refreshToken = jwtService.createAndSaveRefreshToken(uuid);
 
-        return Map.of("accessToken", accessToken, 
-                "refreshToken", refreshToken);
+        return TokenResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken).build();
     }
 }

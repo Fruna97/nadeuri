@@ -27,7 +27,7 @@ public class NadeuriServiceImpl implements NadeuriService {
 
     @Override
     @Transactional
-    public Nadeuri createNadeuri(PrincipalDetails principalDetails, String title) {
+    public void createNadeuri(PrincipalDetails principalDetails, String title) {
         Member owner = memberRepository.getReferenceById(principalDetails.getId());
 
         Nadeuri nadeuri = Nadeuri.builder()
@@ -35,8 +35,7 @@ public class NadeuriServiceImpl implements NadeuriService {
                 .owner(owner)
                 .build();
         nadeuri.getMembers().add(owner);
-
-        return nadeuriRepository.save(nadeuri);
+        nadeuriRepository.save(nadeuri);
     }
 
     @Override

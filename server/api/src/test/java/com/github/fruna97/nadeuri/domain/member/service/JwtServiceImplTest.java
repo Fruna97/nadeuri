@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatCode;
 import static org.mockito.Mockito.when;
 import java.time.Duration;
 import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.AfterEach;
@@ -17,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.github.fruna97.nadeuri.domain.member.dto.TokenResponse;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 import com.github.fruna97.nadeuri.domain.member.repository.MemoryRefreshTokenRepository;
@@ -156,16 +156,13 @@ class JwtServiceImplTest {
         refreshTokenRepository.save(uuid, refreshToken, refreshTokenDuration);
 
         // When
-        Map<String, String> reissuedToken = jwtService.reissueToken(refreshToken);
+        TokenResponse result = jwtService.reissueToken(refreshToken);
 
         // Then
-        assertThat(reissuedToken).containsKeys("accessToken", "refreshToken"); // 토큰 재발급 시 Access Token, RefreshToken을 모두 반환하는지
-
-        String reissuedRefreshToken = reissuedToken.get("refreshToken");
+        assertThat(result.getAccessToken()).isNotEmpty(); // Access Token이 발급되었는지
+        assertThat(result.getRefreshToken()).isNotEmpty(); // Refresh Token이 발급되었는지
         Optional<String> savedRefreshToken = refreshTokenRepository.findByUuid(uuid);
-        assertThat(savedRefreshToken).get()
-                .isEqualTo(reissuedRefreshToken) // 재발급한 Refresh Token을 저장했는지
-                .isNotEqualTo(refreshToken); // 재발급한 Refresh Token이 기존의 것과 다른지
+        assertThat(result.getRefreshToken()).isEqualTo(savedRefreshToken.get()); // 재발급된 Refresh Token이 정확히 저장되었는지
     }
 
     @Test

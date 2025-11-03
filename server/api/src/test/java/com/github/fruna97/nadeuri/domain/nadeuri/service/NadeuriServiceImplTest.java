@@ -57,12 +57,10 @@ class NadeuriServiceImplTest {
         when(nadeuriRepository.save(any(Nadeuri.class))).thenReturn(savedNadeuri);
 
         // When
-        Nadeuri result = nadeuriServiceImpl.createNadeuri(principalDetails, title);
+        nadeuriServiceImpl.createNadeuri(principalDetails, title);
 
         // Then
-        assertThat(result).isEqualTo(savedNadeuri); // 저장된 객체를 그대로 반환 하는지
-
-        verify(nadeuriRepository).save(nadeuriCaptor.capture());
+        verify(nadeuriRepository).save(nadeuriCaptor.capture()); // Repository의 [save]를 호출하는지
         Nadeuri capturedNadeuri = nadeuriCaptor.getValue();
         assertThat(capturedNadeuri.getTitle()).isEqualTo(title); // 주어진 제목을 그대로 저장하는지
         assertThat(capturedNadeuri.getOwner()).isEqualTo(member); // 인증 회원을 Owner로 지정하는지

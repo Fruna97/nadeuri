@@ -1,9 +1,9 @@
 package com.github.fruna97.nadeuri.domain.member.service;
 
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.github.fruna97.nadeuri.domain.member.dto.TokenResponse;
 
 public interface JwtService {
 
@@ -19,7 +19,7 @@ public interface JwtService {
      */
     Optional<DecodedJWT> verifyToken(String jwt);
 
-    Map<String, String> reissueToken(String refreshToken);
+    TokenResponse reissueToken(String refreshToken);
 
     void deleteRefreshToken(UUID uuid);
 }

@@ -2,7 +2,6 @@ package com.github.fruna97.nadeuri.domain.member.service;
 
 import java.time.Duration;
 import java.util.Date;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +13,7 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.github.fruna97.nadeuri.domain.member.dto.TokenResponse;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 import com.github.fruna97.nadeuri.domain.member.repository.RefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -76,7 +76,7 @@ public class JwtServiceImpl implements JwtService {
     }
 
     @Override
-    public Map<String, String> reissueToken(String refreshToken) {
+    public TokenResponse reissueToken(String refreshToken) {
         DecodedJWT verifiedToken = verifyToken(refreshToken)
                 .orElseThrow(() -> new BadCredentialsException("자격 증명에 실패하였습니다."));
 
@@ -102,8 +102,9 @@ public class JwtServiceImpl implements JwtService {
         String newAccessToken = createAccessToken(uuid);
         String newRefreshToken = createAndSaveRefreshToken(uuid);
 
-        return Map.of("accessToken", newAccessToken, 
-                "refreshToken", newRefreshToken);
+        return TokenResponse.builder()
+                .accessToken(newAccessToken)
+                .refreshToken(newRefreshToken).build();
     }
 
     @Override

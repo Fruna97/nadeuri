@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
-import java.util.Map;
 import java.util.UUID;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,6 +22,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import com.github.fruna97.nadeuri.domain.member.dto.SignInRequest;
+import com.github.fruna97.nadeuri.domain.member.dto.SignUpRequest;
+import com.github.fruna97.nadeuri.domain.member.dto.TokenResponse;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
@@ -66,19 +68,24 @@ class MemberServiceImplTest {
         String email = "test_email@test.com";
         String password = "test_password";
         String nickname = "test_nickname";
-        Member savedMember = Member.builder().uuid(uuid).email(email).password(password).nickname(nickname).build();
+        SignUpRequest signUpRequest = SignUpRequest.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname).build();
+        Member savedMember = Member.builder()
+                .uuid(uuid)
+                .email(email)
+                .password(password)
+                .nickname(nickname).build();
         when(memberRepository.saveAndFlush(any(Member.class))).thenReturn(savedMember);
 
         // When
-        Member result = memberService.signUp(email, password, nickname);
+        memberService.signUp(signUpRequest);
 
         // Then
-        assertThat(result).isEqualTo(savedMember); // 저장된 객체를 그대로 반환 하는지
-
-        verify(memberRepository).saveAndFlush(memberCaptor.capture());
+        verify(memberRepository).saveAndFlush(memberCaptor.capture()); // Repository의 [saveAndFlush]를 호출하는지
         Member capturedMember = memberCaptor.getValue();
-        String encodedPassword = capturedMember.getPassword();
-        assertTrue(bCryptPasswordEncoder.matches(password, encodedPassword)); // 비밀번호를 암호화 하여 저장 하는지
+        assertTrue(bCryptPasswordEncoder.matches(password, capturedMember.getPassword())); // 비밀번호를 암호화 하여 저장 하는지
     }
 
     @Test
@@ -87,10 +94,14 @@ class MemberServiceImplTest {
         String email = "test_email@test.com";
         String password = "test_password";
         String nickname = "test_nickname";
+        SignUpRequest signUpRequest = SignUpRequest.builder()
+                .email(email)
+                .password(password)
+                .nickname(nickname).build();
         when(memberRepository.saveAndFlush(any(Member.class))).thenThrow(DataIntegrityViolationException.class);
 
         // When
-        ThrowingCallable signUpWithDuplicatedEmailAction = () -> memberService.signUp(email, password, nickname);
+        ThrowingCallable signUpWithDuplicatedEmailAction = () -> memberService.signUp(signUpRequest);
 
         // Then
         assertThatThrownBy(signUpWithDuplicatedEmailAction)
@@ -102,6 +113,9 @@ class MemberServiceImplTest {
         // Given
         String email = "test_email@test.com";
         String password = "test_password";
+        SignInRequest signInRequest = SignInRequest.builder()
+                .email(email)
+                .password(password).build();
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(principalDetails);
@@ -110,10 +124,11 @@ class MemberServiceImplTest {
         when(jwtService.createAndSaveRefreshToken(any(UUID.class))).thenReturn("test_refreshToken_token");
 
         // When
-        Map<String, String> result = memberService.signIn(email, password);
+        TokenResponse result = memberService.signIn(signInRequest);
 
         // Then
-        assertThat(result).containsKeys("accessToken", "refreshToken"); // accessToken과 refreshToken을 담고 있는지
+        assertThat(result.getAccessToken()).isNotEmpty(); // Access Token이 발급되었는지
+        assertThat(result.getRefreshToken()).isNotEmpty(); // Refresh Token이 발급되었는지
     }
 
     @Test
@@ -121,11 +136,14 @@ class MemberServiceImplTest {
         // Given
         String email = "test_email@test.com";
         String password = "test_password";
+        SignInRequest signInRequest = SignInRequest.builder()
+                .email(email)
+                .password(password).build();
 
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenThrow(new BadCredentialsException("자격 증명에 실패하였습니다."));
 
         // When
-        ThrowingCallable signInWithInvalidCredentials = () -> memberService.signIn(email, password);
+        ThrowingCallable signInWithInvalidCredentials = () -> memberService.signIn(signInRequest);
 
         // Then
         assertThatThrownBy(signInWithInvalidCredentials).isInstanceOf(AuthenticationException.class); // 인증 예외를 throw 하는지
