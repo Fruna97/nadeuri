@@ -7,7 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.fruna97.nadeuri.domain.member.dto.MemberSummaryResponse;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
-import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import com.github.fruna97.nadeuri.domain.nadeuri.repository.NadeuriRepository;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
@@ -41,11 +41,11 @@ public class NadeuriServiceImpl implements NadeuriService {
 
     @Override
     @Transactional
-    public List<ParticipatingNadeuriDto> getParticipatingNadeuris(PrincipalDetails principalDetails) {
+    public List<ParticipatingNadeuriResponse> getParticipatingNadeuris(PrincipalDetails principalDetails) {
         List<Nadeuri> participatingNadeuris = nadeuriRepository.findByMembers_Id(principalDetails.getId());
 
         return participatingNadeuris.stream()
-                .map(nadeuri -> ParticipatingNadeuriDto.builder()
+                .map(nadeuri -> ParticipatingNadeuriResponse.builder()
                         .title(nadeuri.getTitle())
                         .members(nadeuri.getMembers().stream()
                                 .map(MemberSummaryResponse::from).toList()).build()).toList();

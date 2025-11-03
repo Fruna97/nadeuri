@@ -16,8 +16,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
-import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriDto;
-import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriRequest;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.service.NadeuriService;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
@@ -40,11 +40,11 @@ class NadeuriControllerTest {
     void createNadeuri() {
         // Given
         String title = "test_title";
-        CreateNadeuriDto createNadeuriDto = CreateNadeuriDto.builder()
+        CreateNadeuriRequest createNadeuriRequest = CreateNadeuriRequest.builder()
                 .title(title).build();
 
         // When
-        ResponseEntity<ResponseDto<Void>> result = nadeuriController.createNadeuri(principalDetails, createNadeuriDto);
+        ResponseEntity<ResponseDto<Void>> result = nadeuriController.createNadeuri(principalDetails, createNadeuriRequest);
 
         // Then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환 하는지
@@ -56,19 +56,19 @@ class NadeuriControllerTest {
     @Test
     void participatingNadeuris() {
         // Given
-        List<ParticipatingNadeuriDto> participatingNadeuris = List.of(
-            ParticipatingNadeuriDto.builder().title("test_title_1").build(), 
-            ParticipatingNadeuriDto.builder().title("test_title_2").build(), 
-            ParticipatingNadeuriDto.builder().title("test_title_3").build()
+        List<ParticipatingNadeuriResponse> participatingNadeuris = List.of(
+            ParticipatingNadeuriResponse.builder().title("test_title_1").build(), 
+            ParticipatingNadeuriResponse.builder().title("test_title_2").build(), 
+            ParticipatingNadeuriResponse.builder().title("test_title_3").build()
         );
         when(nadeuriService.getParticipatingNadeuris(any(PrincipalDetails.class))).thenReturn(participatingNadeuris);
 
         // When
-        ResponseEntity<ResponseDto<List<ParticipatingNadeuriDto>>> result = nadeuriController.participatingNadeuris(principalDetails);
+        ResponseEntity<ResponseDto<List<ParticipatingNadeuriResponse>>> result = nadeuriController.participatingNadeuris(principalDetails);
 
         // Then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환 하는지
-        ResponseDto<List<ParticipatingNadeuriDto>> body = result.getBody();
+        ResponseDto<List<ParticipatingNadeuriResponse>> body = result.getBody();
         assertNotNull(body); // 응답에 본문을 담고 있는지
         assertThat(body.getData()).containsExactlyInAnyOrderElementsOf(participatingNadeuris); // 응답 본문의 데이터가 주어진 Nadeuri 목록과 같은지
     }

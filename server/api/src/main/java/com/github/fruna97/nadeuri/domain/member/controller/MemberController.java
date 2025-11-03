@@ -10,8 +10,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
-import com.github.fruna97.nadeuri.domain.member.dto.SignInDto;
-import com.github.fruna97.nadeuri.domain.member.dto.SignUpDto;
+import com.github.fruna97.nadeuri.domain.member.dto.SignInRequest;
+import com.github.fruna97.nadeuri.domain.member.dto.SignUpRequest;
 import com.github.fruna97.nadeuri.domain.member.service.JwtService;
 import com.github.fruna97.nadeuri.domain.member.service.MemberService;
 import jakarta.validation.Valid;
@@ -30,10 +30,10 @@ public class MemberController {
     }
 
     @PostMapping("/member/signup")
-    public ResponseEntity<ResponseDto<Void>> signUp(@RequestBody @Valid SignUpDto signUpDto) {
-        String email = signUpDto.getEmail();
-        String password = signUpDto.getPassword();
-        String nickname = signUpDto.getNickname();
+    public ResponseEntity<ResponseDto<Void>> signUp(@RequestBody @Valid SignUpRequest signUpRequest) {
+        String email = signUpRequest.getEmail();
+        String password = signUpRequest.getPassword();
+        String nickname = signUpRequest.getNickname();
         
         memberService.signUp(email, password, nickname);
 
@@ -46,9 +46,9 @@ public class MemberController {
     }
 
     @PostMapping("/member/signin")
-    public ResponseEntity<ResponseDto<Map<String, String>>> signIn(@RequestBody @Valid SignInDto signInDto) {
-        String email = signInDto.getEmail();
-        String password = signInDto.getPassword();
+    public ResponseEntity<ResponseDto<Map<String, String>>> signIn(@RequestBody @Valid SignInRequest signInRequest) {
+        String email = signInRequest.getEmail();
+        String password = signInRequest.getPassword();
 
         Map<String, String> issuedTokens = memberService.signIn(email, password);
 

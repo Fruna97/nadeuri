@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class CreateNadeuriDto {
+public class CreateNadeuriRequest {
 
     private String title;
 }

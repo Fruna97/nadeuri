@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
-import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriDto;
-import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriRequest;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.service.NadeuriService;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
@@ -27,8 +27,8 @@ public class NadeuriController {
     }
 
     @PostMapping("/nadeuri")
-    public ResponseEntity<ResponseDto<Void>> createNadeuri(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody CreateNadeuriDto createNadeuriDto) {
-        String title = createNadeuriDto.getTitle();
+    public ResponseEntity<ResponseDto<Void>> createNadeuri(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody CreateNadeuriRequest createNadeuriRequest) {
+        String title = createNadeuriRequest.getTitle();
         
         nadeuriService.createNadeuri(principalDetails, title);
 
@@ -40,12 +40,12 @@ public class NadeuriController {
     }
 
     @GetMapping("/nadeuri/participating")
-    public ResponseEntity<ResponseDto<List<ParticipatingNadeuriDto>>> participatingNadeuris(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<ParticipatingNadeuriDto> participatingNadeuris = nadeuriService.getParticipatingNadeuris(principalDetails);
+    public ResponseEntity<ResponseDto<List<ParticipatingNadeuriResponse>>> participatingNadeuris(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<ParticipatingNadeuriResponse> participatingNadeuris = nadeuriService.getParticipatingNadeuris(principalDetails);
 
         return ResponseEntity
                 .ok()
-                .body(ResponseDto.<List<ParticipatingNadeuriDto>>builder()
+                .body(ResponseDto.<List<ParticipatingNadeuriResponse>>builder()
                         .message("성공적으로 Nadeuri가 조회되었습니다.")
                         .data(participatingNadeuris).build());
     }

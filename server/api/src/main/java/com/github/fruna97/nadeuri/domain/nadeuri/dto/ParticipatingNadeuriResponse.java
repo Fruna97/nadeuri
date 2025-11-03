@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class ParticipatingNadeuriDto {
+public class ParticipatingNadeuriResponse {
 
     private String title;
     private List<MemberSummaryResponse> members;

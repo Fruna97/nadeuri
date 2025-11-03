@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.fruna97.nadeuri.domain.member.dto.MemberSummaryResponse;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
-import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriDto;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import com.github.fruna97.nadeuri.domain.nadeuri.repository.NadeuriRepository;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
@@ -101,17 +101,17 @@ class NadeuriServiceImplTest {
         when(nadeuriRepository.findByMembers_Id(1L)).thenReturn(participatingNadeuris);
 
         // When
-        List<ParticipatingNadeuriDto> result = nadeuriServiceImpl.getParticipatingNadeuris(principalDetails);
+        List<ParticipatingNadeuriResponse> result = nadeuriServiceImpl.getParticipatingNadeuris(principalDetails);
 
         // Then
         assertThat(result).hasSize(2); // 참가 Nadeuri 목록의 개수가 정확한지
 
         List<String> titles = result.stream()
-                .map(ParticipatingNadeuriDto::getTitle)
+                .map(ParticipatingNadeuriResponse::getTitle)
                 .toList();
-        assertThat(titles).containsExactlyInAnyOrder(title1, title2); // 변환된 DTO가 제목을 그대로 가지고 있는지
+        assertThat(titles).containsExactlyInAnyOrder(title1, title2); // 제목을 그대로 가지고 있는지
         assertThat(result).allSatisfy(
-                participatingNadeuriDto -> assertThat(participatingNadeuriDto.getMembers())
+                participatingNadeuriResponse -> assertThat(participatingNadeuriResponse.getMembers())
                         .extracting(MemberSummaryResponse::getUuid).contains(uuid)); // 각 Nadeuri 회원 목록에 생성한 회원이 포함되어 있는지
     }
 }
