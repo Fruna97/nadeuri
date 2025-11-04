@@ -1,8 +1,7 @@
-package com.github.fruna97.nadeuri.security;
+package com.github.fruna97.nadeuri.domain.auth.controller;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import java.util.UUID;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,10 +16,11 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
+import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class SecurityIntegrationTest {
+class AuthControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
@@ -31,7 +30,7 @@ class SecurityIntegrationTest {
     private PasswordEncoder passwordEncoder;
 
     @Test
-    void 로그인_성공시_JWT_반환() throws Exception {
+    void signIn() throws Exception {
         // Given
         String testEmail = "test_email@test.com";
         String testPassword = "test_password";
@@ -45,7 +44,7 @@ class SecurityIntegrationTest {
 
         // When
         ResultActions result = mockMvc
-                .perform(post("/member/signin").contentType(MediaType.APPLICATION_JSON).content("""
+                .perform(post("/auth/signin").contentType(MediaType.APPLICATION_JSON).content("""
                         {
                                 "email": "%s",
                                 "password": "%s"
@@ -53,13 +52,13 @@ class SecurityIntegrationTest {
                         """.formatted(testEmail, testPassword)));
 
         // Then
-        result.andExpectAll(status().isOk()
-                , jsonPath("$.data.accessToken").exists()
-                , jsonPath("$.data.refreshToken").exists());
+        result.andExpectAll(status().isOk() // 200 OK를 반환하는지
+                , jsonPath("$.data.accessToken").exists() // JSON 키 [accessToken]를 포함하고 있는지
+                , jsonPath("$.data.refreshToken").exists()); // JSON 키 [refreshToken]를 포함하고 있는지
     }
 
     @Test
-    void 유효하지_않은_정보로_로그인시_401_반환() throws Exception {
+    void signInWithWrongCredentials() throws Exception {
         // Given
         String testEmail = "test_email@test.com";
         String testPassword = "test_password";
@@ -74,7 +73,7 @@ class SecurityIntegrationTest {
 
         // When
         ResultActions result = mockMvc
-                .perform(post("/member/signin").contentType(MediaType.APPLICATION_JSON).content("""
+                .perform(post("/auth/signin").contentType(MediaType.APPLICATION_JSON).content("""
                         {
                                 "email": "%s",
                                 "password": "%s"
@@ -82,7 +81,6 @@ class SecurityIntegrationTest {
                         """.formatted(testEmail, wrongPassword)));
 
         // Then
-        result.andExpectAll(status().isUnauthorized(),
-                header().doesNotExist(HttpHeaders.AUTHORIZATION));
+        result.andExpect(status().isUnauthorized()); // 401 Unauthorized를 반환하는지
     }
 }

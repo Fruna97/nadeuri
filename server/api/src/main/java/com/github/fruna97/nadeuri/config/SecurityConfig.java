@@ -13,8 +13,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
+import com.github.fruna97.nadeuri.domain.auth.service.JwtService;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
-import com.github.fruna97.nadeuri.domain.member.service.JwtService;
 import com.github.fruna97.nadeuri.security.filter.JwtAuthorizationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -46,9 +46,9 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/member/signin").permitAll()
                         .requestMatchers("/member/signup").permitAll()
-                        .requestMatchers("/member/reissue-token").permitAll()
+                        .requestMatchers("/auth/signin").permitAll()
+                        .requestMatchers("/auth/reissue-token").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated());
 

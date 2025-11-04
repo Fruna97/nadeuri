@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.domain.member.service;
+package com.github.fruna97.nadeuri.domain.auth.service;
 
 import java.time.Duration;
 import java.util.Date;
@@ -13,9 +13,9 @@ import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.github.fruna97.nadeuri.domain.member.dto.TokenResponse;
+import com.github.fruna97.nadeuri.domain.auth.dto.TokenResponse;
+import com.github.fruna97.nadeuri.domain.auth.repository.RefreshTokenRepository;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
-import com.github.fruna97.nadeuri.domain.member.repository.RefreshTokenRepository;
 import lombok.extern.slf4j.Slf4j;
 
 @Service

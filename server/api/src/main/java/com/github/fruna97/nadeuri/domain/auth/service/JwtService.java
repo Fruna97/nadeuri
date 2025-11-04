@@ -1,9 +1,9 @@
-package com.github.fruna97.nadeuri.domain.member.service;
+package com.github.fruna97.nadeuri.domain.auth.service;
 
 import java.util.Optional;
 import java.util.UUID;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.github.fruna97.nadeuri.domain.member.dto.TokenResponse;
+import com.github.fruna97.nadeuri.domain.auth.dto.TokenResponse;
 
 public interface JwtService {
 

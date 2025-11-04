@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.domain.member.repository;
+package com.github.fruna97.nadeuri.domain.auth.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Optional;
@@ -32,8 +32,7 @@ class MemoryRefreshTokenRepositoryTest {
 
         // then
         Optional<String> result = memoryRefreshTokenRepository.findByUuid(uuid);
-        assertThat(result).isPresent();
-        assertThat(result.get()).isEqualTo(refreshToken);
+        assertThat(result).get().isEqualTo(refreshToken); // Refresh Token을 정확히 저장했는지 
     }
 
     @Test
@@ -48,10 +47,10 @@ class MemoryRefreshTokenRepositoryTest {
         memoryRefreshTokenRepository.save(uuid2, refreshToken2, null);
 
         // when
-        Optional<String> foundToken = memoryRefreshTokenRepository.findByUuid(uuid2);
+        Optional<String> result = memoryRefreshTokenRepository.findByUuid(uuid2);
 
         // then
-        assertThat(refreshToken2).isEqualTo(foundToken.get());
+        assertThat(result).get().isEqualTo(refreshToken2); // UUID로 찾아낸 Refresh Token이 정확한지
     }
 
     @Test
@@ -66,6 +65,6 @@ class MemoryRefreshTokenRepositoryTest {
 
         // then
         Optional<String> result = memoryRefreshTokenRepository.findByUuid(uuid);
-        assertThat(result).isNotPresent();
+        assertThat(result).isNotPresent(); // UUID를 통한 삭제가 되었는지
     }
 }

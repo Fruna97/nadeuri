@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.domain.member.service;
+package com.github.fruna97.nadeuri.domain.auth.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatCode;
@@ -16,11 +16,11 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.github.fruna97.nadeuri.domain.member.dto.TokenResponse;
+import com.github.fruna97.nadeuri.domain.auth.dto.TokenResponse;
+import com.github.fruna97.nadeuri.domain.auth.repository.MemoryRefreshTokenRepository;
+import com.github.fruna97.nadeuri.domain.auth.repository.RefreshTokenRepository;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
-import com.github.fruna97.nadeuri.domain.member.repository.MemoryRefreshTokenRepository;
-import com.github.fruna97.nadeuri.domain.member.repository.RefreshTokenRepository;
 
 @ExtendWith(MockitoExtension.class)
 class JwtServiceImplTest {

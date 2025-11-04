@@ -1,4 +1,4 @@
-package com.github.fruna97.nadeuri.domain.member.dto;
+package com.github.fruna97.nadeuri.domain.auth.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
