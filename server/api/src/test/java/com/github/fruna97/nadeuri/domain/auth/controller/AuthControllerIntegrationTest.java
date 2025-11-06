@@ -15,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -32,15 +31,14 @@ class AuthControllerIntegrationTest {
     @Test
     void signIn() throws Exception {
         // Given
-        String testEmail = "test_email@test.com";
-        String testPassword = "test_password";
+        Long id = 0L;
+        UUID uuid = UUID.randomUUID();
+        String email = "test_email@test.com";
+        String password = "test_password";
+        String encodedPassword = passwordEncoder.encode(password);
 
-        PrincipalDetails principalDetails = new PrincipalDetails(Member.builder()
-                .uuid(UUID.randomUUID())
-                .email(testEmail)
-                .password(passwordEncoder.encode(testPassword))
-                .build());
-        when(userDetailsService.loadUserByUsername(testEmail)).thenReturn(principalDetails);
+        PrincipalDetails principalDetails = new PrincipalDetails(id, uuid, email, encodedPassword);
+        when(userDetailsService.loadUserByUsername(email)).thenReturn(principalDetails);
 
         // When
         ResultActions result = mockMvc
@@ -49,7 +47,7 @@ class AuthControllerIntegrationTest {
                                 "email": "%s",
                                 "password": "%s"
                         }
-                        """.formatted(testEmail, testPassword)));
+                        """.formatted(email, password)));
 
         // Then
         result.andExpectAll(status().isOk() // 200 OK를 반환하는지
@@ -60,25 +58,24 @@ class AuthControllerIntegrationTest {
     @Test
     void signInWithWrongCredentials() throws Exception {
         // Given
-        String testEmail = "test_email@test.com";
-        String testPassword = "test_password";
-        String wrongPassword = "wrong_password";
+        Long id = 0L;
+        UUID uuid = UUID.randomUUID();
+        String email = "test_email@test.com";
+        String password = "test_password";
+        String encodedPassword = passwordEncoder.encode(password);
 
-        PrincipalDetails principalDetails = new PrincipalDetails(Member.builder()
-                .uuid(UUID.randomUUID())
-                .email(testEmail)
-                .password(passwordEncoder.encode(testPassword))
-                .build());
-        when(userDetailsService.loadUserByUsername(testEmail)).thenReturn(principalDetails);
+        PrincipalDetails principalDetails = new PrincipalDetails(id, uuid, email, encodedPassword);
+        when(userDetailsService.loadUserByUsername(email)).thenReturn(principalDetails);
 
         // When
+        String wrongPassword = "wrong_password";
         ResultActions result = mockMvc
                 .perform(post("/auth/signin").contentType(MediaType.APPLICATION_JSON).content("""
                         {
                                 "email": "%s",
                                 "password": "%s"
                         }
-                        """.formatted(testEmail, wrongPassword)));
+                        """.formatted(email, wrongPassword)));
 
         // Then
         result.andExpect(status().isUnauthorized()); // 401 Unauthorized를 반환하는지

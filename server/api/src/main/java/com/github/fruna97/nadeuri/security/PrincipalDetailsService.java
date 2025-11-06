@@ -22,12 +22,16 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        Optional<Member> member = memberRepository.findByEmail(email);
 
-        if (optionalMember.isEmpty()) {
+        if (member.isEmpty()) {
             throw new UsernameNotFoundException("존재하지 않는 회원 입니다: " + email);
         }
 
-        return new PrincipalDetails(optionalMember.get());
+        return new PrincipalDetails(
+                member.get().getId(),
+                member.get().getUuid(),
+                member.get().getEmail(),
+                member.get().getPassword());
     }
 }

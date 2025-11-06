@@ -4,14 +4,19 @@ import java.util.Collection;
 import java.util.UUID;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import com.github.fruna97.nadeuri.domain.member.model.Member;
 
 public class PrincipalDetails implements UserDetails {
 
-    private final Member member;
-
-    public PrincipalDetails(Member member) {
-        this.member = member;
+    private final Long id;
+    private final UUID uuid;
+    private final String email;
+    private final String password;
+    
+    public PrincipalDetails(Long id, UUID uuid, String email, String password) {
+        this.id = id;
+        this.uuid = uuid;
+        this.email = email;
+        this.password = password;
     }
 
     @Override
@@ -21,12 +26,12 @@ public class PrincipalDetails implements UserDetails {
 
     @Override
     public String getPassword() {
-        return member.getPassword();
+        return password;
     }
 
     @Override
     public String getUsername() {
-        return member.getEmail();
+        return email;
     }
 
     @Override
@@ -50,14 +55,10 @@ public class PrincipalDetails implements UserDetails {
     }
 
     public Long getId() {
-        return member.getId();
+        return id;
     }
 
     public UUID getUuid() {
-        return member.getUuid();
-    }
-
-    public String getNickname() {
-        return member.getNickname();
+        return uuid;
     }
 }

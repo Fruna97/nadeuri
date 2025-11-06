@@ -1,11 +1,11 @@
 package com.github.fruna97.nadeuri.security;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 import java.util.Optional;
 import java.util.UUID;
-import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -25,37 +25,38 @@ class PrincipalDetailsServiceTest {
     private PrincipalDetailsService principalDetailsService;
 
     @Test
-    void loadUserByUsername_회원존재() {
+    void loadUserByUsername() {
         // Given
+        Long id = 0L;
         UUID uuid = UUID.randomUUID();
         String email = "test_email@test.com";
         String password = "test_email@test.com";
         String nickname = "test_email@test.com";
-        Member member = Member.builder().uuid(uuid).email(email).password(password).nickname(nickname).build();
+        Member member = Member.builder().id(id).uuid(uuid).email(email).password(password).nickname(nickname).build();
 
         when(memberRepository.findByEmail(email)).thenReturn(Optional.of(member));
 
         // When
-        PrincipalDetails principalDetails =
+        PrincipalDetails result =
                 (PrincipalDetails) principalDetailsService.loadUserByUsername(email);
 
         // Then
-        assertThat(principalDetails.getUsername()).isEqualTo(email);
-        assertThat(principalDetails.getNickname()).isEqualTo(nickname);
+        assertAll(
+                () -> assertThat(result.getUsername()).isEqualTo(email),
+                () -> assertThat(result.getPassword()).isEqualTo(password),
+                () -> assertThat(result.getId()).isEqualTo(id),
+                () -> assertThat(result.getUuid()).isEqualTo(uuid)); // 불러온 회원 정보가 저장된 회원 정보와 같은지
     }
 
     @Test
-    void loadUserByUsername_회원없음() {
+    void loadUserByUsername_없는회원() {
         // Given
         String email = "test_email@test.com";
         when(memberRepository.findByEmail(email)).thenReturn(Optional.empty());
 
         // When
-        ThrowingCallable loadNoSuchEmail = () -> principalDetailsService.loadUserByUsername(email);
-
         // Then
-        assertThatThrownBy(loadNoSuchEmail)
-                .isInstanceOf(UsernameNotFoundException.class)
-                .hasMessageContaining("존재하지 않는 회원 입니다: " + email);
+        assertThrows(UsernameNotFoundException.class,
+                () -> principalDetailsService.loadUserByUsername(email)); // 존재하지 않는 회원에 대해서 UsernameNotFoundException 예외를 발생시키는지
     }
 }

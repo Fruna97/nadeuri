@@ -42,12 +42,13 @@ class NadeuriServiceImplTest {
     @Test
     void createNadeuri() {
         // Given
+        UUID uuid = UUID.randomUUID();
         Member member = Member.builder()
                 .id(1L)
+                .uuid(uuid)
                 .email("test_email@test.com")
                 .password("test_password")
                 .nickname("test_nickname").build();
-        PrincipalDetails principalDetails = new PrincipalDetails(member);
         when(memberRepository.getReferenceById(1L)).thenReturn(member);
 
         String title = "test_title";
@@ -55,6 +56,12 @@ class NadeuriServiceImplTest {
                 .id(97L)
                 .title(title).build();
         when(nadeuriRepository.save(any(Nadeuri.class))).thenReturn(savedNadeuri);
+
+        PrincipalDetails principalDetails = new PrincipalDetails(
+                member.getId(),
+                member.getUuid(),
+                member.getEmail(),
+                member.getPassword());
 
         // When
         nadeuriServiceImpl.createNadeuri(principalDetails, title);
@@ -79,7 +86,6 @@ class NadeuriServiceImplTest {
                 .password("test_password")
                 .nickname("test_nickname")
                 .participatingNadeuris(participatingNadeuris).build();
-        PrincipalDetails principalDetails = new PrincipalDetails(member);
 
         String title1 = "title1";
         String title2 = "title2";
@@ -95,8 +101,13 @@ class NadeuriServiceImplTest {
                 .members(List.of(member)).build();
         participatingNadeuris.add(nadeuri1);
         participatingNadeuris.add(nadeuri2);
-
         when(nadeuriRepository.findByMembers_Id(1L)).thenReturn(participatingNadeuris);
+
+        PrincipalDetails principalDetails = new PrincipalDetails(
+                member.getId(),
+                member.getUuid(),
+                member.getEmail(),
+                member.getPassword());
 
         // When
         List<ParticipatingNadeuriResponse> result = nadeuriServiceImpl.getParticipatingNadeuris(principalDetails);
