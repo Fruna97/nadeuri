@@ -166,6 +166,25 @@ class JwtServiceImplTest {
     }
 
     @Test
+    void getAuthenticationFromAccessToken_존재하지않는회원() {
+        // Given
+        UUID uuid = UUID.randomUUID();
+        when(memberRepository.findByUuid(uuid)).thenReturn(Optional.empty());
+
+        String accessToken = JWT.create()
+                .withSubject(uuid.toString())
+                .withClaim("type", TokenType.ACCESS.name())
+                .withExpiresAt(new Date(System.currentTimeMillis() + 3600))
+                .sign(Algorithm.HMAC512(secretKey));
+
+        // When
+        Optional<Authentication> result = jwtService.getAuthenticationFromAccessToken(accessToken);
+
+        // Then
+        assertThat(result).isEmpty(); // 존재하지 않는 회원 UUID를 담은 토큰에 대해 인증정보를 담지 않고 반환하는지
+    }
+
+    @Test
     void reissueToken() {
         // Given
         UUID uuid = UUID.randomUUID();
@@ -245,6 +264,26 @@ class JwtServiceImplTest {
         assertThrows(AuthenticationException.class, () -> {
             jwtService.reissueToken(refreshToken);
         }); // Refresh Token 저장소에 존재하지 않는 토큰에 대해 인증 예외가 발생하는지
+    }
+
+    @Test
+    void reissueToken_존재하지않는회원() {
+        // Given
+        UUID uuid = UUID.randomUUID();
+        when(memberRepository.findByUuid(uuid)).thenReturn(Optional.empty());
+
+        String refreshToken = JWT.create()
+                .withSubject(uuid.toString())
+                .withClaim("type", TokenType.REFRESH.name())
+                .withExpiresAt(new Date(System.currentTimeMillis() + 3600))
+                .sign(Algorithm.HMAC512(secretKey));
+        refreshTokenRepository.save(uuid, refreshToken, refreshTokenDuration);
+
+        // When
+        // Then
+        assertThrows(AuthenticationException.class, () -> {
+            jwtService.reissueToken(refreshToken);
+        }); // 존재하지 않는 회원 UUID를 담은 토큰에 대해 인증 예외가 발생하는지
     }
 
     @Test
