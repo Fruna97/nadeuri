@@ -12,10 +12,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.AuthorizationFilter;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.fruna97.nadeuri.dto.ResponseDto;
-import com.github.fruna97.nadeuri.repository.MemberRepository;
-import com.github.fruna97.nadeuri.security.JwtAuthorizationFilter;
-import com.github.fruna97.nadeuri.service.JwtService;
+import com.github.fruna97.nadeuri.common.dto.ResponseDto;
+import com.github.fruna97.nadeuri.domain.auth.service.JwtService;
+import com.github.fruna97.nadeuri.security.filter.JwtAuthorizationFilter;
 import jakarta.servlet.http.HttpServletResponse;
 
 @Configuration
@@ -35,8 +34,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(HttpSecurity http,
         AuthenticationManager authenticationManager, 
-        JwtService jwtService, 
-        MemberRepository memberRepository) throws Exception {
+        JwtService jwtService) throws Exception {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.disable())
@@ -46,15 +44,15 @@ public class SecurityConfig {
 
         http
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/member/signin").permitAll()
                         .requestMatchers("/member/signup").permitAll()
-                        .requestMatchers("/member/reissue-token").permitAll()
+                        .requestMatchers("/auth/signin").permitAll()
+                        .requestMatchers("/auth/reissue-token").permitAll()
                         .requestMatchers("/error").permitAll()
                         .anyRequest().authenticated());
 
-        http.addFilterBefore(new JwtAuthorizationFilter(jwtService, memberRepository), AuthorizationFilter.class);
+        http.addFilterBefore(new JwtAuthorizationFilter(jwtService), AuthorizationFilter.class);
 
-        http.exceptionHandling((exceptionHandling) -> exceptionHandling
+        http.exceptionHandling(exceptionHandling -> exceptionHandling
                 .authenticationEntryPoint((request, response, authException) -> {
                     response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 

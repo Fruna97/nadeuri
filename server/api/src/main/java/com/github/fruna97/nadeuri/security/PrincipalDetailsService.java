@@ -7,9 +7,8 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-
-import com.github.fruna97.nadeuri.domain.Member;
-import com.github.fruna97.nadeuri.repository.MemberRepository;
+import com.github.fruna97.nadeuri.domain.member.model.Member;
+import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 
 @Service
 public class PrincipalDetailsService implements UserDetailsService {
@@ -23,12 +22,16 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        Optional<Member> optionalMember = memberRepository.findByEmail(email);
+        Optional<Member> member = memberRepository.findByEmail(email);
 
-        if (optionalMember.isEmpty()) {
+        if (member.isEmpty()) {
             throw new UsernameNotFoundException("존재하지 않는 회원 입니다: " + email);
         }
 
-        return new PrincipalDetails(optionalMember.get());
+        return new PrincipalDetails(
+                member.get().getId(),
+                member.get().getUuid(),
+                member.get().getEmail(),
+                member.get().getPassword());
     }
 }

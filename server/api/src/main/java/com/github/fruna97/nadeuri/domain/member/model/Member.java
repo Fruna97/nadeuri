@@ -1,0 +1,68 @@
+package com.github.fruna97.nadeuri.domain.member.model;
+
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+import org.hibernate.annotations.CreationTimestamp;
+import com.fasterxml.uuid.Generators;
+import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.PrePersist;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+@Entity
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+@Getter
+public class Member {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column(nullable = false, unique = true)
+    private UUID uuid;
+
+    @Column(nullable = false, unique = true, length = 320)
+    private String email;
+
+    @Column(nullable = false)
+    private String password;
+
+    @Column(length = 24)
+    private String nickname;
+
+    @Column(nullable = false)
+    @CreationTimestamp
+    private LocalDateTime createDate;
+
+    @Column(length = 2048)
+    private String profileImageUrl;
+
+    @OneToMany(mappedBy = "owner")
+    @Builder.Default
+    private List<Nadeuri> createdNadeuris = new ArrayList<>();
+
+    @ManyToMany(mappedBy = "members")
+    @Builder.Default
+    private List<Nadeuri> participatingNadeuris = new ArrayList<>();
+
+    // TODO: Spring Data JPA 4.0.0 이상에서 Hibernate의 @UuidGenerator 사용으로 리팩터링할 것 (GitHub Issue #6)
+    @PrePersist
+    void prePersist() {
+        if (uuid == null) {
+            uuid = Generators.timeBasedEpochGenerator().generate();
+        }
+    }
+}
