@@ -7,12 +7,12 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class PrincipalDetails implements UserDetails {
 
-    private final Long id;
+    private final long id;
     private final UUID uuid;
     private final String email;
     private final String password;
     
-    public PrincipalDetails(Long id, UUID uuid, String email, String password) {
+    public PrincipalDetails(long id, UUID uuid, String email, String password) {
         this.id = id;
         this.uuid = uuid;
         this.email = email;
@@ -54,7 +54,7 @@ public class PrincipalDetails implements UserDetails {
         return true;
     }
 
-    public Long getId() {
+    public long getId() {
         return id;
     }
 

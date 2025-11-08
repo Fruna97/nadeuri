@@ -6,5 +6,5 @@ import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 
 public interface NadeuriRepository extends JpaRepository<Nadeuri, Long> {
 
-    List<Nadeuri> findByMembers_Id(Long id);
+    List<Nadeuri> findByMembers_Id(long id);
 }
