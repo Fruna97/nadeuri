@@ -70,7 +70,7 @@ class ApiClient {
   }
 
   Future<Result<TokenApiModel>> signIn(SignInRequest signInRequest) async {
-    final String endpoint = "/member/signin";
+    final String endpoint = "/auth/signin";
     try {
       final Response response = await _dioWithoutToken.post(endpoint, data: signInRequest.toJson());
       final int statusCode = response.statusCode!;

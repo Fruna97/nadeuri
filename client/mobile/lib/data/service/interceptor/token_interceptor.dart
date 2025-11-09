@@ -146,7 +146,7 @@ class TokenInterceptor extends Interceptor {
       throw LocalError.tokenNotFound(tokenType: TokenType.refresh);
     }
 
-    final String reissueEndpoint = "/member/reissue-token";
+    final String reissueEndpoint = "/auth/reissue-token";
     try {
       final Response response = await _dioWithoutTokenInterceptor.post(
         reissueEndpoint,
