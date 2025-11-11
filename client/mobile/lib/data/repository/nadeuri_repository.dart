@@ -22,6 +22,7 @@ class NadeuriRepository {
         log("Result is Ok", name: _logTag);
         List<NadeuriApiModel> value = result.value;
         List<Nadeuri> nadeuris = value.map((nadeuriApiModel) => nadeuriApiModel.toNadeuri()).toList();
+        log("나들이 정보: $nadeuris", name: _logTag);
         return Result.ok(nadeuris);
       case Error<List<NadeuriApiModel>> _:
         Exception error = result.error;
