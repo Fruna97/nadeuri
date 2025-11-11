@@ -1,11 +1,11 @@
 import 'package:flutter/foundation.dart';
-import 'package:mobile/data/repository/auth_repository.dart';
+import 'package:mobile/data/repository/member_repository.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/utils/command.dart';
 import 'package:mobile/utils/result.dart';
 
 class SignUpViewModel extends ChangeNotifier {
-  final AuthRepository _authRepository;
+  final MemberRepository _memberRepository;
 
   late final Command1<void, (String email, String password, String nickname)> signUp;
 
@@ -15,7 +15,7 @@ class SignUpViewModel extends ChangeNotifier {
   String? _nicknameErrorText;
   String _commonErrorText = "";
 
-  SignUpViewModel({required AuthRepository authRepository}) : _authRepository = authRepository {
+  SignUpViewModel({required MemberRepository memberRepository}) : _memberRepository = memberRepository {
     signUp = Command1<void, (String email, String password, String nickname)>(_signUp);
   }
 
@@ -71,7 +71,7 @@ class SignUpViewModel extends ChangeNotifier {
 
   Future<Result<void>> _signUp((String email, String password, String nickname) member) async {
     final (email, password, nickname) = member;
-    final Result result = await _authRepository.signUp(email: email, password: password, nickname: nickname);
+    final Result result = await _memberRepository.signUp(email: email, password: password, nickname: nickname);
 
     if (result is Error) {
       Exception error = result.error;

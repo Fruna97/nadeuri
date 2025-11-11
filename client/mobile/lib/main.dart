@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
+import 'package:mobile/data/repository/member_repository.dart';
 import 'package:mobile/data/repository/nadeuri_repository.dart';
 import 'package:mobile/data/service/api_client.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
@@ -28,13 +29,14 @@ void main() {
             flutterSecureStorage: context.read<FlutterSecureStorage>(),
           ),
         ),
+        Provider<MemberRepository>(create: (context) => MemberRepository(apiClient: context.read<ApiClient>())),
         Provider<AuthRepository>(
           create: (context) => AuthRepository(
             apiClient: context.read<ApiClient>(),
             flutterSecureStorage: context.read<FlutterSecureStorage>(),
           ),
         ),
-        Provider(create: (context) => NadeuriRepository(apiClient: context.read<ApiClient>()))
+        Provider<NadeuriRepository>(create: (context) => NadeuriRepository(apiClient: context.read<ApiClient>())),
       ],
       child: const MyApp(),
     ),
@@ -67,7 +69,7 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
-        useMaterial3: true, 
+        useMaterial3: true,
       ),
       routes: {
         '/home': (BuildContext context) => ChangeNotifierProvider(
@@ -79,7 +81,7 @@ class MyApp extends StatelessWidget {
           child: SignInPage(),
         ),
         '/sign-up': (BuildContext context) => ChangeNotifierProvider(
-          create: (_) => SignUpViewModel(authRepository: context.read<AuthRepository>()),
+          create: (_) => SignUpViewModel(memberRepository: context.read<MemberRepository>()),
           child: SignUpPage(),
         ),
       },
