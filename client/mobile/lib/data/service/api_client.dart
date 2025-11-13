@@ -6,13 +6,14 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/data/service/interceptor/token_interceptor.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
+import 'package:mobile/data/service/model/member/member_api_model.dart';
 import 'package:mobile/data/service/model/nadeuri/nadeuri_api_model.dart';
 import 'package:mobile/data/service/model/sign_in_request/sign_in_request.dart';
 import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
 import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/utils/result.dart';
 
-enum RequestMethod { signUp, signIn, getParticipatingNadeuris, postNadeuri }
+enum RequestMethod { signUp, getMyProfile, signIn, getParticipatingNadeuris, postNadeuri }
 
 class ApiClient {
   final String _logTag = "ApiClient";
@@ -56,6 +57,15 @@ class ApiClient {
       RequestMethod.signUp,
       () => _dioWithoutToken.post(endpoint, data: signUpRequest.toJson()),
       null,
+    );
+  }
+
+  Future<Result<MemberApiModel>> getMyProfile() async {
+    final String endpoint = "/member";
+    return await _requestAndParse<MemberApiModel>(
+      RequestMethod.getMyProfile,
+      () => _dioWithToken.get(endpoint),
+      (data) => MemberApiModel.fromJson(data as Map<String, dynamic>),
     );
   }
 
@@ -157,32 +167,31 @@ class ApiClient {
       data = body["data"] ?? <String, dynamic>{};
     }
 
-    switch (requestMethod) {
-      case RequestMethod.signUp:
-        data["runtimeType"] = switch (statusCode) {
-          HttpStatus.conflict => "duplicateEmail",
-          HttpStatus.unprocessableEntity => "validationError",
-          _ => "unknownError",
-        };
-      case RequestMethod.signIn:
-        data["runtimeType"] = switch (statusCode) {
-          HttpStatus.unauthorized => "unauthorized",
-          HttpStatus.unprocessableEntity => "validationError",
-          _ => "unknownError",
-        };
-      case RequestMethod.getParticipatingNadeuris:
-        data["runtimeType"] = switch (statusCode) {
-          HttpStatus.unauthorized => "unauthorized",
-          _ => "unknownError",
-        };
-      case RequestMethod.postNadeuri:
-        data["runtimeType"] = switch (statusCode) {
-          HttpStatus.unauthorized => "unauthorized",
-          HttpStatus.unprocessableEntity => "validationError",
-          _ => "unknownError",
-        };
-        break;
-    }
+    data["runtimeType"] = switch (requestMethod) {
+      RequestMethod.signUp => switch (statusCode) {
+        HttpStatus.conflict => "duplicateEmail",
+        HttpStatus.unprocessableEntity => "validationError",
+        _ => "unknownError",
+      },
+      RequestMethod.getMyProfile => switch (statusCode) {
+        HttpStatus.unauthorized => "unauthorized",
+        _ => "unknownError",
+      },
+      RequestMethod.signIn => switch (statusCode) {
+        HttpStatus.unauthorized => "unauthorized",
+        HttpStatus.unprocessableEntity => "validationError",
+        _ => "unknownError",
+      },
+      RequestMethod.getParticipatingNadeuris => switch (statusCode) {
+        HttpStatus.unauthorized => "unauthorized",
+        _ => "unknownError",
+      },
+      RequestMethod.postNadeuri => switch (statusCode) {
+        HttpStatus.unauthorized => "unauthorized",
+        HttpStatus.unprocessableEntity => "validationError",
+        _ => "unknownError",
+      },
+    };
     final ApiError apiError = ApiError.fromJson(data);
     return Result.error(apiError);
   }
