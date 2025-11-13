@@ -12,14 +12,22 @@ import 'package:mobile/ui/sign_in/sign_in_view_model.dart';
 import 'package:mobile/ui/sign_up/sign_up.dart';
 import 'package:mobile/ui/sign_up/sign_up_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final SharedPreferencesWithCache prefsWithCache = await SharedPreferencesWithCache.create(
+    cacheOptions: SharedPreferencesWithCacheOptions(),
+  );
+
   runApp(
     MultiProvider(
       providers: [
         Provider<FlutterSecureStorage>(
           create: (_) => const FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true)),
         ),
+        Provider<SharedPreferencesWithCache>(create: (_) => prefsWithCache),
         Provider<AppSnackBar>(create: (_) => AppSnackBar()),
         Provider<ApiClient>(
           create: (context) => ApiClient(
@@ -29,7 +37,12 @@ void main() {
             flutterSecureStorage: context.read<FlutterSecureStorage>(),
           ),
         ),
-        Provider<MemberRepository>(create: (context) => MemberRepository(apiClient: context.read<ApiClient>())),
+        Provider<MemberRepository>(
+          create: (context) => MemberRepository(
+            apiClient: context.read<ApiClient>(),
+            prefsWithCache: context.read<SharedPreferencesWithCache>(),
+          ),
+        ),
         Provider<AuthRepository>(
           create: (context) => AuthRepository(
             apiClient: context.read<ApiClient>(),
