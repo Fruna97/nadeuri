@@ -89,6 +89,7 @@ class MyApp extends StatelessWidget {
           create: (_) => HomeViewModel(
             memberRepository: context.read<MemberRepository>(),
             nadeuriRepository: context.read<NadeuriRepository>(),
+            prefsWithCache: context.read<SharedPreferencesWithCache>(),
           ),
           child: HomePage(),
         ),

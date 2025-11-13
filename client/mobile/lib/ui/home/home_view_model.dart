@@ -7,22 +7,28 @@ import 'package:mobile/domain/model/member/member.dart';
 import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
 import 'package:mobile/utils/command.dart';
 import 'package:mobile/utils/result.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomeViewModel extends ChangeNotifier {
   final String _logTag = "HomeViewModel";
 
   final MemberRepository _memberRepository;
   final NadeuriRepository _nadeuriRepository;
-  
+  final SharedPreferencesWithCache _prefsWithCache;
+
   late final Command0 load;
   late final Command1<void, String> createNadeuri;
 
   bool isFirstLoad = true;
   List<Nadeuri> _nadeuris = [];
 
-  HomeViewModel({required MemberRepository memberRepository, required NadeuriRepository nadeuriRepository}) : 
-  _memberRepository = memberRepository,
-  _nadeuriRepository = nadeuriRepository {
+  HomeViewModel({
+    required MemberRepository memberRepository,
+    required NadeuriRepository nadeuriRepository,
+    required SharedPreferencesWithCache prefsWithCache,
+  }) : _memberRepository = memberRepository,
+       _nadeuriRepository = nadeuriRepository,
+       _prefsWithCache = prefsWithCache {
     load = Command0(_load)..execute();
     createNadeuri = Command1<void, String>(_createNadeuri);
   }
@@ -54,17 +60,21 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   Future<Result> _createNadeuri(String title) async {
-    // Optimistic 상태를 위한 임의의 Nadeuri 생성
-    Nadeuri nadeuri = Nadeuri(title: title, members: <Member>[Member(uuid: "uuid", email: "email")]);// TODO: 로드 시 본인 정보 Fetch 및 기기 저장 후 그 값을 사용
     List<Nadeuri> oldNadeuris = _nadeuris;
+
+    // Optimistic 상태 반영
+    String? profileImgUrl = _prefsWithCache.getString("profile.profileImgUrl");
+    Nadeuri nadeuri = Nadeuri(
+      title: title,
+      members: <Member>[Member(uuid: "uuid", email: "email", profileImageUrl: profileImgUrl)],
+    );
     _nadeuris = [nadeuri, ..._nadeuris];
     notifyListeners();
 
     final Result result = await _nadeuriRepository.createNadeuri(nadeuri);
-
     switch (result) {
       case Ok _:
-        load.execute(); // TODO: 위의 TODO 수행 후 load 삭제 고려
+        break;
       case Error _:
         _nadeuris = oldNadeuris;
         notifyListeners();
