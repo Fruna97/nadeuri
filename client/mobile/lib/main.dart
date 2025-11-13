@@ -102,7 +102,7 @@ class MyApp extends StatelessWidget {
           child: SignUpPage(),
         ),
       },
-      initialRoute: '/sign-in',
+      initialRoute: '/home',
     );
   }
 }
