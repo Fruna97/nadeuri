@@ -86,7 +86,10 @@ class MyApp extends StatelessWidget {
       ),
       routes: {
         '/home': (BuildContext context) => ChangeNotifierProvider(
-          create: (_) => HomeViewModel(nadeuriRepository: context.read<NadeuriRepository>()),
+          create: (_) => HomeViewModel(
+            memberRepository: context.read<MemberRepository>(),
+            nadeuriRepository: context.read<NadeuriRepository>(),
+          ),
           child: HomePage(),
         ),
         '/sign-in': (BuildContext context) => ChangeNotifierProvider(

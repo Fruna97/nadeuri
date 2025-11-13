@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:flutter/foundation.dart';
+import 'package:mobile/data/repository/member_repository.dart';
 import 'package:mobile/data/repository/nadeuri_repository.dart';
 import 'package:mobile/domain/model/member/member.dart';
 import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
@@ -10,35 +11,46 @@ import 'package:mobile/utils/result.dart';
 class HomeViewModel extends ChangeNotifier {
   final String _logTag = "HomeViewModel";
 
+  final MemberRepository _memberRepository;
   final NadeuriRepository _nadeuriRepository;
   
-  late final Command0<List<Nadeuri>> load;
+  late final Command0 load;
   late final Command1<void, String> createNadeuri;
 
   bool isFirstLoad = true;
   List<Nadeuri> _nadeuris = [];
 
-  HomeViewModel({required NadeuriRepository nadeuriRepository}) : _nadeuriRepository = nadeuriRepository {
-    load = Command0<List<Nadeuri>>(_load)..execute();
+  HomeViewModel({required MemberRepository memberRepository, required NadeuriRepository nadeuriRepository}) : 
+  _memberRepository = memberRepository,
+  _nadeuriRepository = nadeuriRepository {
+    load = Command0(_load)..execute();
     createNadeuri = Command1<void, String>(_createNadeuri);
   }
 
   List<Nadeuri> get nadeuris => _nadeuris;
 
-  Future<Result<List<Nadeuri>>> _load() async {
-    final Result<List<Nadeuri>> result = await _nadeuriRepository.getParticipatingNadeuris();
-
-    switch (result) {
+  Future<Result> _load() async {
+    final Result<List<Nadeuri>> nadeurisResult = await _nadeuriRepository.getParticipatingNadeuris();
+    switch (nadeurisResult) {
       case Ok<List<Nadeuri>> _:
-        _nadeuris = result.value;
+        _nadeuris = nadeurisResult.value;
         log("Nadeuri 로드 완료", name: _logTag);
       case Error<List<Nadeuri>> _:
         log("Nadeuri 로드 실패", name: _logTag);
+        return nadeurisResult;
+    }
+
+    final Result memberResult = await _memberRepository.getMyProfile();
+    switch (memberResult) {
+      case Ok _:
+        log("Member 프로필 로드 완료", name: _logTag);
+      case Error _:
+        log("Member 프로필 로드 실패", name: _logTag);
+        return memberResult;
     }
 
     notifyListeners();
-
-    return result;
+    return memberResult;
   }
 
   Future<Result> _createNadeuri(String title) async {
