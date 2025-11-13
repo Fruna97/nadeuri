@@ -4,19 +4,17 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RestController;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.service.NadeuriService;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
-
-
-@Controller
+@RestController
 public class NadeuriController {
 
     private final NadeuriService nadeuriService;
