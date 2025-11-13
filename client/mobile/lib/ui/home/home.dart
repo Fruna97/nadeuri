@@ -35,7 +35,8 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       body: RefreshIndicator(
         onRefresh: () async {
-          await _homeViewModel.load.execute();
+          _homeViewModel.load.clearResult();
+          _homeViewModel.load.execute();
         },
         child: SafeArea(
           child: ListenableBuilder(
@@ -48,14 +49,16 @@ class _HomePageState extends State<HomePage> {
               if (_homeViewModel.load.error) {
                 final Error result = _homeViewModel.load.result! as Error;
                 final Exception error = result.error;
-                if (error is Unauthorized || error is TokenNotFound) {
-                  return SizedBox.shrink();
+                if (!(error is Unauthorized || error is TokenNotFound)) {
+                  return _PleaseRetryScreen(homeViewModel: _homeViewModel);
                 }
-                return _PleaseRetryScreen(homeViewModel: _homeViewModel);
               }
 
-              _homeViewModel.isFirstLoad = false;
-              return child!;
+              if (_homeViewModel.load.completed || _homeViewModel.load.running) {
+                return child!;
+              }
+
+              return SizedBox.shrink(); // [clearResult] 시 Navigate 전에 잠깐 보여질 수 있는 화면
             },
             child: _HomeScreen(homeViewModel: _homeViewModel),
           ),
@@ -227,7 +230,7 @@ class _HomeScreen extends StatelessWidget {
 }
 
 class _CreateNadeuriCard extends StatelessWidget {
-  static final ShapeBorder _border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0));
+  final _borderRadius = 12.0;
 
   final HomeViewModel _homeViewModel;
 
@@ -239,7 +242,7 @@ class _CreateNadeuriCard extends StatelessWidget {
       width: 180,
       height: 260,
       child: Card(
-        shape: _border,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_borderRadius)),
         clipBehavior: Clip.hardEdge,
         child: InkWell(
           onTap: () {
@@ -254,7 +257,7 @@ class _CreateNadeuriCard extends StatelessWidget {
               },
             );
           },
-          customBorder: _border,
+          customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_borderRadius)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -274,7 +277,7 @@ class _CreateNadeuriCard extends StatelessWidget {
 }
 
 class _NadeuriCard extends StatelessWidget {
-  static final ShapeBorder _border = RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0));
+  final _borderRadius = 12.0;
 
   final Nadeuri _nadeuri;
 
@@ -286,11 +289,11 @@ class _NadeuriCard extends StatelessWidget {
       width: 180,
       height: 260,
       child: Card(
-        shape: _border,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_borderRadius)),
         clipBehavior: Clip.hardEdge,
         child: InkWell(
           onTap: () {},
-          customBorder: _border,
+          customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_borderRadius)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -319,6 +322,7 @@ class _NadeuriCard extends StatelessWidget {
                         padding: const EdgeInsets.fromLTRB(0, 0, 4.0, 0),
                         child: CircleAvatar(
                           foregroundImage: NetworkImage(_nadeuri.members![i].profileImageUrl ?? ""),
+                          onForegroundImageError: (exception, stackTrace) {},
                           radius: 15,
                           child: Icon(Icons.person, color: Colors.blue),
                         ),
@@ -416,6 +420,7 @@ class _PleaseRetryScreen extends StatelessWidget {
           SizedBox(height: 12.0),
           ElevatedButton.icon(
             onPressed: () {
+              _homeViewModel.load.clearResult();
               _homeViewModel.load.execute();
             },
             icon: Icon(Icons.replay),

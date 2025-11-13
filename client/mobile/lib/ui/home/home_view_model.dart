@@ -19,7 +19,7 @@ class HomeViewModel extends ChangeNotifier {
   late final Command0 load;
   late final Command1<void, String> createNadeuri;
 
-  bool isFirstLoad = true;
+  bool _isFirstLoad = true;
   List<Nadeuri> _nadeuris = [];
 
   HomeViewModel({
@@ -34,6 +34,7 @@ class HomeViewModel extends ChangeNotifier {
   }
 
   List<Nadeuri> get nadeuris => _nadeuris;
+  bool get isFirstLoad => _isFirstLoad;
 
   Future<Result> _load() async {
     final Result<List<Nadeuri>> nadeurisResult = await _nadeuriRepository.getParticipatingNadeuris();
@@ -55,6 +56,7 @@ class HomeViewModel extends ChangeNotifier {
         return memberResult;
     }
 
+    _isFirstLoad = false;
     notifyListeners();
     return memberResult;
   }
