@@ -45,6 +45,7 @@ public class NadeuriServiceImpl implements NadeuriService {
 
         return participatingNadeuris.stream()
                 .map(nadeuri -> ParticipatingNadeuriResponse.builder()
+                        .uuid(nadeuri.getUuid())
                         .title(nadeuri.getTitle())
                         .members(nadeuri.getMembers().stream()
                                 .map(MemberSummaryResponse::from).toList()).build()).toList();

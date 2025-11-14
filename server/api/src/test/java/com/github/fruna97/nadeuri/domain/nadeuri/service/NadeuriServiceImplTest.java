@@ -78,24 +78,28 @@ class NadeuriServiceImplTest {
     void getParticipatingNadeuris() {
         // Given
         List<Nadeuri> participatingNadeuris = new ArrayList<>();
-        UUID uuid = UUID.randomUUID();
+        UUID memberUuid = UUID.randomUUID();
         Member member = Member.builder()
                 .id(1L)
-                .uuid(uuid)
+                .uuid(memberUuid)
                 .email("test_email@test.com")
                 .password("test_password")
                 .nickname("test_nickname")
                 .participatingNadeuris(participatingNadeuris).build();
 
+        UUID uuid1 = UUID.randomUUID();
+        UUID uuid2 = UUID.randomUUID();
         String title1 = "title1";
         String title2 = "title2";
         Nadeuri nadeuri1 = Nadeuri.builder()
                 .id(97L)
+                .uuid(uuid1)
                 .title(title1)
                 .owner(member)
                 .members(List.of(member)).build();
         Nadeuri nadeuri2 = Nadeuri.builder()
                 .id(98L)
+                .uuid(uuid2)
                 .title(title2)
                 .owner(member)
                 .members(List.of(member)).build();
@@ -115,12 +119,14 @@ class NadeuriServiceImplTest {
         // Then
         assertThat(result).hasSize(2); // 참가 Nadeuri 목록의 개수가 정확한지
 
+        List<UUID> uuids = result.stream()
+                .map(ParticipatingNadeuriResponse::getUuid).toList();
+        assertThat(uuids).containsExactlyInAnyOrder(uuid1, uuid2);// 저장된 UUID를 그대로 가지고 오는지
         List<String> titles = result.stream()
-                .map(ParticipatingNadeuriResponse::getTitle)
-                .toList();
-        assertThat(titles).containsExactlyInAnyOrder(title1, title2); // 제목을 그대로 가지고 있는지
+                .map(ParticipatingNadeuriResponse::getTitle).toList();
+        assertThat(titles).containsExactlyInAnyOrder(title1, title2); // 저장된 제목을 그대로 가지고 오는지
         assertThat(result).allSatisfy(
                 participatingNadeuriResponse -> assertThat(participatingNadeuriResponse.getMembers())
-                        .extracting(MemberSummaryResponse::getUuid).contains(uuid)); // 각 Nadeuri 회원 목록에 생성한 회원이 포함되어 있는지
+                        .extracting(MemberSummaryResponse::getUuid).contains(memberUuid)); // 각 Nadeuri 회원 목록에 생성한 회원이 포함되어 있는지
     }
 }
