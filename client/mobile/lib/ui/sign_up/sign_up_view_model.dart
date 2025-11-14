@@ -1,11 +1,12 @@
 import 'package:flutter/foundation.dart';
-import 'package:mobile/data/repository/auth_repository.dart';
-import 'package:mobile/data/service/model/sign_up_response/sign_up_response.dart';
+import 'package:mobile/data/repository/member_repository.dart';
+import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/utils/command.dart';
 import 'package:mobile/utils/result.dart';
 
 class SignUpViewModel extends ChangeNotifier {
-  final AuthRepository _authRepository;
+  final MemberRepository _memberRepository;
+
   late final Command1<void, (String email, String password, String nickname)> signUp;
 
   String? _emailErrorText;
@@ -14,7 +15,7 @@ class SignUpViewModel extends ChangeNotifier {
   String? _nicknameErrorText;
   String _commonErrorText = "";
 
-  SignUpViewModel({required AuthRepository authRepository}) : _authRepository = authRepository {
+  SignUpViewModel({required MemberRepository memberRepository}) : _memberRepository = memberRepository {
     signUp = Command1<void, (String email, String password, String nickname)>(_signUp);
   }
 
@@ -70,19 +71,19 @@ class SignUpViewModel extends ChangeNotifier {
 
   Future<Result<void>> _signUp((String email, String password, String nickname) member) async {
     final (email, password, nickname) = member;
-    final Result result = await _authRepository.signUp(email: email, password: password, nickname: nickname);
+    final Result result = await _memberRepository.signUp(email: email, password: password, nickname: nickname);
 
     if (result is Error) {
-      SignUpResponse error = result.error;
+      Exception error = result.error;
       switch (error) {
         case RequestTimeout _:
           _commonErrorText = "문제가 발생했습니다.\n잠시 후 다시 시도해 주세요.";
-        case DuplicateEmailError _:
+        case DuplicateEmail _:
           _emailErrorText = "이미 가입된 이메일 입니다.";
         case ValidationError _:
-          _emailErrorText = error.email?.join("\n");
-          _passwordCheckErrorText = error.password?.join("\n");
-          _nicknameErrorText = error.nickname?.join("\n");
+          _emailErrorText = error.info["email"]?.join("\n");
+          _passwordCheckErrorText = error.info["password"]?.join("\n");
+          _nicknameErrorText = error.info["nickname"]?.join("\n");
         case UnknownError _:
           _commonErrorText = "문제가 발생했습니다.\n문제가 반복된다면, 고객센터에 문의해주세요.";
       }

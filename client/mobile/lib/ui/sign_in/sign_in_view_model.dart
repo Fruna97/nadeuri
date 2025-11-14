@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
-import 'package:mobile/data/service/model/sign_in_response/sign_in_response.dart';
+import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/utils/command.dart';
 import 'package:mobile/utils/result.dart';
 
 class SignInViewModel extends ChangeNotifier {
   final AuthRepository _authRepository;
+
   late final Command1<void, (String email, String password)> signIn;
 
   String commonErrorText = "";
@@ -29,9 +30,9 @@ class SignInViewModel extends ChangeNotifier {
     final Result result = await _authRepository.signIn(email: email, password: password);
 
     if (result is Error) {
-      SignInResponse error = result.error;
+      Exception error = result.error;
       switch (error) {
-        case UnAuthorized _:
+        case Unauthorized _:
         case ValidationError _:
           commonErrorText = "이메일 또는 비밀번호가 잘못 되었습니다.\n이메일과 비밀번호를 정확히 입력해 주세요.";
         case RequestTimeout _:

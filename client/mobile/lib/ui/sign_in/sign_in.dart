@@ -16,11 +16,11 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   void initState() {
+    super.initState();
+    
     _signInViewModel = context.read<SignInViewModel>();
 
-    _signInViewModel.signIn.addListener(_navigateOnSignInComplete);
-
-    super.initState();
+    _signInViewModel.signIn.addListener(_onSignIn);
   }
 
   @override
@@ -47,14 +47,16 @@ class _SignInPageState extends State<SignInPage> {
 
   @override
   void dispose() {
-    _signInViewModel.signIn.removeListener(_navigateOnSignInComplete);
+    _signInViewModel.signIn.removeListener(_onSignIn);
 
     super.dispose();
   }
 
-  void _navigateOnSignInComplete() {
-    if (_signInViewModel.signIn.completed) {
-      // TODO: 메인 화면으로 이동
+  /// 로그인 완료 시 홈 페이지로 이동
+  void _onSignIn() {
+    if (_signInViewModel.signIn.completed && mounted) {
+      _signInViewModel.signIn.clearResult();
+      Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
     }
   }
 }

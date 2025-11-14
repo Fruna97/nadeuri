@@ -1,20 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
+import 'package:mobile/data/repository/member_repository.dart';
+import 'package:mobile/data/repository/nadeuri_repository.dart';
 import 'package:mobile/data/service/api_client.dart';
+import 'package:mobile/ui/core/app_snack_bar.dart';
+import 'package:mobile/ui/home/home.dart';
+import 'package:mobile/ui/home/home_view_model.dart';
 import 'package:mobile/ui/sign_in/sign_in.dart';
 import 'package:mobile/ui/sign_in/sign_in_view_model.dart';
 import 'package:mobile/ui/sign_up/sign_up.dart';
 import 'package:mobile/ui/sign_up/sign_up_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  final SharedPreferencesWithCache prefsWithCache = await SharedPreferencesWithCache.create(
+    cacheOptions: SharedPreferencesWithCacheOptions(),
+  );
+
   runApp(
     MultiProvider(
       providers: [
         Provider<FlutterSecureStorage>(
           create: (_) => const FlutterSecureStorage(aOptions: AndroidOptions(encryptedSharedPreferences: true)),
         ),
+        Provider<SharedPreferencesWithCache>(create: (_) => prefsWithCache),
+        Provider<AppSnackBar>(create: (_) => AppSnackBar()),
         Provider<ApiClient>(
           create: (context) => ApiClient(
             host: "http://10.0.2.2",
@@ -23,12 +37,19 @@ void main() {
             flutterSecureStorage: context.read<FlutterSecureStorage>(),
           ),
         ),
+        Provider<MemberRepository>(
+          create: (context) => MemberRepository(
+            apiClient: context.read<ApiClient>(),
+            prefsWithCache: context.read<SharedPreferencesWithCache>(),
+          ),
+        ),
         Provider<AuthRepository>(
           create: (context) => AuthRepository(
             apiClient: context.read<ApiClient>(),
             flutterSecureStorage: context.read<FlutterSecureStorage>(),
           ),
         ),
+        Provider<NadeuriRepository>(create: (context) => NadeuriRepository(apiClient: context.read<ApiClient>())),
       ],
       child: const MyApp(),
     ),
@@ -42,6 +63,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      scaffoldMessengerKey: context.read<AppSnackBar>().scaffoldMessengerKey,
       title: 'Flutter Demo',
       theme: ThemeData(
         // This is the theme of your application.
@@ -60,19 +82,27 @@ class MyApp extends StatelessWidget {
         // This works for code too, not just values: Most code changes can be
         // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
-        useMaterial3: true, 
+        useMaterial3: true,
       ),
       routes: {
+        '/home': (BuildContext context) => ChangeNotifierProvider(
+          create: (_) => HomeViewModel(
+            memberRepository: context.read<MemberRepository>(),
+            nadeuriRepository: context.read<NadeuriRepository>(),
+            prefsWithCache: context.read<SharedPreferencesWithCache>(),
+          ),
+          child: HomePage(),
+        ),
         '/sign-in': (BuildContext context) => ChangeNotifierProvider(
           create: (_) => SignInViewModel(authRepository: context.read<AuthRepository>()),
           child: SignInPage(),
-        ), 
+        ),
         '/sign-up': (BuildContext context) => ChangeNotifierProvider(
-          create: (_) => SignUpViewModel(authRepository: context.read<AuthRepository>()),
+          create: (_) => SignUpViewModel(memberRepository: context.read<MemberRepository>()),
           child: SignUpPage(),
-        ), 
+        ),
       },
-      initialRoute: '/sign-in',
+      initialRoute: '/home',
     );
   }
 }
