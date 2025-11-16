@@ -18,7 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.fruna97.nadeuri.domain.member.dto.MemberSummaryResponse;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
-import com.github.fruna97.nadeuri.domain.nadeuri.dto.ParticipatingNadeuriResponse;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.NadeuriSummaryResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import com.github.fruna97.nadeuri.domain.nadeuri.repository.NadeuriRepository;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
@@ -114,16 +114,16 @@ class NadeuriServiceImplTest {
                 member.getPassword());
 
         // When
-        List<ParticipatingNadeuriResponse> result = nadeuriServiceImpl.getParticipatingNadeuris(principalDetails);
+        List<NadeuriSummaryResponse> result = nadeuriServiceImpl.getParticipatingNadeuris(principalDetails);
 
         // Then
         assertThat(result).hasSize(2); // 참가 Nadeuri 목록의 개수가 정확한지
 
         List<UUID> uuids = result.stream()
-                .map(ParticipatingNadeuriResponse::getUuid).toList();
+                .map(NadeuriSummaryResponse::getUuid).toList();
         assertThat(uuids).containsExactlyInAnyOrder(uuid1, uuid2);// 저장된 UUID를 그대로 가지고 오는지
         List<String> titles = result.stream()
-                .map(ParticipatingNadeuriResponse::getTitle).toList();
+                .map(NadeuriSummaryResponse::getTitle).toList();
         assertThat(titles).containsExactlyInAnyOrder(title1, title2); // 저장된 제목을 그대로 가지고 오는지
         assertThat(result).allSatisfy(
                 participatingNadeuriResponse -> assertThat(participatingNadeuriResponse.getMembers())
