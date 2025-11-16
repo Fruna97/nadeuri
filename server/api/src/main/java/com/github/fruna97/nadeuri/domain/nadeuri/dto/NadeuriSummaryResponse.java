@@ -24,6 +24,6 @@ public class NadeuriSummaryResponse {
                 .uuid(nadeuri.getUuid())
                 .title(nadeuri.getTitle())
                 .members(nadeuri.getMembers().stream()
-                        .map(MemberSummaryResponse::from).toList()).build();
+                        .map(MemberSummaryResponse::fromEntity).toList()).build();
     }
 }

@@ -56,6 +56,6 @@ public class MemberServiceImpl implements MemberService {
             return new BadCredentialsException("자격 증명에 실패하였습니다.");
         });
 
-        return MemberSummaryResponse.from(member);
+        return MemberSummaryResponse.fromEntity(member);
     }
 }

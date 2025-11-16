@@ -18,7 +18,7 @@ public class MemberSummaryResponse {
     private String nickname;
     private String profileImageUrl;
 
-    public static MemberSummaryResponse from(Member member) {
+    public static MemberSummaryResponse fromEntity(Member member) {
         return MemberSummaryResponse.builder()
                 .uuid(member.getUuid())
                 .email(member.getEmail())

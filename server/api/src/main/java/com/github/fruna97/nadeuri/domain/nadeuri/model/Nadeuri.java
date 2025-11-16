@@ -40,7 +40,7 @@ public class Nadeuri {
     private String title;
 
     @ManyToOne(optional = false)
-    @JoinColumn(name = "owner", nullable = false)
+    @JoinColumn(name = "owner_id", nullable = false)
     private Member owner;
 
     @ManyToMany
