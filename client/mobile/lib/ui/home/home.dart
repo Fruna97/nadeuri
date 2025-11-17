@@ -33,32 +33,37 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: RefreshIndicator(
-        onRefresh: () async {
-          _homeViewModel.load.clearResult();
-          _homeViewModel.load.execute();
-        },
-        child: SafeArea(
-          child: ListenableBuilder(
-            listenable: _homeViewModel.load,
-            builder: (context, child) {
-              if (_homeViewModel.load.running && _homeViewModel.isFirstLoad) {
-                return const Center(child: CircularProgressIndicator());
-              }
+      body: SafeArea(
+        child: ListenableBuilder(
+          listenable: _homeViewModel.load,
+          builder: (context, child) {
+            if (_homeViewModel.load.running && _homeViewModel.isRefreshing) {
+              return child!;
+            }
+            if (_homeViewModel.load.running) {
+              return const Center(child: CircularProgressIndicator());
+            }
 
-              if (_homeViewModel.load.error) {
-                final Error result = _homeViewModel.load.result! as Error;
-                final Exception error = result.error;
-                if (!(error is Unauthorized || error is TokenNotFound)) {
-                  return _PleaseRetryScreen(homeViewModel: _homeViewModel);
-                }
+            if (_homeViewModel.load.error) {
+              final Error result = _homeViewModel.load.result! as Error;
+              final Exception error = result.error;
+              if (!(error is Unauthorized || error is TokenNotFound)) {
+                return _PleaseRetryScreen(homeViewModel: _homeViewModel);
               }
+            }
 
-              if (_homeViewModel.load.completed || _homeViewModel.load.running) {
-                return child!;
-              }
+            if (_homeViewModel.load.completed) {
+              return child!;
+            }
 
-              return SizedBox.shrink(); // [clearResult] 시 Navigate 전에 잠깐 보여질 수 있는 화면
+            return SizedBox.shrink(); // [clearResult] 시 Navigate 전에 잠깐 보여질 수 있는 화면
+          },
+          child: RefreshIndicator(
+            onRefresh: () async {
+              _homeViewModel.isRefreshing = true;
+              _homeViewModel.load.clearResult();
+              await _homeViewModel.load.execute();
+              _homeViewModel.isRefreshing = false;
             },
             child: _HomeScreen(homeViewModel: _homeViewModel),
           ),
