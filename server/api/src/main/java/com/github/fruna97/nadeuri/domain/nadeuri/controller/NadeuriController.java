@@ -13,6 +13,7 @@ import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.NadeuriSummaryResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.service.NadeuriService;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
+import jakarta.validation.Valid;
 
 @RestController
 public class NadeuriController {
@@ -25,9 +26,11 @@ public class NadeuriController {
     }
 
     @PostMapping("/nadeuri")
-    public ResponseEntity<ResponseDto<Void>> createNadeuri(@AuthenticationPrincipal PrincipalDetails principalDetails, @RequestBody CreateNadeuriRequest createNadeuriRequest) {
+    public ResponseEntity<ResponseDto<Void>> createNadeuri(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @RequestBody @Valid CreateNadeuriRequest createNadeuriRequest) {
         String title = createNadeuriRequest.getTitle();
-        
+
         nadeuriService.createNadeuri(principalDetails, title);
 
         return ResponseEntity
