@@ -6,6 +6,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.List;
+import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.NadeuriSummaryResponse;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriTitleRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.service.NadeuriService;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
@@ -29,7 +31,7 @@ class NadeuriControllerTest {
 
     @Mock
     private PrincipalDetails principalDetails;
-    
+
     @InjectMocks
     private NadeuriController nadeuriController;
 
@@ -71,5 +73,22 @@ class NadeuriControllerTest {
         ResponseDto<List<NadeuriSummaryResponse>> body = result.getBody();
         assertNotNull(body); // 응답에 본문을 담고 있는지
         assertThat(body.getData()).containsExactlyInAnyOrderElementsOf(participatingNadeuris); // 응답 본문의 데이터가 주어진 Nadeuri 목록과 같은지
+    }
+
+    @Test
+    void updateNadeuriTitle() {
+        // Given
+        UUID nadeuriUuid = UUID.randomUUID();
+
+        String newTitle = "new Title";
+        UpdateNadeuriTitleRequest updateNadeuriTitleRequest =
+                UpdateNadeuriTitleRequest.builder().newTitle(newTitle).build();
+
+        // When
+        ResponseEntity<ResponseDto<Void>> result = nadeuriController
+                .updateNadeuriTitle(principalDetails, nadeuriUuid, updateNadeuriTitleRequest);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환하는지
     }
 }
