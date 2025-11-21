@@ -17,6 +17,10 @@ abstract class NadeuriApiModel with _$NadeuriApiModel {
 
   factory NadeuriApiModel.fromJson(Map<String, dynamic> json) => _$NadeuriApiModelFromJson(json);
 
+  static NadeuriApiModel fromNadeuri(Nadeuri nadeuri) {
+    return NadeuriApiModel(uuid: nadeuri.uuid, title: nadeuri.title);
+  }
+
   Nadeuri toNadeuri() {
     return Nadeuri(
       uuid: uuid,

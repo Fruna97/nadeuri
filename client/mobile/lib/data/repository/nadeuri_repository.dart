@@ -42,7 +42,7 @@ class NadeuriRepository {
   }
 
   Future<Result<void>> createNadeuri(Nadeuri nadeuri) async {
-    NadeuriApiModel nadeuriApiModel = nadeuri.map((nadeuri) => NadeuriApiModel(uuid: nadeuri.uuid, title: nadeuri.title));
+    NadeuriApiModel nadeuriApiModel = NadeuriApiModel.fromNadeuri(nadeuri);
     Result result = await _apiClient.postNadeuri(nadeuriApiModel);
   
     switch (result) {
