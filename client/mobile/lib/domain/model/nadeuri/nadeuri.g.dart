@@ -7,6 +7,7 @@ part of 'nadeuri.dart';
 // **************************************************************************
 
 _Nadeuri _$NadeuriFromJson(Map<String, dynamic> json) => _Nadeuri(
+  uuid: json['uuid'] as String,
   title: json['title'] as String?,
   members: (json['members'] as List<dynamic>?)
       ?.map((e) => Member.fromJson(e as Map<String, dynamic>))
@@ -14,6 +15,7 @@ _Nadeuri _$NadeuriFromJson(Map<String, dynamic> json) => _Nadeuri(
 );
 
 Map<String, dynamic> _$NadeuriToJson(_Nadeuri instance) => <String, dynamic>{
+  'uuid': instance.uuid,
   'title': instance.title,
   'members': instance.members,
 };

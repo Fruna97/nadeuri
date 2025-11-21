@@ -214,6 +214,7 @@ class _HomeScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   return _NadeuriCard(
                     nadeuri: Nadeuri(
+                      uuid: "nadeuri_uuid",
                       title: "나들이 제목",
                       members: [
                         Member(

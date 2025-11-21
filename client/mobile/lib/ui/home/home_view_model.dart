@@ -65,8 +65,9 @@ class HomeViewModel extends ChangeNotifier {
     // Optimistic 상태 반영
     String? profileImgUrl = _prefsWithCache.getString("profile.profileImgUrl");
     Nadeuri nadeuri = Nadeuri(
+      uuid: "nadeuri_uuid",
       title: title,
-      members: <Member>[Member(uuid: "uuid", email: "email", profileImageUrl: profileImgUrl)],
+      members: <Member>[Member(uuid: "member_uuid", email: "email", profileImageUrl: profileImgUrl)],
     );
     _nadeuris = [nadeuri, ..._nadeuris];
     notifyListeners();

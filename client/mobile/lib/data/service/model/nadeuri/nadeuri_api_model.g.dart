@@ -8,6 +8,7 @@ part of 'nadeuri_api_model.dart';
 
 _NadeuriApiModel _$NadeuriApiModelFromJson(Map<String, dynamic> json) =>
     _NadeuriApiModel(
+      uuid: json['uuid'] as String,
       title: json['title'] as String?,
       members: (json['members'] as List<dynamic>?)
           ?.map((e) => MemberApiModel.fromJson(e as Map<String, dynamic>))
@@ -15,4 +16,8 @@ _NadeuriApiModel _$NadeuriApiModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$NadeuriApiModelToJson(_NadeuriApiModel instance) =>
-    <String, dynamic>{'title': instance.title, 'members': instance.members};
+    <String, dynamic>{
+      'uuid': instance.uuid,
+      'title': instance.title,
+      'members': instance.members,
+    };

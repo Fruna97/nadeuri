@@ -7,6 +7,7 @@ part 'nadeuri.g.dart';
 @freezed
 abstract class Nadeuri with _$Nadeuri {
   const factory Nadeuri({
+    required String uuid,
     String? title,
     List<Member>? members
   }) = _Nadeuri;
