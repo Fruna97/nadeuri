@@ -44,6 +44,20 @@ public class NadeuriController {
                         .data(null).build());
     }
 
+    @GetMapping("/nadeuri/{uuid}")
+    public ResponseEntity<ResponseDto<NadeuriSummaryResponse>> getNadeuri(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable("uuid") UUID uuid) {
+        NadeuriSummaryResponse nadeuriSummaryResponse =
+                nadeuriService.getNadeuri(principalDetails, uuid);
+
+        return ResponseEntity
+                .ok()
+                .body(ResponseDto.<NadeuriSummaryResponse>builder()
+                        .message("Nadeuri를 성공적으로 조회했습니다.")
+                        .data(nadeuriSummaryResponse).build());
+    }    
+
     @GetMapping("/nadeuri/participating")
     public ResponseEntity<ResponseDto<List<NadeuriSummaryResponse>>> participatingNadeuris(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {

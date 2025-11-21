@@ -56,6 +56,26 @@ class NadeuriControllerTest {
     }
 
     @Test
+    void getNadeuri() {
+        // Given
+        UUID uuid = UUID.randomUUID();
+        String title = "test_title";
+        NadeuriSummaryResponse nadeuriSummaryResponse = NadeuriSummaryResponse.builder()
+                .uuid(uuid)
+                .title(title).build();
+        when(nadeuriService.getNadeuri(principalDetails, uuid)).thenReturn(nadeuriSummaryResponse);
+
+        // When
+        ResponseEntity<ResponseDto<NadeuriSummaryResponse>> result = nadeuriController.getNadeuri(principalDetails, uuid);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환 하는지
+        ResponseDto<NadeuriSummaryResponse> body = result.getBody();
+        assertNotNull(body); // 응답에 본문을 담고 있는지
+        assertThat(body.getData()).isEqualTo(nadeuriSummaryResponse); // 응답 본문의 데이터가 [NadeuriService.getNadeuri]가 반환한 [NadeuriSummaryResponse]와 동일한지
+    }
+
+    @Test
     void participatingNadeuris() {
         // Given
         List<NadeuriSummaryResponse> participatingNadeuris = List.of(
