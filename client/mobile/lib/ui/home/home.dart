@@ -7,6 +7,8 @@ import 'package:mobile/domain/model/member/member.dart';
 import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/home/home_view_model.dart';
+import 'package:mobile/ui/nadeuri/details/nadeuri_details.dart';
+import 'package:mobile/ui/nadeuri/details/nadeuri_details_view_model.dart';
 import 'package:mobile/utils/result.dart';
 import 'package:provider/provider.dart';
 
@@ -297,7 +299,15 @@ class _NadeuriCard extends StatelessWidget {
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_borderRadius)),
         clipBehavior: Clip.hardEdge,
         child: InkWell(
-          onTap: () {},
+          onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute<void>(
+                builder: (context) =>
+                    NadeuriDetailsPage(nadeuriDetailsViewModel: NadeuriDetailsViewModel(nadeuri: _nadeuri)),
+              ),
+            );
+          },
           customBorder: RoundedRectangleBorder(borderRadius: BorderRadius.circular(_borderRadius)),
           child: Padding(
             padding: const EdgeInsets.all(16.0),

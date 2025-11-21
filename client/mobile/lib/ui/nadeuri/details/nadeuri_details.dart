@@ -15,7 +15,7 @@ class NadeuriDetailsPage extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           children: <Widget>[
             SizedBox(height: 32.0),
-            _NadeuriTitleSection(),
+            _NadeuriTitleSection(nadeuriDetailsViewModel: _nadeuriDetailsViewModel),
             Divider(height: 32.0),
             _ChatSection(),
             Divider(height: 32.0),
@@ -32,16 +32,28 @@ class NadeuriDetailsPage extends StatelessWidget {
 }
 
 class _NadeuriTitleSection extends StatefulWidget {
-  const _NadeuriTitleSection({super.key});
+  final NadeuriDetailsViewModel _nadeuriDetailsViewModel;
+
+  const _NadeuriTitleSection({super.key, required NadeuriDetailsViewModel nadeuriDetailsViewModel})
+    : _nadeuriDetailsViewModel = nadeuriDetailsViewModel;
 
   @override
   State<_NadeuriTitleSection> createState() => _NadeuriTitleSectionState();
 }
 
 class _NadeuriTitleSectionState extends State<_NadeuriTitleSection> {
-  final TextEditingController _nadeuriTitleController = TextEditingController();
   final FocusNode _nadeuriTitleFocusNode = FocusNode();
+
+  late final TextEditingController _nadeuriTitleController;
+
   bool _nadeuriTextFieldReadOnly = true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _nadeuriTitleController = TextEditingController(text: widget._nadeuriDetailsViewModel.nadeuri.title);
+  }
 
   @override
   Widget build(BuildContext context) {
