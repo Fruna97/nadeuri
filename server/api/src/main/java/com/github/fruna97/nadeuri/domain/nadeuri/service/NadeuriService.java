@@ -10,6 +10,8 @@ public interface NadeuriService {
 
     void createNadeuri(PrincipalDetails principalDetails, String title);
 
+    NadeuriSummaryResponse getNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid);
+
     List<NadeuriSummaryResponse> getParticipatingNadeuris(PrincipalDetails principalDetails);
 
     void updateNadeuriTitle(PrincipalDetails principalDetails, UUID nadeuriUuid,

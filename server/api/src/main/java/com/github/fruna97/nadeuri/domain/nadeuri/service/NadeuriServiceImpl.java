@@ -43,6 +43,19 @@ public class NadeuriServiceImpl implements NadeuriService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public NadeuriSummaryResponse getNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid) {
+        Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid).orElseThrow();
+
+        if (!hasAuthorityToNadeuri(principalDetails, nadeuri)) {
+            log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 조회 요청");
+            throw new BadCredentialsException("자격 증명에 실패하였습니다.");
+        }
+
+        return NadeuriSummaryResponse.fromEntity(nadeuri);
+    }
+
+    @Override
     @Transactional
     public List<NadeuriSummaryResponse> getParticipatingNadeuris(PrincipalDetails principalDetails) {
         List<Nadeuri> participatingNadeuris = nadeuriRepository.findByMembers_Id(principalDetails.getId());

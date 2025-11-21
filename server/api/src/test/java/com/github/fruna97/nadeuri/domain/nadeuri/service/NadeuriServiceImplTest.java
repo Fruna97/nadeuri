@@ -1,6 +1,7 @@
 package com.github.fruna97.nadeuri.domain.nadeuri.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.spy;
@@ -77,6 +78,60 @@ class NadeuriServiceImplTest {
         assertThat(capturedNadeuri.getTitle()).isEqualTo(title); // 주어진 제목을 그대로 저장하는지
         assertThat(capturedNadeuri.getOwner()).isEqualTo(member); // 인증 회원을 Owner로 지정하는지
         assertThat(capturedNadeuri.getMembers()).contains(member); // 인증 회원을 참여 회원 목록에 담는지
+    }
+
+    @Test
+    void getNadeuri() {
+        // Given
+        long memberId = 0L;
+        Member member = Member.builder()
+                .id(memberId).build();
+
+        long nadeuriId = 0L;
+        UUID nadeuriUuid = UUID.randomUUID();
+        String nadeuriTitle = "test_title";
+        Nadeuri nadeuri = Nadeuri.builder()
+                .id(nadeuriId)
+                .uuid(nadeuriUuid)
+                .title(nadeuriTitle)
+                .members(List.of(member)).build();
+        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
+
+        PrincipalDetails principalDetails = new PrincipalDetails(memberId, null, null, null);
+
+        // When
+        NadeuriSummaryResponse result = nadeuriServiceImpl.getNadeuri(principalDetails, nadeuriUuid);
+
+        // Then
+        assertAll(() -> assertThat(result.getUuid()).isEqualTo(nadeuriUuid),
+                () -> assertThat(result.getTitle()).isEqualTo(nadeuriTitle)); // 조회 결과가 저장소에서 가져온 Nadeuri와 일치하는지
+    }
+
+    @Test
+    void getNadeuri_조회권한이없는회원() {
+        // Given
+        long memberHasAuthorityId = 0L;
+        Member memberHasAuthority = Member.builder()
+                .id(memberHasAuthorityId).build();
+
+        long nadeuriId = 0L;
+        UUID nadeuriUuid = UUID.randomUUID();
+        String nadeuriTitle = "test_title";
+        Nadeuri nadeuri = Nadeuri.builder()
+                .id(nadeuriId)
+                .uuid(nadeuriUuid)
+                .title(nadeuriTitle)
+                .members(List.of(memberHasAuthority)).build();
+        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
+
+        long memberWithoutAuthorityId = 1L;
+        PrincipalDetails principalDetailsWithoutAuthority = new PrincipalDetails(memberWithoutAuthorityId, null, null, null);
+
+        // When
+        // Then
+        assertThrows(AuthenticationException.class, () -> {
+            nadeuriServiceImpl.getNadeuri(principalDetailsWithoutAuthority, nadeuriUuid);
+        }); // Nadeuri에 참가중이지 않은 회원이 조회 요청을 했을 때, 인증 예외를 발생시키는지
     }
 
     @Test
@@ -169,12 +224,11 @@ class NadeuriServiceImplTest {
     }
 
     @Test
-    void updateNadeuriTitle_수정권한이없는사용자() {
+    void updateNadeuriTitle_수정권한이없는회원() {
         // Given
         long memberHasAuthorityId = 0L;
         Member memberHasAuthority = Member.builder()
                 .id(memberHasAuthorityId).build();
-        long memberWithoutAuthorityId = 1L;
 
         UUID nadeuriUuid = UUID.randomUUID();
         String previousTitle = "Previous Title";
@@ -185,6 +239,7 @@ class NadeuriServiceImplTest {
                 .members(members).build();
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
 
+        long memberWithoutAuthorityId = 1L;
         String newTitle = "New Title";
         PrincipalDetails principalDetailsWithoutAuthority = new PrincipalDetails(memberWithoutAuthorityId, null, null, null);
         UpdateNadeuriTitleRequest updateNadeuriTitleRequest = UpdateNadeuriTitleRequest.builder()
