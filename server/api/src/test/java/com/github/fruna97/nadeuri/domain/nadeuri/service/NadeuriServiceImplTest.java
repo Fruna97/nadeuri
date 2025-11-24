@@ -4,8 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.spy;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
@@ -187,33 +185,34 @@ class NadeuriServiceImplTest {
     void updateNadeuri() {
         // Given
         long memberId1 = 0L;
+        UUID memberUuid1 = UUID.randomUUID();
         Member member1 = Member.builder()
-                .id(memberId1).build();
+                .id(memberId1)
+                .uuid(memberUuid1).build();
+        PrincipalDetails principalDetails1 = new PrincipalDetails(memberId1, memberUuid1, null, null);
         long memberId2 = 1L;
+        UUID memberUuid2 = UUID.randomUUID();
         Member member2 = Member.builder()
-                .id(memberId2).build();
+                .id(memberId2)
+                .uuid(memberUuid2).build();
 
         UUID nadeuriUuid = UUID.randomUUID();
         String previousTitle = "Previous Title";
-        List<Member> members = List.of(member1, member2);
         Nadeuri nadeuri = Nadeuri.builder()
                 .uuid(nadeuriUuid)
                 .title(previousTitle)
-                .members(members).build();
-        Nadeuri spyNadeuri = spy(nadeuri);
-        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(spyNadeuri));
+                .members(List.of(member1, member2)).build();
+        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
 
         String newTitle = "New Title";
-        PrincipalDetails principalDetails1 = new PrincipalDetails(memberId1, null, null, null);
         UpdateNadeuriRequest updateNadeuriTitleRequest = UpdateNadeuriRequest.builder()
                 .title(newTitle).build();
-        
 
         // When
-        nadeuriServiceImpl.updateNadeuri(principalDetails1, nadeuriUuid, updateNadeuriTitleRequest);
+        NadeuriSummaryResponse result = nadeuriServiceImpl.updateNadeuri(principalDetails1, nadeuriUuid, updateNadeuriTitleRequest);
 
         // Then
-        verify(spyNadeuri).setTitle(newTitle); // 새로운 제목을 인자로 넣어 [setTitle]을 호출하는지
+        assertThat(result.getTitle()).isEqualTo(newTitle); // 세로운 제목으로 업데이트 했는지
     }
 
     @Test
@@ -224,19 +223,19 @@ class NadeuriServiceImplTest {
                 .id(memberHasAuthorityId).build();
 
         UUID nadeuriUuid = UUID.randomUUID();
-        String previousTitle = "Previous Title";
-        List<Member> members = List.of(memberHasAuthority);
+        String previousTitle = "previous_test_title";
         Nadeuri nadeuri = Nadeuri.builder()
                 .uuid(nadeuriUuid)
                 .title(previousTitle)
-                .members(members).build();
-        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
+                .members(List.of(memberHasAuthority)).build();
 
         long memberWithoutAuthorityId = 1L;
-        String newTitle = "New Title";
         PrincipalDetails principalDetailsWithoutAuthority = new PrincipalDetails(memberWithoutAuthorityId, null, null, null);
+        String newTitle = "new_test_title";
         UpdateNadeuriRequest updateNadeuriTitleRequest = UpdateNadeuriRequest.builder()
                 .title(newTitle).build();
+
+        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
 
         // When
         // Then

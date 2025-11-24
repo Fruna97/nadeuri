@@ -98,17 +98,25 @@ class NadeuriControllerTest {
     @Test
     void updateNadeuri() {
         // Given
-        UUID nadeuriUuid = UUID.randomUUID();
+        UUID uuid = UUID.randomUUID();
+        String newTitle = "new_test_title";
+        UpdateNadeuriRequest updateNadeuriTitleRequest = UpdateNadeuriRequest.builder()
+                .title(newTitle).build();
+        NadeuriSummaryResponse nadeuriSummaryResponse = NadeuriSummaryResponse.builder()
+                .uuid(uuid)
+                .title(newTitle).build();
 
-        String newTitle = "new Title";
-        UpdateNadeuriRequest updateNadeuriTitleRequest =
-                UpdateNadeuriRequest.builder().title(newTitle).build();
+        when(nadeuriService.updateNadeuri(principalDetails, uuid, updateNadeuriTitleRequest))
+                .thenReturn(nadeuriSummaryResponse);
 
         // When
-        ResponseEntity<ResponseDto<Void>> result = nadeuriController
-                .updateNadeuri(principalDetails, nadeuriUuid, updateNadeuriTitleRequest);
+        ResponseEntity<ResponseDto<NadeuriSummaryResponse>> result =
+                nadeuriController.updateNadeuri(principalDetails, uuid, updateNadeuriTitleRequest);
 
         // Then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환하는지
+        ResponseDto<NadeuriSummaryResponse> body = result.getBody();
+        assertNotNull(body); // 응답에 본문을 담고 있는지
+        assertThat(body.getData()).isEqualTo(nadeuriSummaryResponse); // 응답 본문의 데이터가 [NadeuriService.updateNadeuri]가 반환한 [NadeuriSummaryResponse]와 동일한지
     }
 }

@@ -70,7 +70,7 @@ public class NadeuriServiceImpl implements NadeuriService {
 
     @Override
     @Transactional
-    public void updateNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid,
+    public NadeuriSummaryResponse updateNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid,
             UpdateNadeuriRequest updateNadeuriRequest) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid).orElseThrow();
 
@@ -80,6 +80,8 @@ public class NadeuriServiceImpl implements NadeuriService {
         }
 
         if (updateNadeuriRequest.getTitle() != null) nadeuri.setTitle(updateNadeuriRequest.getTitle());
+
+        return NadeuriSummaryResponse.fromEntity(nadeuri);
     }
 
     /**

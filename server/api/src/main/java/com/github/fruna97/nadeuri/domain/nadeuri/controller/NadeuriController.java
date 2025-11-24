@@ -70,15 +70,15 @@ public class NadeuriController {
     }
 
     @PatchMapping("/nadeuri/{uuid}")
-    public ResponseEntity<ResponseDto<Void>> updateNadeuri(
+    public ResponseEntity<ResponseDto<NadeuriSummaryResponse>> updateNadeuri(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("uuid") UUID uuid, @RequestBody UpdateNadeuriRequest updateNadeuriTitleRequest) {
-        nadeuriService.updateNadeuri(principalDetails, uuid, updateNadeuriTitleRequest);
+        NadeuriSummaryResponse nadeuriSummaryResponse = nadeuriService.updateNadeuri(principalDetails, uuid, updateNadeuriTitleRequest);
 
         return ResponseEntity
                 .ok()
-                .body(ResponseDto.<Void>builder()
+                .body(ResponseDto.<NadeuriSummaryResponse>builder()
                         .message("Nadeuri가 성공적으로 변경되었습니다.")
-                        .data(null).build());
+                        .data(nadeuriSummaryResponse).build());
     }
 }

@@ -15,6 +15,6 @@ public interface NadeuriService {
 
     List<NadeuriSummaryResponse> getParticipatingNadeuris(PrincipalDetails principalDetails);
 
-    void updateNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid,
+    NadeuriSummaryResponse updateNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid,
             UpdateNadeuriRequest updateNadeuriRequest);
 }
