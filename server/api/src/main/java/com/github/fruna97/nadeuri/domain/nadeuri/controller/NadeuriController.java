@@ -30,18 +30,16 @@ public class NadeuriController {
     }
 
     @PostMapping("/nadeuri")
-    public ResponseEntity<ResponseDto<Void>> createNadeuri(
+    public ResponseEntity<ResponseDto<NadeuriSummaryResponse>> createNadeuri(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody @Valid CreateNadeuriRequest createNadeuriRequest) {
-        String title = createNadeuriRequest.getTitle();
-
-        nadeuriService.createNadeuri(principalDetails, title);
+        NadeuriSummaryResponse nadeuriSummaryResponse = nadeuriService.createNadeuri(principalDetails, createNadeuriRequest);
 
         return ResponseEntity
                 .ok()
-                .body(ResponseDto.<Void>builder()
+                .body(ResponseDto.<NadeuriSummaryResponse>builder()
                         .message("Nadeuri가 생성되었습니다.")
-                        .data(null).build());
+                        .data(nadeuriSummaryResponse).build());
     }
 
     @GetMapping("/nadeuri/{uuid}")

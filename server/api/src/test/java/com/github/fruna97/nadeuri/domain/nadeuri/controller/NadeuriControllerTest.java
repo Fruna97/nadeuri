@@ -3,14 +3,11 @@ package com.github.fruna97.nadeuri.domain.nadeuri.controller;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -35,24 +32,27 @@ class NadeuriControllerTest {
     @InjectMocks
     private NadeuriController nadeuriController;
 
-    @Captor
-    private ArgumentCaptor<String> titleCaptor;
-
     @Test
     void createNadeuri() {
         // Given
         String title = "test_title";
+        NadeuriSummaryResponse nadeuriSummaryResponse = NadeuriSummaryResponse.builder()
+                .title(title).build();
         CreateNadeuriRequest createNadeuriRequest = CreateNadeuriRequest.builder()
                 .title(title).build();
 
+        when(nadeuriService.createNadeuri(principalDetails, createNadeuriRequest))
+                .thenReturn(nadeuriSummaryResponse);
+
         // When
-        ResponseEntity<ResponseDto<Void>> result = nadeuriController.createNadeuri(principalDetails, createNadeuriRequest);
+        ResponseEntity<ResponseDto<NadeuriSummaryResponse>> result =
+                nadeuriController.createNadeuri(principalDetails, createNadeuriRequest);
 
         // Then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환 하는지
-
-        verify(nadeuriService).createNadeuri(any(PrincipalDetails.class), titleCaptor.capture()); // NadeuriService의 createNadeuri 메서드를 호출하는지
-        assertThat(titleCaptor.getValue()).isEqualTo(title); // 메서드의 인자에 title을 제대로 전달하는지        
+        ResponseDto<NadeuriSummaryResponse> body = result.getBody();
+        assertNotNull(body); // 응답 본문을 담고있는지
+        assertThat(body.getData()).isEqualTo(nadeuriSummaryResponse); // 응답 본문의 데이터가 [NadeuriService.createNadeuri]가 반환한 [NadeuriSummaryResponse]와 동일한지
     }
 
     @Test

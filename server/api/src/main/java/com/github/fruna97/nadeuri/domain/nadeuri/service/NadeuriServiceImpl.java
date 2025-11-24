@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.NadeuriSummaryResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
@@ -31,7 +32,8 @@ public class NadeuriServiceImpl implements NadeuriService {
 
     @Override
     @Transactional
-    public void createNadeuri(PrincipalDetails principalDetails, String title) {
+    public NadeuriSummaryResponse createNadeuri(PrincipalDetails principalDetails, CreateNadeuriRequest createNadeuriRequest) {
+        String title = createNadeuriRequest.getTitle();
         Member owner = memberRepository.getReferenceById(principalDetails.getId());
 
         Nadeuri nadeuri = Nadeuri.builder()
@@ -39,7 +41,9 @@ public class NadeuriServiceImpl implements NadeuriService {
                 .owner(owner)
                 .build();
         nadeuri.getMembers().add(owner);
-        nadeuriRepository.save(nadeuri);
+        Nadeuri savedNadeuri = nadeuriRepository.save(nadeuri);
+
+        return NadeuriSummaryResponse.fromEntity(savedNadeuri);
     }
 
     @Override

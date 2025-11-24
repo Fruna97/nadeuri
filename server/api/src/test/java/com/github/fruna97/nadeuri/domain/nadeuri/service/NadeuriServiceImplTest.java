@@ -13,8 +13,6 @@ import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -23,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.fruna97.nadeuri.domain.member.dto.MemberSummaryResponse;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.NadeuriSummaryResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
@@ -42,42 +41,36 @@ class NadeuriServiceImplTest {
     @InjectMocks
     NadeuriServiceImpl nadeuriServiceImpl;
 
-    @Captor
-    ArgumentCaptor<Nadeuri> nadeuriCaptor;
-
     @Test
     void createNadeuri() {
         // Given
+        long id = 0L;
         UUID uuid = UUID.randomUUID();
         Member member = Member.builder()
-                .id(1L)
-                .uuid(uuid)
-                .email("test_email@test.com")
-                .password("test_password")
-                .nickname("test_nickname").build();
-        when(memberRepository.getReferenceById(1L)).thenReturn(member);
-
+                .id(id)
+                .uuid(uuid).build();
         String title = "test_title";
-        Nadeuri savedNadeuri = Nadeuri.builder()
-                .id(97L)
+        PrincipalDetails principalDetails = new PrincipalDetails(id, uuid, null, null);
+
+        CreateNadeuriRequest createNadeuriRequest = CreateNadeuriRequest.builder()
                 .title(title).build();
+        Nadeuri savedNadeuri = Nadeuri.builder()
+                .id(0L)
+                .title(title)
+                .owner(member)
+                .members(List.of(member)).build();
+
+        when(memberRepository.getReferenceById(id)).thenReturn(member);
         when(nadeuriRepository.save(any(Nadeuri.class))).thenReturn(savedNadeuri);
 
-        PrincipalDetails principalDetails = new PrincipalDetails(
-                member.getId(),
-                member.getUuid(),
-                member.getEmail(),
-                member.getPassword());
-
         // When
-        nadeuriServiceImpl.createNadeuri(principalDetails, title);
+        NadeuriSummaryResponse result = nadeuriServiceImpl.createNadeuri(principalDetails, createNadeuriRequest);
 
         // Then
-        verify(nadeuriRepository).save(nadeuriCaptor.capture()); // Repository의 [save]를 호출하는지
-        Nadeuri capturedNadeuri = nadeuriCaptor.getValue();
-        assertThat(capturedNadeuri.getTitle()).isEqualTo(title); // 주어진 제목을 그대로 저장하는지
-        assertThat(capturedNadeuri.getOwner()).isEqualTo(member); // 인증 회원을 Owner로 지정하는지
-        assertThat(capturedNadeuri.getMembers()).contains(member); // 인증 회원을 참여 회원 목록에 담는지
+        assertThat(result.getTitle()).isEqualTo(title); // 주어진 제목을 그대로 저장하는지
+        assertThat(result.getMembers())
+                .anySatisfy(memberSummaryResponse -> assertThat(memberSummaryResponse.getUuid())
+                        .isEqualTo(uuid)); // Nadeuri의 멤버 목록에 만든 회원이 포함되어 있는지
     }
 
     @Test
