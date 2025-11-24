@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Nadeuri {
 
- String get uuid; String? get title; List<Member>? get members;
+ String? get uuid; String get title; List<Member> get members;
 /// Create a copy of Nadeuri
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $NadeuriCopyWith<$Res>  {
   factory $NadeuriCopyWith(Nadeuri value, $Res Function(Nadeuri) _then) = _$NadeuriCopyWithImpl;
 @useResult
 $Res call({
- String uuid, String? title, List<Member>? members
+ String? uuid, String title, List<Member> members
 });
 
 
@@ -65,12 +65,12 @@ class _$NadeuriCopyWithImpl<$Res>
 
 /// Create a copy of Nadeuri
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uuid = null,Object? title = freezed,Object? members = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uuid = freezed,Object? title = null,Object? members = null,}) {
   return _then(_self.copyWith(
-uuid: null == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
-as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String?,members: freezed == members ? _self.members : members // ignore: cast_nullable_to_non_nullable
-as List<Member>?,
+uuid: freezed == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
+as String?,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,members: null == members ? _self.members : members // ignore: cast_nullable_to_non_nullable
+as List<Member>,
   ));
 }
 
@@ -155,7 +155,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String uuid,  String? title,  List<Member>? members)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? uuid,  String title,  List<Member> members)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Nadeuri() when $default != null:
 return $default(_that.uuid,_that.title,_that.members);case _:
@@ -176,7 +176,7 @@ return $default(_that.uuid,_that.title,_that.members);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String uuid,  String? title,  List<Member>? members)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? uuid,  String title,  List<Member> members)  $default,) {final _that = this;
 switch (_that) {
 case _Nadeuri():
 return $default(_that.uuid,_that.title,_that.members);case _:
@@ -196,7 +196,7 @@ return $default(_that.uuid,_that.title,_that.members);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String uuid,  String? title,  List<Member>? members)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? uuid,  String title,  List<Member> members)?  $default,) {final _that = this;
 switch (_that) {
 case _Nadeuri() when $default != null:
 return $default(_that.uuid,_that.title,_that.members);case _:
@@ -211,18 +211,16 @@ return $default(_that.uuid,_that.title,_that.members);case _:
 @JsonSerializable()
 
 class _Nadeuri implements Nadeuri {
-  const _Nadeuri({required this.uuid, this.title, final  List<Member>? members}): _members = members;
+  const _Nadeuri({this.uuid, required this.title, required final  List<Member> members}): _members = members;
   factory _Nadeuri.fromJson(Map<String, dynamic> json) => _$NadeuriFromJson(json);
 
-@override final  String uuid;
-@override final  String? title;
- final  List<Member>? _members;
-@override List<Member>? get members {
-  final value = _members;
-  if (value == null) return null;
+@override final  String? uuid;
+@override final  String title;
+ final  List<Member> _members;
+@override List<Member> get members {
   if (_members is EqualUnmodifiableListView) return _members;
   // ignore: implicit_dynamic_type
-  return EqualUnmodifiableListView(value);
+  return EqualUnmodifiableListView(_members);
 }
 
 
@@ -259,7 +257,7 @@ abstract mixin class _$NadeuriCopyWith<$Res> implements $NadeuriCopyWith<$Res> {
   factory _$NadeuriCopyWith(_Nadeuri value, $Res Function(_Nadeuri) _then) = __$NadeuriCopyWithImpl;
 @override @useResult
 $Res call({
- String uuid, String? title, List<Member>? members
+ String? uuid, String title, List<Member> members
 });
 
 
@@ -276,12 +274,12 @@ class __$NadeuriCopyWithImpl<$Res>
 
 /// Create a copy of Nadeuri
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uuid = null,Object? title = freezed,Object? members = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uuid = freezed,Object? title = null,Object? members = null,}) {
   return _then(_Nadeuri(
-uuid: null == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
-as String,title: freezed == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
-as String?,members: freezed == members ? _self._members : members // ignore: cast_nullable_to_non_nullable
-as List<Member>?,
+uuid: freezed == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
+as String?,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
+as String,members: null == members ? _self._members : members // ignore: cast_nullable_to_non_nullable
+as List<Member>,
   ));
 }
 

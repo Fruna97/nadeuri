@@ -7,10 +7,10 @@ part of 'nadeuri.dart';
 // **************************************************************************
 
 _Nadeuri _$NadeuriFromJson(Map<String, dynamic> json) => _Nadeuri(
-  uuid: json['uuid'] as String,
-  title: json['title'] as String?,
-  members: (json['members'] as List<dynamic>?)
-      ?.map((e) => Member.fromJson(e as Map<String, dynamic>))
+  uuid: json['uuid'] as String?,
+  title: json['title'] as String,
+  members: (json['members'] as List<dynamic>)
+      .map((e) => Member.fromJson(e as Map<String, dynamic>))
       .toList(),
 );
 

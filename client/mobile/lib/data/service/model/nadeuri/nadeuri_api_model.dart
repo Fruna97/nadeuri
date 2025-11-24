@@ -10,22 +10,26 @@ abstract class NadeuriApiModel with _$NadeuriApiModel {
   const NadeuriApiModel._();
 
   const factory NadeuriApiModel({
-    required String uuid,
-    String? title,
-    List<MemberApiModel>? members
+    String? uuid,
+    required String title,
+    required List<MemberApiModel> members
   }) = _NadeuriApiModel;
 
   factory NadeuriApiModel.fromJson(Map<String, dynamic> json) => _$NadeuriApiModelFromJson(json);
 
   static NadeuriApiModel fromNadeuri(Nadeuri nadeuri) {
-    return NadeuriApiModel(uuid: nadeuri.uuid, title: nadeuri.title);
+    return NadeuriApiModel(
+      uuid: nadeuri.uuid,
+      title: nadeuri.title,
+      members: nadeuri.members.map((member) => MemberApiModel.fromMember(member)).toList(),
+    );
   }
 
   Nadeuri toNadeuri() {
     return Nadeuri(
       uuid: uuid,
       title: title,
-      members: members?.map((memberApiModel) => memberApiModel.toMember()).toList(),
+      members: members.map((memberApiModel) => memberApiModel.toMember()).toList(),
     );
   }
 }

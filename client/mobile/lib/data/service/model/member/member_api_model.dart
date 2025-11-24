@@ -17,6 +17,15 @@ abstract class MemberApiModel with _$MemberApiModel {
 
   factory MemberApiModel.fromJson(Map<String, dynamic> json) => _$MemberApiModelFromJson(json);
 
+  static MemberApiModel fromMember(Member member) {
+    return MemberApiModel(
+      uuid: member.uuid,
+      email: member.email,
+      nickname: member.nickname,
+      profileImageUrl: member.profileImageUrl,
+    );
+  }
+
   Member toMember() {
     return Member(uuid: uuid, email: email, nickname: nickname, profileImageUrl: profileImageUrl);
   }

@@ -7,9 +7,9 @@ part 'nadeuri.g.dart';
 @freezed
 abstract class Nadeuri with _$Nadeuri {
   const factory Nadeuri({
-    required String uuid,
-    String? title,
-    List<Member>? members
+    String? uuid,
+    required String title,
+    required List<Member> members
   }) = _Nadeuri;
 
   factory Nadeuri.fromJson(Map<String, dynamic> json) => _$NadeuriFromJson(json);
