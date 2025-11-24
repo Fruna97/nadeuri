@@ -10,8 +10,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class UpdateNadeuriTitleRequest {
+public class UpdateNadeuriRequest {
 
     @Size(max = 100)
-    private String newTitle;
+    private String title;
 }

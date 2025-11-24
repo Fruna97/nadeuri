@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.NadeuriSummaryResponse;
-import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriTitleRequest;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import com.github.fruna97.nadeuri.domain.nadeuri.repository.NadeuriRepository;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
@@ -66,8 +66,8 @@ public class NadeuriServiceImpl implements NadeuriService {
 
     @Override
     @Transactional
-    public void updateNadeuriTitle(PrincipalDetails principalDetails, UUID nadeuriUuid,
-            UpdateNadeuriTitleRequest updateNadeuriTitleRequest) {
+    public void updateNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid,
+            UpdateNadeuriRequest updateNadeuriRequest) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid).orElseThrow();
 
         if (!hasAuthorityToNadeuri(principalDetails, nadeuri)) {
@@ -75,7 +75,7 @@ public class NadeuriServiceImpl implements NadeuriService {
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
 
-        nadeuri.setTitle(updateNadeuriTitleRequest.getNewTitle());
+        if (updateNadeuriRequest.getTitle() != null) nadeuri.setTitle(updateNadeuriRequest.getTitle());
     }
 
     /**

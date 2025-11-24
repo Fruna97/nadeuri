@@ -24,7 +24,7 @@ import com.github.fruna97.nadeuri.domain.member.dto.MemberSummaryResponse;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.NadeuriSummaryResponse;
-import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriTitleRequest;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import com.github.fruna97.nadeuri.domain.nadeuri.repository.NadeuriRepository;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
@@ -191,7 +191,7 @@ class NadeuriServiceImplTest {
     }
 
     @Test
-    void updateNadeuriTitle() {
+    void updateNadeuri() {
         // Given
         long memberId1 = 0L;
         Member member1 = Member.builder()
@@ -212,19 +212,19 @@ class NadeuriServiceImplTest {
 
         String newTitle = "New Title";
         PrincipalDetails principalDetails1 = new PrincipalDetails(memberId1, null, null, null);
-        UpdateNadeuriTitleRequest updateNadeuriTitleRequest = UpdateNadeuriTitleRequest.builder()
-                .newTitle(newTitle).build();
+        UpdateNadeuriRequest updateNadeuriTitleRequest = UpdateNadeuriRequest.builder()
+                .title(newTitle).build();
         
 
         // When
-        nadeuriServiceImpl.updateNadeuriTitle(principalDetails1, nadeuriUuid, updateNadeuriTitleRequest);
+        nadeuriServiceImpl.updateNadeuri(principalDetails1, nadeuriUuid, updateNadeuriTitleRequest);
 
         // Then
         verify(spyNadeuri).setTitle(newTitle); // 새로운 제목을 인자로 넣어 [setTitle]을 호출하는지
     }
 
     @Test
-    void updateNadeuriTitle_수정권한이없는회원() {
+    void updateNadeuri_수정권한이없는회원() {
         // Given
         long memberHasAuthorityId = 0L;
         Member memberHasAuthority = Member.builder()
@@ -242,13 +242,13 @@ class NadeuriServiceImplTest {
         long memberWithoutAuthorityId = 1L;
         String newTitle = "New Title";
         PrincipalDetails principalDetailsWithoutAuthority = new PrincipalDetails(memberWithoutAuthorityId, null, null, null);
-        UpdateNadeuriTitleRequest updateNadeuriTitleRequest = UpdateNadeuriTitleRequest.builder()
-                .newTitle(newTitle).build();
+        UpdateNadeuriRequest updateNadeuriTitleRequest = UpdateNadeuriRequest.builder()
+                .title(newTitle).build();
 
         // When
         // Then
         assertThrows(AuthenticationException.class, () -> {
-            nadeuriServiceImpl.updateNadeuriTitle(principalDetailsWithoutAuthority, nadeuriUuid,
+            nadeuriServiceImpl.updateNadeuri(principalDetailsWithoutAuthority, nadeuriUuid,
                     updateNadeuriTitleRequest);
         }); // Nadeuri에 참가중이지 않은 회원이 수정 요청을 했을 때, 인증 예외를 발생시키는지
     }

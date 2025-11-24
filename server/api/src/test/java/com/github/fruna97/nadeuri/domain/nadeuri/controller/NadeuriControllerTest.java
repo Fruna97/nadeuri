@@ -19,7 +19,7 @@ import org.springframework.http.ResponseEntity;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.NadeuriSummaryResponse;
-import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriTitleRequest;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.service.NadeuriService;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
@@ -96,17 +96,17 @@ class NadeuriControllerTest {
     }
 
     @Test
-    void updateNadeuriTitle() {
+    void updateNadeuri() {
         // Given
         UUID nadeuriUuid = UUID.randomUUID();
 
         String newTitle = "new Title";
-        UpdateNadeuriTitleRequest updateNadeuriTitleRequest =
-                UpdateNadeuriTitleRequest.builder().newTitle(newTitle).build();
+        UpdateNadeuriRequest updateNadeuriTitleRequest =
+                UpdateNadeuriRequest.builder().title(newTitle).build();
 
         // When
         ResponseEntity<ResponseDto<Void>> result = nadeuriController
-                .updateNadeuriTitle(principalDetails, nadeuriUuid, updateNadeuriTitleRequest);
+                .updateNadeuri(principalDetails, nadeuriUuid, updateNadeuriTitleRequest);
 
         // Then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환하는지
