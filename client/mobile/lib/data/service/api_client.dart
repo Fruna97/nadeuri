@@ -13,7 +13,7 @@ import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
 import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/utils/result.dart';
 
-enum RequestMethod { signUp, getMyProfile, signIn, getParticipatingNadeuris, postNadeuri }
+enum RequestMethod { signUp, getMyProfile, signIn, postNadeuri, getParticipatingNadeuris }
 
 class ApiClient {
   final String _logTag = "ApiClient";
@@ -78,12 +78,12 @@ class ApiClient {
     );
   }
 
-  Future<Result<void>> postNadeuri(NadeuriApiModel nadeuriApiModel) async {
+  Future<Result<NadeuriApiModel>> postNadeuri(NadeuriApiModel nadeuriApiModel) async {
     final String endpoint = "/nadeuri";
     return await _requestAndParse(
       RequestMethod.postNadeuri,
       () => _dioWithToken.post(endpoint, data: nadeuriApiModel.toJson()),
-      null,
+      (data) => NadeuriApiModel.fromJson(data as Map<String, dynamic>),
     );
   }
 
@@ -182,13 +182,13 @@ class ApiClient {
         HttpStatus.unprocessableEntity => "validationError",
         _ => "unknownError",
       },
-      RequestMethod.getParticipatingNadeuris => switch (statusCode) {
-        HttpStatus.unauthorized => "unauthorized",
-        _ => "unknownError",
-      },
       RequestMethod.postNadeuri => switch (statusCode) {
         HttpStatus.unauthorized => "unauthorized",
         HttpStatus.unprocessableEntity => "validationError",
+        _ => "unknownError",
+      },
+      RequestMethod.getParticipatingNadeuris => switch (statusCode) {
+        HttpStatus.unauthorized => "unauthorized",
         _ => "unknownError",
       },
     };

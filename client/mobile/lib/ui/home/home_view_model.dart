@@ -64,22 +64,22 @@ class HomeViewModel extends ChangeNotifier {
 
     // Optimistic 상태 반영
     String? profileImgUrl = _prefsWithCache.getString("profile.profileImgUrl");
-    Nadeuri nadeuri = Nadeuri(
+    Nadeuri tmpNadeuri = Nadeuri(
       title: title,
       members: <Member>[Member(uuid: "member_uuid", email: "email", profileImageUrl: profileImgUrl)],
     );
-    _nadeuris = [nadeuri, ..._nadeuris];
+    _nadeuris = [tmpNadeuri, ..._nadeuris];
     notifyListeners();
 
-    final Result result = await _nadeuriRepository.createNadeuri(nadeuri);
+    final Result<Nadeuri> result = await _nadeuriRepository.createNadeuri(tmpNadeuri);
     switch (result) {
-      case Ok _:
-        break;
-      case Error _:
+      case Ok<Nadeuri> _:
+        _nadeuris = [result.value, ...oldNadeuris];
+      case Error<Nadeuri> _:
         _nadeuris = oldNadeuris;
-        notifyListeners();
     }
 
+    notifyListeners();
     return result;
   }
 }
