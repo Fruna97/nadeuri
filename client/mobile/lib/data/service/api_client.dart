@@ -13,7 +13,7 @@ import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
 import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/utils/result.dart';
 
-enum RequestMethod { signUp, getMyProfile, signIn, postNadeuri, getParticipatingNadeuris }
+enum RequestMethod { signUp, getMyProfile, signIn, postNadeuri, getNadeuri, getParticipatingNadeuris }
 
 class ApiClient {
   final String _logTag = "ApiClient";
@@ -87,6 +87,15 @@ class ApiClient {
     );
   }
 
+  Future<Result<NadeuriApiModel>> getNadeuri(String uuid) async {
+    final String endpoint = "/nadeuri/$uuid";
+    return await _requestAndParse(
+      RequestMethod.postNadeuri,
+      () => _dioWithToken.get(endpoint),
+      (data) => NadeuriApiModel.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
   Future<Result<List<NadeuriApiModel>>> getParticipatingNadeuris() async {
     final String endpoint = "/nadeuri/participating";
     return await _requestAndParse<List<NadeuriApiModel>>(
@@ -102,11 +111,11 @@ class ApiClient {
   }
 
   /// HTTP 요청을 보내고 응답을 받아, 응답 본문의 데이터를 파싱.
-  /// 
+  ///
   /// [requestMethod]는 응답 오류 시, 오류 정보 파싱을 위해 사용됨.
-  /// 
+  ///
   /// 클래스에 선언된 [Dio] 객체의 HTTP 메서드를 [dioRequest] 콜백으로 전달하여 사용.
-  /// 
+  ///
   /// 요청 성공 시 JSON 본문 [data] 키에 담긴 값을 파싱하기 위해 [parser]를 지정할 수 있음.
   /// 받을 데이터가 없는 경우 [parser]를 [null]로, 제네릭 [T]를 [void]로 지정해야함.
   Future<Result<T>> _requestAndParse<T>(
@@ -161,7 +170,8 @@ class ApiClient {
     log("응답 메시지 (${requestMethod.name}): $message", name: _logTag);
 
     Map<String, dynamic> data;
-    if (statusCode == HttpStatus.unprocessableEntity) { // 요청 본문 Validation 오류인 경우 [info] 키로 한번 더 감싸서 파싱
+    if (statusCode == HttpStatus.unprocessableEntity) {
+      // 요청 본문 Validation 오류인 경우 [info] 키로 한번 더 감싸서 파싱
       data = {"info": body["data"]};
     } else {
       data = body["data"] ?? <String, dynamic>{};
@@ -185,6 +195,10 @@ class ApiClient {
       RequestMethod.postNadeuri => switch (statusCode) {
         HttpStatus.unauthorized => "unauthorized",
         HttpStatus.unprocessableEntity => "validationError",
+        _ => "unknownError",
+      },
+      RequestMethod.getNadeuri => switch (statusCode) {
+        HttpStatus.unauthorized => "unauthorized",
         _ => "unknownError",
       },
       RequestMethod.getParticipatingNadeuris => switch (statusCode) {
