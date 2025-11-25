@@ -1,6 +1,7 @@
 import 'dart:math' show min;
 
 import 'package:flutter/material.dart';
+import 'package:mobile/data/repository/nadeuri_repository.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/domain/model/member/member.dart';
@@ -303,8 +304,12 @@ class _NadeuriCard extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute<void>(
-                builder: (context) =>
-                    NadeuriDetailsPage(nadeuriDetailsViewModel: NadeuriDetailsViewModel(nadeuri: _nadeuri)),
+                builder: (context) => NadeuriDetailsPage(
+                  nadeuriDetailsViewModel: NadeuriDetailsViewModel(
+                    nadeuri: _nadeuri,
+                    nadeuriRepository: context.read<NadeuriRepository>(),
+                  ),
+                ),
               ),
             );
           },
