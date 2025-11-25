@@ -38,15 +38,40 @@ class NadeuriRepository {
     }
   }
 
+  Future<Result<Nadeuri>> getNadeuri(String uuid) async {
+    Result<NadeuriApiModel> result = await _apiClient.getNadeuri(uuid);
+
+    switch (result) {
+      case Ok<NadeuriApiModel> _:
+        log("Result is Ok: ${result.value}", name: _logTag);
+        return Result.ok(result.value.toNadeuri());
+      case Error<NadeuriApiModel> _:
+        Exception error = result.error;
+        switch (error) {
+          case Unauthorized _:
+            log("Result is Unauthorized", name: _logTag);
+          case RequestTimeout _:
+            log("Result is RequestTimeout", name: _logTag);
+          case UnknownError _:
+            log("Result is UnknownError", name: _logTag);
+          case TokenNotFound _:
+            log("Result is TokenNotFound", name: _logTag);
+        }
+
+        return Result.error(error);
+    }
+  }
+
   Future<Result<List<Nadeuri>>> getParticipatingNadeuris() async {
     Result<List<NadeuriApiModel>> result = await _apiClient.getParticipatingNadeuris();
-  
+
     switch (result) {
       case Ok<List<NadeuriApiModel>> _:
-        List<NadeuriApiModel> value = result.value;
-        List<Nadeuri> nadeuris = value.map((nadeuriApiModel) => nadeuriApiModel.toNadeuri()).toList();
-        log("Result is Ok: $nadeuris", name: _logTag);
-        return Result.ok(nadeuris);
+        List<Nadeuri> participatingNadeuris = result.value
+            .map((nadeuriApiModel) => nadeuriApiModel.toNadeuri())
+            .toList();
+        log("Result is Ok: $participatingNadeuris", name: _logTag);
+        return Result.ok(participatingNadeuris);
       case Error<List<NadeuriApiModel>> _:
         Exception error = result.error;
         switch (error) {
@@ -59,7 +84,7 @@ class NadeuriRepository {
           case TokenNotFound _:
             log("Result is TokenNotFound", name: _logTag);
         }
-        
+
         return Result.error(error);
     }
   }
