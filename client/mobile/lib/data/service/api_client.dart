@@ -91,7 +91,7 @@ class ApiClient {
   Future<Result<NadeuriApiModel>> getNadeuri(String uuid) async {
     final String endpoint = "/nadeuri/$uuid";
     return await _requestAndParse(
-      RequestMethod.postNadeuri,
+      RequestMethod.getNadeuri,
       () => _dioWithToken.get(endpoint),
       (data) => NadeuriApiModel.fromJson(data as Map<String, dynamic>),
     );
