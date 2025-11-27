@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mobile/data/service/model/api_error/api_error.dart';
+import 'package:mobile/data/service/model/local_error/local_error.dart';
+import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/nadeuri/details/nadeuri_details_view_model.dart';
+import 'package:mobile/utils/result.dart';
+import 'package:provider/provider.dart';
 
 class NadeuriDetailsPage extends StatelessWidget {
   final NadeuriDetailsViewModel _nadeuriDetailsViewModel;
@@ -53,6 +58,9 @@ class _NadeuriTitleSectionState extends State<_NadeuriTitleSection> {
     super.initState();
 
     _nadeuriTitleController = TextEditingController(text: widget._nadeuriDetailsViewModel.nadeuri.title);
+
+    widget._nadeuriDetailsViewModel.load.addListener(_onLoad);
+    widget._nadeuriDetailsViewModel.updateNadeuri.addListener(_onUpdateNadeuri);
   }
 
   @override
@@ -64,35 +72,86 @@ class _NadeuriTitleSectionState extends State<_NadeuriTitleSection> {
             onSubmitted: (value) {
               setState(() {
                 _nadeuriTextFieldReadOnly = true;
+                _onTitleFixed();
               });
             },
             onTapOutside: (event) {
               setState(() {
                 _nadeuriTextFieldReadOnly = true;
+                _onTitleFixed();
               });
             },
             controller: _nadeuriTitleController,
             focusNode: _nadeuriTitleFocusNode,
-            decoration: InputDecoration(hintText: "나들이 제목을 지정해보세요!", border: InputBorder.none),
+            decoration: InputDecoration(
+              hintText: "나들이 제목을 지정해보세요!",
+              border: InputBorder.none,
+              suffixIcon: IconButton(
+                onPressed: () {
+                  setState(() {
+                    _nadeuriTextFieldReadOnly = !_nadeuriTextFieldReadOnly;
+                    if (_nadeuriTextFieldReadOnly) {
+                      _nadeuriTitleFocusNode.unfocus();
+                      _onTitleFixed();
+                    } else {
+                      _nadeuriTitleFocusNode.requestFocus();
+                    }
+                  });
+                },
+                icon: Icon(Icons.edit),
+              ),
+            ),
             style: TextStyle(fontSize: 20.0),
             readOnly: _nadeuriTextFieldReadOnly,
           ),
         ),
-        IconButton(
-          onPressed: () {
-            setState(() {
-              _nadeuriTextFieldReadOnly = !_nadeuriTextFieldReadOnly;
-              if (_nadeuriTextFieldReadOnly) {
-                _nadeuriTitleFocusNode.unfocus();
-              } else {
-                _nadeuriTitleFocusNode.requestFocus();
-              }
-            });
-          },
-          icon: Icon(Icons.edit),
-        ),
       ],
     );
+  }
+
+  @override
+  void dispose() {
+    widget._nadeuriDetailsViewModel.updateNadeuri.removeListener(_onUpdateNadeuri);
+    widget._nadeuriDetailsViewModel.load.removeListener(_onLoad);
+
+    super.dispose();
+  }
+
+  /// 원래 제목과 다르면 업데이트 시도
+  void _onTitleFixed() {
+    if (_nadeuriTitleController.text == widget._nadeuriDetailsViewModel.nadeuri.title) {
+      return;
+    }
+
+    widget._nadeuriDetailsViewModel.updateNadeuri.execute((_nadeuriTitleController.text,));
+  }
+
+  /// 인증에 문제가 있으면 로그인 페이지로 이동.
+  void _onLoad() {
+    if (widget._nadeuriDetailsViewModel.load.error && mounted) {
+      final Error result = widget._nadeuriDetailsViewModel.load.result! as Error;
+      final Exception error = result.error;
+
+      if (error is Unauthorized || error is TokenNotFound) {
+        widget._nadeuriDetailsViewModel.load.clearResult();
+        context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
+        Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
+      }
+    }
+  }
+
+  /// 인증에 문제가 있으면 로그인 페이지로 이동.
+  void _onUpdateNadeuri() {
+    if (widget._nadeuriDetailsViewModel.updateNadeuri.error && mounted) {
+      final Error result = widget._nadeuriDetailsViewModel.updateNadeuri.result! as Error;
+      final Exception error = result.error;
+
+      if (error is Unauthorized || error is TokenNotFound) {
+        widget._nadeuriDetailsViewModel.updateNadeuri.clearResult();
+        context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
+        Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
+      }
+    }
   }
 }
 

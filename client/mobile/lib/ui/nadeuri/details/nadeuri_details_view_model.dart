@@ -11,20 +11,22 @@ class NadeuriDetailsViewModel extends ChangeNotifier {
 
   final NadeuriRepository _nadeuriRepository;
 
-  late final Command1 load;
+  late final Command0 load;
+  late final Command1<void, (String,)> updateNadeuri;
 
   Nadeuri _nadeuri;
 
   NadeuriDetailsViewModel({required Nadeuri nadeuri, required NadeuriRepository nadeuriRepository})
     : _nadeuri = nadeuri,
       _nadeuriRepository = nadeuriRepository {
-    load = Command1<void, String>(_load)..execute(nadeuri.uuid!);
+    load = Command0(_load)..execute();
+    updateNadeuri = Command1(_updateNadeuri);
   }
 
   Nadeuri get nadeuri => _nadeuri;
 
-  Future<Result> _load(String uuid) async {
-    Result<Nadeuri> result = await _nadeuriRepository.getNadeuri(uuid);
+  Future<Result> _load() async {
+    Result<Nadeuri> result = await _nadeuriRepository.getNadeuri(nadeuri.uuid!);
     switch (result) {
       case Ok<Nadeuri> _:
         _nadeuri = result.value;
@@ -33,6 +35,21 @@ class NadeuriDetailsViewModel extends ChangeNotifier {
       case Error<Nadeuri> _:
         log("Nadeuri 조회 실패", name: _logTag);
     }
+    return result;
+  }
+
+  Future<Result> _updateNadeuri((String title,) updateInfo) async {
+    final (title,) = updateInfo;
+
+    Result<Nadeuri> result = await _nadeuriRepository.updateNadeuri(nadeuri.uuid!, title);
+    switch (result) {
+      case Ok<Nadeuri> _:
+        _nadeuri = result.value;
+        log("Nadeuri 업데이트 완료: ${_nadeuri}", name: _logTag);
+      case Error<Nadeuri> _:
+        log("Nadeuri 업데이트 실패", name: _logTag);
+    }
+    notifyListeners();
     return result;
   }
 }
