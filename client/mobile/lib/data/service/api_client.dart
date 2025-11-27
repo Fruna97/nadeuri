@@ -8,12 +8,13 @@ import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/data/service/model/member/member_api_model.dart';
 import 'package:mobile/data/service/model/nadeuri/nadeuri_api_model.dart';
+import 'package:mobile/data/service/model/nadeuri/update_nadeuri_api_model.dart';
 import 'package:mobile/data/service/model/sign_in_request/sign_in_request.dart';
 import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
 import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/utils/result.dart';
 
-enum RequestMethod { signUp, getMyProfile, signIn, postNadeuri, getNadeuri, getParticipatingNadeuris }
+enum RequestMethod { signUp, getMyProfile, signIn, postNadeuri, getNadeuri, getParticipatingNadeuris, updateNadeuri }
 
 class ApiClient {
   final String _logTag = "ApiClient";
@@ -80,7 +81,7 @@ class ApiClient {
 
   Future<Result<NadeuriApiModel>> postNadeuri(NadeuriApiModel nadeuriApiModel) async {
     final String endpoint = "/nadeuri";
-    return await _requestAndParse(
+    return await _requestAndParse<NadeuriApiModel>(
       RequestMethod.postNadeuri,
       () => _dioWithToken.post(endpoint, data: nadeuriApiModel.toJson()),
       (data) => NadeuriApiModel.fromJson(data as Map<String, dynamic>),
@@ -107,6 +108,15 @@ class ApiClient {
             .map((element) => NadeuriApiModel.fromJson(element))
             .toList();
       },
+    );
+  }
+
+  Future<Result<NadeuriApiModel>> updateNadeuri(String uuid, UpdateNadeuriApiModel updateNadeuriApiModel) async {
+    final String endpoint = "/nadeuri/$uuid";
+    return await _requestAndParse<NadeuriApiModel>(
+      RequestMethod.updateNadeuri,
+      () => _dioWithToken.patch(endpoint, data: updateNadeuriApiModel.toJson()),
+      (data) => NadeuriApiModel.fromJson(data as Map<String, dynamic>),
     );
   }
 
@@ -203,6 +213,11 @@ class ApiClient {
       },
       RequestMethod.getParticipatingNadeuris => switch (statusCode) {
         HttpStatus.unauthorized => "unauthorized",
+        _ => "unknownError",
+      },
+      RequestMethod.updateNadeuri => switch (statusCode) {
+        HttpStatus.unauthorized => "unauthorized",
+        HttpStatus.unprocessableEntity => "validationError",
         _ => "unknownError",
       },
     };
