@@ -4,6 +4,7 @@ import 'package:mobile/data/service/api_client.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/data/service/model/nadeuri/nadeuri_api_model.dart';
+import 'package:mobile/data/service/model/nadeuri/update_nadeuri_api_model.dart';
 import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
 import 'package:mobile/utils/result.dart';
 
@@ -33,6 +34,8 @@ class NadeuriRepository {
             log("Result is ValidationError: $error", name: _logTag);
           case UnknownError _:
             log("Result is UnknownError", name: _logTag);
+          case TokenNotFound _:
+            log("Result is TokenNotFound", name: _logTag);
         }
         return Result.error(error);
     }
@@ -85,6 +88,31 @@ class NadeuriRepository {
             log("Result is TokenNotFound", name: _logTag);
         }
 
+        return Result.error(error);
+    }
+  }
+
+  Future<Result<Nadeuri>> updateNadeuri(String uuid, String title) async {
+    Result<NadeuriApiModel> result = await _apiClient.updateNadeuri(uuid, UpdateNadeuriApiModel(title: title));
+
+    switch (result) {
+      case Ok<NadeuriApiModel> _:
+        log("Result is Ok: ${result.value}", name: _logTag);
+        return Result.ok(result.value.toNadeuri());
+      case Error<NadeuriApiModel> _:
+        Exception error = result.error;
+        switch (error) {
+          case Unauthorized _:
+            log("Result is Unauthorized", name: _logTag);
+          case RequestTimeout _:
+            log("Result is RequestTimeout", name: _logTag);
+          case ValidationError _:
+            log("Result is ValidationError: $error", name: _logTag);
+          case UnknownError _:
+            log("Result is UnknownError", name: _logTag);
+          case TokenNotFound _:
+            log("Result is TokenNotFound", name: _logTag);
+        }
         return Result.error(error);
     }
   }
