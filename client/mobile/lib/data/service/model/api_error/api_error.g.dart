@@ -12,6 +12,13 @@ Unauthorized _$UnauthorizedFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$UnauthorizedToJson(Unauthorized instance) =>
     <String, dynamic>{'runtimeType': instance.$type};
 
+NotFound _$NotFoundFromJson(Map<String, dynamic> json) =>
+    NotFound($type: json['runtimeType'] as String?);
+
+Map<String, dynamic> _$NotFoundToJson(NotFound instance) => <String, dynamic>{
+  'runtimeType': instance.$type,
+};
+
 RequestTimeout _$RequestTimeoutFromJson(Map<String, dynamic> json) =>
     RequestTimeout($type: json['runtimeType'] as String?);
 

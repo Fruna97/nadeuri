@@ -209,6 +209,7 @@ class ApiClient {
       },
       RequestMethod.getNadeuri => switch (statusCode) {
         HttpStatus.unauthorized => "unauthorized",
+        HttpStatus.notFound => "notFound",
         _ => "unknownError",
       },
       RequestMethod.getParticipatingNadeuris => switch (statusCode) {
@@ -217,6 +218,7 @@ class ApiClient {
       },
       RequestMethod.updateNadeuri => switch (statusCode) {
         HttpStatus.unauthorized => "unauthorized",
+        HttpStatus.notFound => "notFound",
         HttpStatus.unprocessableEntity => "validationError",
         _ => "unknownError",
       },

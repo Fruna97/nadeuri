@@ -19,6 +19,10 @@ ApiError _$ApiErrorFromJson(
           return Unauthorized.fromJson(
             json
           );
+                case 'notFound':
+          return NotFound.fromJson(
+            json
+          );
                 case 'requestTimeout':
           return RequestTimeout.fromJson(
             json
@@ -93,11 +97,12 @@ extension ApiErrorPatterns on ApiError {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Unauthorized value)?  unauthorized,TResult Function( RequestTimeout value)?  requestTimeout,TResult Function( DuplicateEmail value)?  duplicateEmail,TResult Function( ValidationError value)?  validationError,TResult Function( UnknownError value)?  unknownError,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( Unauthorized value)?  unauthorized,TResult Function( NotFound value)?  notFound,TResult Function( RequestTimeout value)?  requestTimeout,TResult Function( DuplicateEmail value)?  duplicateEmail,TResult Function( ValidationError value)?  validationError,TResult Function( UnknownError value)?  unknownError,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case Unauthorized() when unauthorized != null:
-return unauthorized(_that);case RequestTimeout() when requestTimeout != null:
+return unauthorized(_that);case NotFound() when notFound != null:
+return notFound(_that);case RequestTimeout() when requestTimeout != null:
 return requestTimeout(_that);case DuplicateEmail() when duplicateEmail != null:
 return duplicateEmail(_that);case ValidationError() when validationError != null:
 return validationError(_that);case UnknownError() when unknownError != null:
@@ -119,11 +124,12 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Unauthorized value)  unauthorized,required TResult Function( RequestTimeout value)  requestTimeout,required TResult Function( DuplicateEmail value)  duplicateEmail,required TResult Function( ValidationError value)  validationError,required TResult Function( UnknownError value)  unknownError,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( Unauthorized value)  unauthorized,required TResult Function( NotFound value)  notFound,required TResult Function( RequestTimeout value)  requestTimeout,required TResult Function( DuplicateEmail value)  duplicateEmail,required TResult Function( ValidationError value)  validationError,required TResult Function( UnknownError value)  unknownError,}){
 final _that = this;
 switch (_that) {
 case Unauthorized():
-return unauthorized(_that);case RequestTimeout():
+return unauthorized(_that);case NotFound():
+return notFound(_that);case RequestTimeout():
 return requestTimeout(_that);case DuplicateEmail():
 return duplicateEmail(_that);case ValidationError():
 return validationError(_that);case UnknownError():
@@ -144,11 +150,12 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Unauthorized value)?  unauthorized,TResult? Function( RequestTimeout value)?  requestTimeout,TResult? Function( DuplicateEmail value)?  duplicateEmail,TResult? Function( ValidationError value)?  validationError,TResult? Function( UnknownError value)?  unknownError,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( Unauthorized value)?  unauthorized,TResult? Function( NotFound value)?  notFound,TResult? Function( RequestTimeout value)?  requestTimeout,TResult? Function( DuplicateEmail value)?  duplicateEmail,TResult? Function( ValidationError value)?  validationError,TResult? Function( UnknownError value)?  unknownError,}){
 final _that = this;
 switch (_that) {
 case Unauthorized() when unauthorized != null:
-return unauthorized(_that);case RequestTimeout() when requestTimeout != null:
+return unauthorized(_that);case NotFound() when notFound != null:
+return notFound(_that);case RequestTimeout() when requestTimeout != null:
 return requestTimeout(_that);case DuplicateEmail() when duplicateEmail != null:
 return duplicateEmail(_that);case ValidationError() when validationError != null:
 return validationError(_that);case UnknownError() when unknownError != null:
@@ -169,10 +176,11 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  unauthorized,TResult Function()?  requestTimeout,TResult Function()?  duplicateEmail,TResult Function( Map<String, List<String>> info)?  validationError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  unauthorized,TResult Function()?  notFound,TResult Function()?  requestTimeout,TResult Function()?  duplicateEmail,TResult Function( Map<String, List<String>> info)?  validationError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Unauthorized() when unauthorized != null:
-return unauthorized();case RequestTimeout() when requestTimeout != null:
+return unauthorized();case NotFound() when notFound != null:
+return notFound();case RequestTimeout() when requestTimeout != null:
 return requestTimeout();case DuplicateEmail() when duplicateEmail != null:
 return duplicateEmail();case ValidationError() when validationError != null:
 return validationError(_that.info);case UnknownError() when unknownError != null:
@@ -194,10 +202,11 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  unauthorized,required TResult Function()  requestTimeout,required TResult Function()  duplicateEmail,required TResult Function( Map<String, List<String>> info)  validationError,required TResult Function()  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  unauthorized,required TResult Function()  notFound,required TResult Function()  requestTimeout,required TResult Function()  duplicateEmail,required TResult Function( Map<String, List<String>> info)  validationError,required TResult Function()  unknownError,}) {final _that = this;
 switch (_that) {
 case Unauthorized():
-return unauthorized();case RequestTimeout():
+return unauthorized();case NotFound():
+return notFound();case RequestTimeout():
 return requestTimeout();case DuplicateEmail():
 return duplicateEmail();case ValidationError():
 return validationError(_that.info);case UnknownError():
@@ -218,10 +227,11 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  unauthorized,TResult? Function()?  requestTimeout,TResult? Function()?  duplicateEmail,TResult? Function( Map<String, List<String>> info)?  validationError,TResult? Function()?  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  unauthorized,TResult? Function()?  notFound,TResult? Function()?  requestTimeout,TResult? Function()?  duplicateEmail,TResult? Function( Map<String, List<String>> info)?  validationError,TResult? Function()?  unknownError,}) {final _that = this;
 switch (_that) {
 case Unauthorized() when unauthorized != null:
-return unauthorized();case RequestTimeout() when requestTimeout != null:
+return unauthorized();case NotFound() when notFound != null:
+return notFound();case RequestTimeout() when requestTimeout != null:
 return requestTimeout();case DuplicateEmail() when duplicateEmail != null:
 return duplicateEmail();case ValidationError() when validationError != null:
 return validationError(_that.info);case UnknownError() when unknownError != null:
@@ -264,6 +274,45 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'ApiError.unauthorized()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+@JsonSerializable()
+
+class NotFound implements ApiError {
+  const NotFound({final  String? $type}): $type = $type ?? 'notFound';
+  factory NotFound.fromJson(Map<String, dynamic> json) => _$NotFoundFromJson(json);
+
+
+
+@JsonKey(name: 'runtimeType')
+final String $type;
+
+
+
+@override
+Map<String, dynamic> toJson() {
+  return _$NotFoundToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotFound);
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'ApiError.notFound()';
 }
 
 

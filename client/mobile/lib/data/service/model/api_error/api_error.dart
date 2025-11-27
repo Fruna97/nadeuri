@@ -7,6 +7,8 @@ part 'api_error.g.dart';
 abstract class ApiError with _$ApiError implements Exception {
   const factory ApiError.unauthorized() = Unauthorized;
 
+  const factory ApiError.notFound() = NotFound;
+
   const factory ApiError.requestTimeout() = RequestTimeout;
 
   const factory ApiError.duplicateEmail() = DuplicateEmail;
