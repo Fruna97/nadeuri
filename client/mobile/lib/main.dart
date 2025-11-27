@@ -14,6 +14,8 @@ import 'package:mobile/ui/sign_up/sign_up_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
+
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -84,6 +86,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
         useMaterial3: true,
       ),
+      navigatorObservers: [routeObserver],
       routes: {
         '/home': (BuildContext context) => ChangeNotifierProvider(
           create: (_) => HomeViewModel(

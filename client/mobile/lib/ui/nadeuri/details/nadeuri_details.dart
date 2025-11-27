@@ -67,6 +67,11 @@ class _NadeuriDetailsPageState extends State<NadeuriDetailsPage> {
         context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
         Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
       }
+      if (error is NotFound) {
+        widget._nadeuriDetailsViewModel.load.clearResult();
+        context.read<AppSnackBar>().showSnackBar("나들이 정보가 없습니다.");
+        Navigator.pop(context);
+      }
     }
   }
 }

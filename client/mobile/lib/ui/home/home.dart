@@ -6,6 +6,7 @@ import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/domain/model/member/member.dart';
 import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
+import 'package:mobile/main.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/home/home_view_model.dart';
 import 'package:mobile/ui/nadeuri/details/nadeuri_details.dart';
@@ -20,7 +21,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with RouteAware {
   late final HomeViewModel _homeViewModel;
 
   @override
@@ -31,6 +32,13 @@ class _HomePageState extends State<HomePage> {
 
     _homeViewModel.load.addListener(_onLoad);
     _homeViewModel.createNadeuri.addListener(_onCreateNadeuri);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
@@ -81,6 +89,16 @@ class _HomePageState extends State<HomePage> {
     _homeViewModel.load.removeListener(_onLoad);
 
     super.dispose();
+  }
+
+  @override
+  Future<void> didPopNext() async {
+    super.didPopNext();
+    
+    _homeViewModel.isRefreshing = true;
+    _homeViewModel.load.clearResult();
+    await _homeViewModel.load.execute();
+    _homeViewModel.isRefreshing = false;
   }
 
   /// 인증에 문제가 있으면 로그인 페이지로 이동.
@@ -353,7 +371,7 @@ class _NadeuriCard extends StatelessWidget {
                 ),
                 SizedBox(height: 12.0),
                 Text(
-                  _nadeuri.title ?? "",
+                  _nadeuri.title,
                   style: TextStyle(fontWeight: FontWeight.bold),
                   overflow: TextOverflow.ellipsis,
                 ),
