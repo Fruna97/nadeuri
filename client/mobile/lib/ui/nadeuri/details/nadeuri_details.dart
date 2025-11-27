@@ -6,11 +6,25 @@ import 'package:mobile/ui/nadeuri/details/nadeuri_details_view_model.dart';
 import 'package:mobile/utils/result.dart';
 import 'package:provider/provider.dart';
 
-class NadeuriDetailsPage extends StatelessWidget {
+class NadeuriDetailsPage extends StatefulWidget {
+
   final NadeuriDetailsViewModel _nadeuriDetailsViewModel;
 
   const NadeuriDetailsPage({super.key, required NadeuriDetailsViewModel nadeuriDetailsViewModel})
     : _nadeuriDetailsViewModel = nadeuriDetailsViewModel;
+
+  @override
+  State<NadeuriDetailsPage> createState() => _NadeuriDetailsPageState();
+}
+
+class _NadeuriDetailsPageState extends State<NadeuriDetailsPage> {
+
+  @override
+  void initState() {
+    super.initState();
+
+    widget._nadeuriDetailsViewModel.load.addListener(_onLoad);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +34,7 @@ class NadeuriDetailsPage extends StatelessWidget {
           padding: EdgeInsets.symmetric(horizontal: 20.0),
           children: <Widget>[
             SizedBox(height: 32.0),
-            _NadeuriTitleSection(nadeuriDetailsViewModel: _nadeuriDetailsViewModel),
+            _NadeuriTitleSection(nadeuriDetailsViewModel: widget._nadeuriDetailsViewModel),
             Divider(height: 32.0),
             _ChatSection(),
             Divider(height: 32.0),
@@ -33,6 +47,27 @@ class NadeuriDetailsPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    widget._nadeuriDetailsViewModel.load.removeListener(_onLoad);
+
+    super.dispose();
+  }
+
+  /// 인증에 문제가 있으면 로그인 페이지로 이동.
+  void _onLoad() {
+    if (widget._nadeuriDetailsViewModel.load.error && mounted) {
+      final Error result = widget._nadeuriDetailsViewModel.load.result! as Error;
+      final Exception error = result.error;
+
+      if (error is Unauthorized || error is TokenNotFound) {
+        widget._nadeuriDetailsViewModel.load.clearResult();
+        context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
+        Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
+      }
+    }
   }
 }
 
@@ -59,7 +94,6 @@ class _NadeuriTitleSectionState extends State<_NadeuriTitleSection> {
 
     _nadeuriTitleController = TextEditingController(text: widget._nadeuriDetailsViewModel.nadeuri.title);
 
-    widget._nadeuriDetailsViewModel.load.addListener(_onLoad);
     widget._nadeuriDetailsViewModel.updateNadeuri.addListener(_onUpdateNadeuri);
   }
 
@@ -112,7 +146,6 @@ class _NadeuriTitleSectionState extends State<_NadeuriTitleSection> {
   @override
   void dispose() {
     widget._nadeuriDetailsViewModel.updateNadeuri.removeListener(_onUpdateNadeuri);
-    widget._nadeuriDetailsViewModel.load.removeListener(_onLoad);
 
     super.dispose();
   }
@@ -124,20 +157,6 @@ class _NadeuriTitleSectionState extends State<_NadeuriTitleSection> {
     }
 
     widget._nadeuriDetailsViewModel.updateNadeuri.execute((_nadeuriTitleController.text,));
-  }
-
-  /// 인증에 문제가 있으면 로그인 페이지로 이동.
-  void _onLoad() {
-    if (widget._nadeuriDetailsViewModel.load.error && mounted) {
-      final Error result = widget._nadeuriDetailsViewModel.load.result! as Error;
-      final Exception error = result.error;
-
-      if (error is Unauthorized || error is TokenNotFound) {
-        widget._nadeuriDetailsViewModel.load.clearResult();
-        context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
-        Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
-      }
-    }
   }
 
   /// 인증에 문제가 있으면 로그인 페이지로 이동.
