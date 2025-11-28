@@ -51,7 +51,7 @@ public class NadeuriServiceImpl implements NadeuriService {
     public NadeuriSummaryResponse getNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid).orElseThrow();
 
-        if (!hasAuthorityToNadeuri(principalDetails, nadeuri)) {
+        if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 조회 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
@@ -74,7 +74,7 @@ public class NadeuriServiceImpl implements NadeuriService {
             UpdateNadeuriRequest updateNadeuriRequest) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid).orElseThrow();
 
-        if (!hasAuthorityToNadeuri(principalDetails, nadeuri)) {
+        if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 수정 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
@@ -82,18 +82,5 @@ public class NadeuriServiceImpl implements NadeuriService {
         if (updateNadeuriRequest.getTitle() != null) nadeuri.setTitle(updateNadeuriRequest.getTitle());
 
         return NadeuriSummaryResponse.fromEntity(nadeuri);
-    }
-
-    /**
-     * Principal에 해당하는 회원이 Nadeuri를 수정할 수 있는 권한을 가지고 있는지 확인합니다.
-     * 
-     * @param principalDetails 회원의 정보가 담긴 Principal.
-     * @param nadeuri [principalDetails]에 해당하는 회원이 속해있는지 확인할 Nadeuri. {@code members} 필드에 접근하기 위해,
-     *        <strong>반드시 Managed(Attached) 상태의 엔티티를 전달해야합니다.</strong>
-     * @return Principal에 해당하는 회원이 Nadeuri에 대한 수정 권한이 있는지 여부.
-     */
-    private boolean hasAuthorityToNadeuri(PrincipalDetails principalDetails, Nadeuri nadeuri) {
-        return nadeuri.getMembers().stream()
-                .anyMatch(member -> member.getId().equals(principalDetails.getId()));
     }
 }
