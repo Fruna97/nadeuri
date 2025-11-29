@@ -205,58 +205,58 @@ class _ChatSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () {},
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("채팅", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-            SizedBox(height: 12.0),
-            Row(
-              children: <Widget>[
-                CircleAvatar(
-                  foregroundImage: NetworkImage(""),
-                  onForegroundImageError: (exception, stackTrace) {},
-                  radius: 20,
-                  child: Icon(Icons.person, size: 30, color: Colors.blue),
-                ),
-                SizedBox(width: 8.0),
-                CircleAvatar(
-                  foregroundImage: NetworkImage(""),
-                  onForegroundImageError: (exception, stackTrace) {},
-                  radius: 20,
-                  child: Icon(Icons.person, size: 30, color: Colors.blue),
-                ),
-                SizedBox(width: 8.0),
-                CircleAvatar(
-                  foregroundImage: NetworkImage(""),
-                  onForegroundImageError: (exception, stackTrace) {},
-                  radius: 20,
-                  child: Icon(Icons.person, size: 30, color: Colors.blue),
-                ),
-                SizedBox(width: 8.0),
-                CircleAvatar(
-                  foregroundImage: NetworkImage(""),
-                  onForegroundImageError: (exception, stackTrace) {},
-                  radius: 20,
-                  child: Icon(Icons.person, size: 30, color: Colors.blue),
-                ),
-                SizedBox(width: 8.0),
-                CircleAvatar(
-                  foregroundImage: NetworkImage(""),
-                  onForegroundImageError: (exception, stackTrace) {},
-                  radius: 20,
-                  child: Icon(Icons.person, size: 30, color: Colors.blue),
-                ),
-                SizedBox(width: 8.0),
-                Spacer(),
-                Icon(Icons.more_horiz, size: 16),
-              ],
-            ),
-            SizedBox(height: 12.0),
-            Text("최근 채팅 메시지"),
-          ],
-        ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Text("채팅", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+          ),
+          SizedBox(height: 8.0),
+          Row(
+            children: <Widget>[
+              CircleAvatar(
+                foregroundImage: NetworkImage(""),
+                onForegroundImageError: (exception, stackTrace) {},
+                radius: 20,
+                child: Icon(Icons.person, size: 30, color: Colors.blue),
+              ),
+              SizedBox(width: 8.0),
+              CircleAvatar(
+                foregroundImage: NetworkImage(""),
+                onForegroundImageError: (exception, stackTrace) {},
+                radius: 20,
+                child: Icon(Icons.person, size: 30, color: Colors.blue),
+              ),
+              SizedBox(width: 8.0),
+              CircleAvatar(
+                foregroundImage: NetworkImage(""),
+                onForegroundImageError: (exception, stackTrace) {},
+                radius: 20,
+                child: Icon(Icons.person, size: 30, color: Colors.blue),
+              ),
+              SizedBox(width: 8.0),
+              CircleAvatar(
+                foregroundImage: NetworkImage(""),
+                onForegroundImageError: (exception, stackTrace) {},
+                radius: 20,
+                child: Icon(Icons.person, size: 30, color: Colors.blue),
+              ),
+              SizedBox(width: 8.0),
+              CircleAvatar(
+                foregroundImage: NetworkImage(""),
+                onForegroundImageError: (exception, stackTrace) {},
+                radius: 20,
+                child: Icon(Icons.person, size: 30, color: Colors.blue),
+              ),
+              SizedBox(width: 8.0),
+              Spacer(),
+              Icon(Icons.more_horiz, size: 16),
+            ],
+          ),
+          SizedBox(height: 16.0),
+          Text("최근 채팅 메시지"),
+        ],
       ),
     );
   }
@@ -270,7 +270,15 @@ class _PlanSection extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("일정들", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+        InkWell(
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.symmetric(vertical: 8.0),
+            child: Row(
+              children: [Text("일정들", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold))],
+            ),
+          ),
+        ),
         SizedBox(height: 8.0),
         _plan("서울숲", DateTime(2025, 06, 05, 14), DateTime(2025, 06, 05, 15)),
         _plan("여의도", DateTime(2025, 06, 06, 14), DateTime(2025, 06, 08, 15)),
@@ -325,10 +333,10 @@ class _PhotoSection extends StatelessWidget {
     return InkWell(
       onTap: () {},
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Row(
           children: <Widget>[
-            Text("사진 ", style: TextStyle(fontSize: 20.0)),
+            Text("사진 ", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
             Icon(Icons.arrow_forward_ios, size: 18.0),
           ],
         ),
@@ -345,10 +353,10 @@ class _SettlementSection extends StatelessWidget {
     return InkWell(
       onTap: () {},
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4.0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
         child: Row(
           children: <Widget>[
-            Text("정산 ", style: TextStyle(fontSize: 20.0)),
+            Text("정산 ", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
             Icon(Icons.arrow_forward_ios, size: 18.0),
           ],
         ),
