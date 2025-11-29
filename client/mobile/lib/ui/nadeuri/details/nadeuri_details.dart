@@ -7,7 +7,6 @@ import 'package:mobile/utils/result.dart';
 import 'package:provider/provider.dart';
 
 class NadeuriDetailsPage extends StatefulWidget {
-
   final NadeuriDetailsViewModel _nadeuriDetailsViewModel;
 
   const NadeuriDetailsPage({super.key, required NadeuriDetailsViewModel nadeuriDetailsViewModel})
@@ -18,7 +17,6 @@ class NadeuriDetailsPage extends StatefulWidget {
 }
 
 class _NadeuriDetailsPageState extends State<NadeuriDetailsPage> {
-
   @override
   void initState() {
     super.initState();
@@ -56,21 +54,25 @@ class _NadeuriDetailsPageState extends State<NadeuriDetailsPage> {
     super.dispose();
   }
 
-  /// 인증에 문제가 있으면 로그인 페이지로 이동.
   void _onLoad() {
     if (widget._nadeuriDetailsViewModel.load.error && mounted) {
       final Error result = widget._nadeuriDetailsViewModel.load.result! as Error;
       final Exception error = result.error;
 
+      // 인증에 문제가 있으면 로그인 페이지로 이동.
       if (error is Unauthorized || error is TokenNotFound) {
         widget._nadeuriDetailsViewModel.load.clearResult();
         context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
         Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
+        return;
       }
+
+      // Nadeuri가 존재하지 않으면 홈화면으로 이동.
       if (error is NotFound) {
         widget._nadeuriDetailsViewModel.load.clearResult();
         context.read<AppSnackBar>().showSnackBar("나들이 정보가 없습니다.");
         Navigator.pop(context);
+        return;
       }
     }
   }
@@ -164,17 +166,34 @@ class _NadeuriTitleSectionState extends State<_NadeuriTitleSection> {
     widget._nadeuriDetailsViewModel.updateNadeuri.execute((_nadeuriTitleController.text,));
   }
 
-  /// 인증에 문제가 있으면 로그인 페이지로 이동.
   void _onUpdateNadeuri() {
     if (widget._nadeuriDetailsViewModel.updateNadeuri.error && mounted) {
       final Error result = widget._nadeuriDetailsViewModel.updateNadeuri.result! as Error;
       final Exception error = result.error;
 
+      // 인증에 문제가 있으면 로그인 페이지로 이동.
       if (error is Unauthorized || error is TokenNotFound) {
         widget._nadeuriDetailsViewModel.updateNadeuri.clearResult();
         context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
         Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
+        return;
       }
+
+      // Nadeuri가 존재하지 않으면 홈화면으로 이동.
+      if (error is NotFound) {
+        widget._nadeuriDetailsViewModel.load.clearResult();
+        context.read<AppSnackBar>().showSnackBar("나들이 정보가 없습니다.");
+        Navigator.pop(context);
+        return;
+      }
+
+      // 이외의 문제면 업데이트 전으로 되돌림.
+      _nadeuriTitleFocusNode.unfocus();
+      setState(() {
+        _nadeuriTextFieldReadOnly = true;
+      });
+      context.read<AppSnackBar>().showSnackBar("제목 변경에 실패했습니다. 다시 시도해주세요.");
+      _nadeuriTitleController.text = widget._nadeuriDetailsViewModel.nadeuri.title;
     }
   }
 }
