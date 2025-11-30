@@ -13,6 +13,9 @@ _NadeuriApiModel _$NadeuriApiModelFromJson(Map<String, dynamic> json) =>
       members: (json['members'] as List<dynamic>)
           .map((e) => MemberApiModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      plans: (json['plans'] as List<dynamic>)
+          .map((e) => PlanApiModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$NadeuriApiModelToJson(_NadeuriApiModel instance) =>
@@ -20,4 +23,5 @@ Map<String, dynamic> _$NadeuriApiModelToJson(_NadeuriApiModel instance) =>
       'uuid': instance.uuid,
       'title': instance.title,
       'members': instance.members,
+      'plans': instance.plans,
     };

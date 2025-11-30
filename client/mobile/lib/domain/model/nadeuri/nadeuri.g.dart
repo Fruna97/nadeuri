@@ -12,10 +12,14 @@ _Nadeuri _$NadeuriFromJson(Map<String, dynamic> json) => _Nadeuri(
   members: (json['members'] as List<dynamic>)
       .map((e) => Member.fromJson(e as Map<String, dynamic>))
       .toList(),
+  plans: (json['plans'] as List<dynamic>)
+      .map((e) => Plan.fromJson(e as Map<String, dynamic>))
+      .toList(),
 );
 
 Map<String, dynamic> _$NadeuriToJson(_Nadeuri instance) => <String, dynamic>{
   'uuid': instance.uuid,
   'title': instance.title,
   'members': instance.members,
+  'plans': instance.plans,
 };

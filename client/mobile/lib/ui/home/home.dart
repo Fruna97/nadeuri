@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
   @override
   Future<void> didPopNext() async {
     super.didPopNext();
-    
+
     _homeViewModel.isRefreshing = true;
     _homeViewModel.load.clearResult();
     await _homeViewModel.load.execute();
@@ -242,6 +242,7 @@ class _HomeScreen extends StatelessWidget {
                         ),
                         for (int i = 0; i < 4; i++) Member(uuid: "uuid", email: "email"),
                       ],
+                      plans: List.empty(),
                     ),
                   );
                 },

@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:mobile/data/service/model/member/member_api_model.dart';
+import 'package:mobile/data/service/model/plan/plan_api_model.dart';
 import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
 
 part 'nadeuri_api_model.freezed.dart';
@@ -12,7 +13,8 @@ abstract class NadeuriApiModel with _$NadeuriApiModel {
   const factory NadeuriApiModel({
     String? uuid,
     required String title,
-    required List<MemberApiModel> members
+    required List<MemberApiModel> members,
+    required List<PlanApiModel> plans,
   }) = _NadeuriApiModel;
 
   factory NadeuriApiModel.fromJson(Map<String, dynamic> json) => _$NadeuriApiModelFromJson(json);
@@ -22,6 +24,7 @@ abstract class NadeuriApiModel with _$NadeuriApiModel {
       uuid: nadeuri.uuid,
       title: nadeuri.title,
       members: nadeuri.members.map((member) => MemberApiModel.fromMember(member)).toList(),
+      plans: nadeuri.plans.map((plan) => PlanApiModel.fromPlan(plan)).toList(),
     );
   }
 
@@ -30,6 +33,7 @@ abstract class NadeuriApiModel with _$NadeuriApiModel {
       uuid: uuid,
       title: title,
       members: members.map((memberApiModel) => memberApiModel.toMember()).toList(),
+      plans: plans.map((planApiModel) => planApiModel.toPlan()).toList(),
     );
   }
 }

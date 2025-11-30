@@ -67,6 +67,7 @@ class HomeViewModel extends ChangeNotifier {
     Nadeuri tmpNadeuri = Nadeuri(
       title: title,
       members: <Member>[Member(uuid: "member_uuid", email: "email", profileImageUrl: profileImgUrl)],
+      plans: List.empty(),
     );
     _nadeuris = [tmpNadeuri, ..._nadeuris];
     notifyListeners();
