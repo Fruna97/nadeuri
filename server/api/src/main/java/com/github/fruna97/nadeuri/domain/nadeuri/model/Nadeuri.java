@@ -17,6 +17,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -53,6 +54,10 @@ public class Nadeuri {
     @Builder.Default
     @Fetch(FetchMode.SUBSELECT)
     private List<Member> members = new ArrayList<>();
+
+    @OneToMany(mappedBy = "nadeuri")
+    @Builder.Default
+    private List<Plan> plans = new ArrayList<>();
 
     // TODO: Spring Data JPA 4.0.0 이상에서 Hibernate의 @UuidGenerator 사용으로 리팩터링할 것 (GitHub Issue #6)
     @PrePersist
