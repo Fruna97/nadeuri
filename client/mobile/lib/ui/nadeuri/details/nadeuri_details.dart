@@ -271,17 +271,62 @@ class _PlanSection extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         InkWell(
-          onTap: () {},
+          onTap: () {
+            showDialog(
+              context: context,
+              builder: (context) {
+                return Dialog(
+                  child: Container(
+                    padding: EdgeInsets.all(24.0),
+                    height: 500,
+                    child: Column(
+                      children: [
+                        Text("일정들", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                        Divider(height: 24.0),
+                        Expanded(
+                          child: ListView(
+                            children: [
+                              Text("2025년 6월 5일, 목요일", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                              _plan("서울", DateTime(2025, 06, 05, 09), DateTime(2025, 06, 06, 15)),
+                              _plan("서울숲", DateTime(2025, 06, 05, 14), DateTime(2025, 06, 05, 15)),
+                              Text("2025년 6월 6일, 금요일", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                              _plan("서울", DateTime(2025, 06, 05, 09), DateTime(2025, 06, 06, 15)),
+                              _plan("여의도", DateTime(2025, 06, 06, 14), DateTime(2025, 06, 06, 15)),
+                              _plan("고기집", DateTime(2025, 06, 06, 14), DateTime(2025, 06, 06, 15)),
+                              Text("2025년 6월 7일, 토요일", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+                              _plan("성심당", DateTime(2025, 06, 07, 14), DateTime(2025, 06, 07, 15)),
+                            ],
+                          ),
+                        ),
+                        SizedBox(height: 12.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [FloatingActionButton(onPressed: () {}, child: Icon(Icons.add))],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          },
           child: Padding(
             padding: const EdgeInsets.symmetric(vertical: 8.0),
             child: Row(
-              children: [Text("일정들", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold))],
+              children: [
+                Text("일정들", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                Spacer(),
+                Text("더보기", style: TextStyle(color: Colors.blue)),
+              ],
             ),
           ),
         ),
         SizedBox(height: 8.0),
+        _plan("서울", DateTime(2025, 06, 05, 09), DateTime(2025, 06, 06, 15)),
         _plan("서울숲", DateTime(2025, 06, 05, 14), DateTime(2025, 06, 05, 15)),
-        _plan("여의도", DateTime(2025, 06, 06, 14), DateTime(2025, 06, 08, 15)),
+        _plan("여의도", DateTime(2025, 06, 06, 14), DateTime(2025, 06, 06, 15)),
+        _plan("고기집", DateTime(2025, 06, 06, 14), DateTime(2025, 06, 06, 15)),
+        _plan("성심당", DateTime(2025, 06, 07, 14), DateTime(2025, 06, 07, 15)),
       ],
     );
   }
