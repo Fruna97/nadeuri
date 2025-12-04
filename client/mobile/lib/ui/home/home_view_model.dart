@@ -17,7 +17,7 @@ class HomeViewModel extends ChangeNotifier {
   final SharedPreferencesWithCache _prefsWithCache;
 
   late final Command0 load;
-  late final Command1<void, String> createNadeuri;
+  late final Command1<void, (String,)> createNadeuri;
 
   bool isRefreshing = false;
   List<Nadeuri> _nadeuris = [];
@@ -30,7 +30,7 @@ class HomeViewModel extends ChangeNotifier {
        _nadeuriRepository = nadeuriRepository,
        _prefsWithCache = prefsWithCache {
     load = Command0(_load)..execute();
-    createNadeuri = Command1<void, String>(_createNadeuri);
+    createNadeuri = Command1<void, (String,)>(_createNadeuri);
   }
 
   List<Nadeuri> get nadeuris => _nadeuris;
@@ -59,8 +59,8 @@ class HomeViewModel extends ChangeNotifier {
     return memberResult;
   }
 
-  Future<Result> _createNadeuri(String title) async {
-    List<Nadeuri> oldNadeuris = _nadeuris;
+  Future<Result> _createNadeuri((String title,) createNadeuriInfo) async {
+    final (title,) = createNadeuriInfo;
 
     // Optimistic 상태 반영
     String? profileImgUrl = _prefsWithCache.getString("profile.profileImgUrl");
@@ -69,6 +69,7 @@ class HomeViewModel extends ChangeNotifier {
       members: <Member>[Member(uuid: "member_uuid", email: "email", profileImageUrl: profileImgUrl)],
       plans: List.empty(),
     );
+    List<Nadeuri> oldNadeuris = _nadeuris;
     _nadeuris = [tmpNadeuri, ..._nadeuris];
     notifyListeners();
 

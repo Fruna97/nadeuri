@@ -431,7 +431,7 @@ class _CreateNadeuriSheetState extends State<_CreateNadeuriSheet> {
             alignment: Alignment.bottomRight,
             child: FilledButton(
               onPressed: () {
-                widget._homeViewModel.createNadeuri.execute(_nadeuriTitleController.text);
+                widget._homeViewModel.createNadeuri.execute((_nadeuriTitleController.text,));
                 Navigator.pop(context);
                 // TODO: 나들이 상세 정보 페이지로 이동
               },
