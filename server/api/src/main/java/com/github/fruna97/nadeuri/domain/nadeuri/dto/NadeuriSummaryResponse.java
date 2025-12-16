@@ -18,12 +18,15 @@ public class NadeuriSummaryResponse {
     private UUID uuid;
     private String title;
     private List<MemberSummaryResponse> members;
+    private List<PlanSummaryResponse> plans;
 
     public static NadeuriSummaryResponse fromEntity(Nadeuri nadeuri) {
         return NadeuriSummaryResponse.builder()
                 .uuid(nadeuri.getUuid())
                 .title(nadeuri.getTitle())
                 .members(nadeuri.getMembers().stream()
-                        .map(MemberSummaryResponse::fromEntity).toList()).build();
+                        .map(MemberSummaryResponse::fromEntity).toList())
+                .plans(nadeuri.getPlans().stream()
+                        .map(PlanSummaryResponse::fromEntity).toList()).build();
     }
 }
