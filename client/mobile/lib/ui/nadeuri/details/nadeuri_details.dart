@@ -3,6 +3,7 @@ import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/nadeuri/details/nadeuri_details_view_model.dart';
+import 'package:mobile/ui/nadeuri/plan/plan.dart';
 import 'package:mobile/utils/result.dart';
 import 'package:provider/provider.dart';
 
@@ -301,7 +302,14 @@ class _PlanSection extends StatelessWidget {
                         SizedBox(height: 12.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
-                          children: [FloatingActionButton(onPressed: () {}, child: Icon(Icons.add))],
+                          children: [
+                            FloatingActionButton(
+                              onPressed: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (_) => PlanPage()));
+                              },
+                              child: Icon(Icons.add),
+                            ),
+                          ],
                         ),
                       ],
                     ),
