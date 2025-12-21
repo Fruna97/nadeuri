@@ -41,11 +41,9 @@ public class Plan {
     private Double longitude;
 
     @Column(nullable = false)
-    @CreationTimestamp
     private LocalDateTime startAt;
 
     @Column(nullable = false)
-    @CreationTimestamp
     private LocalDateTime endAt;
 
     @ManyToOne(optional = false)
