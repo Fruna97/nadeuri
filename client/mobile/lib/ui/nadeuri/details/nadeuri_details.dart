@@ -1,11 +1,21 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
+import 'package:mobile/domain/model/plan/plan.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/nadeuri/details/nadeuri_details_view_model.dart';
 import 'package:mobile/ui/nadeuri/plan/plan.dart';
 import 'package:mobile/utils/result.dart';
 import 'package:provider/provider.dart';
+
+final DateFormat timeFormat = DateFormat("h:mm aaa");
+final DateFormat monthDayFormat = DateFormat("MM월 dd일");
+final DateFormat yearMonthDayFormat = DateFormat("yyyy년 MM월 dd일");
+final DateFormat monthDayTimeFormat = DateFormat("MM월 dd일 h:mm aaa");
+final DateFormat yearMonthDayTimeFormat = DateFormat("yyyy년 MM월 dd일 h:mm aaa");
 
 class NadeuriDetailsPage extends StatefulWidget {
   final NadeuriDetailsViewModel _nadeuriDetailsViewModel;
@@ -37,7 +47,7 @@ class _NadeuriDetailsPageState extends State<NadeuriDetailsPage> {
             Divider(height: 32.0),
             _ChatSection(),
             Divider(height: 32.0),
-            _PlanSection(),
+            _PlanSection(nadeuriDetailsViewModel: widget._nadeuriDetailsViewModel),
             Divider(height: 32.0),
             _PhotoSection(),
             Divider(height: 32.0),
@@ -264,10 +274,16 @@ class _ChatSection extends StatelessWidget {
 }
 
 class _PlanSection extends StatelessWidget {
-  const _PlanSection({super.key});
+  final NadeuriDetailsViewModel _nadeuriDetailsViewModel;
+
+  const _PlanSection({super.key, required NadeuriDetailsViewModel nadeuriDetailsViewModel})
+    : _nadeuriDetailsViewModel = nadeuriDetailsViewModel;
 
   @override
   Widget build(BuildContext context) {
+    List<Plan> sortedPlans = List.from(_nadeuriDetailsViewModel.nadeuri.plans)
+      ..sort((a, b) => a.startAt.compareTo(b.startAt));
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -276,6 +292,30 @@ class _PlanSection extends StatelessWidget {
             showDialog(
               context: context,
               builder: (context) {
+                Widget dialogContents;
+                List<Widget> plansForListView = <Widget>[];
+                if (sortedPlans.isEmpty) {
+                  dialogContents = Center(child: Text("일정이 없습니다. 일정을 추가해보세요."));
+                } else {
+                  Map<DateTime, List<Plan>> planMap = <DateTime, List<Plan>>{};
+                  for (Plan plan in sortedPlans) {
+                    DateTime key = DateTime(plan.startAt.year, plan.startAt.month, plan.startAt.day);
+                    planMap.putIfAbsent(key, () => <Plan>[]).add(plan);
+                  }
+                  for (DateTime key in planMap.keys.toList()..sort()) {
+                    plansForListView.add(
+                      Text(
+                        yearMonthDayFormat.format(key),
+                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
+                      ),
+                    );
+                    for (Plan plan in planMap[key]!) {
+                      plansForListView.add(_planBar(plan));
+                    }
+                    plansForListView.add(SizedBox(height: 16.0));
+                  }
+                  dialogContents = ListView(children: plansForListView);
+                }
                 return Dialog(
                   child: Container(
                     padding: EdgeInsets.all(24.0),
@@ -283,22 +323,8 @@ class _PlanSection extends StatelessWidget {
                     child: Column(
                       children: [
                         Text("일정들", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                        Divider(height: 24.0),
-                        Expanded(
-                          child: ListView(
-                            children: [
-                              Text("2025년 6월 5일, 목요일", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                              _plan("서울", DateTime(2025, 06, 05, 09), DateTime(2025, 06, 06, 15)),
-                              _plan("서울숲", DateTime(2025, 06, 05, 14), DateTime(2025, 06, 05, 15)),
-                              Text("2025년 6월 6일, 금요일", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                              _plan("서울", DateTime(2025, 06, 05, 09), DateTime(2025, 06, 06, 15)),
-                              _plan("여의도", DateTime(2025, 06, 06, 14), DateTime(2025, 06, 06, 15)),
-                              _plan("고기집", DateTime(2025, 06, 06, 14), DateTime(2025, 06, 06, 15)),
-                              Text("2025년 6월 7일, 토요일", style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
-                              _plan("성심당", DateTime(2025, 06, 07, 14), DateTime(2025, 06, 07, 15)),
-                            ],
-                          ),
-                        ),
+                        Divider(height: 32.0),
+                        Expanded(child: dialogContents),
                         SizedBox(height: 12.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -330,16 +356,15 @@ class _PlanSection extends StatelessWidget {
           ),
         ),
         SizedBox(height: 8.0),
-        _plan("서울", DateTime(2025, 06, 05, 09), DateTime(2025, 06, 06, 15)),
-        _plan("서울숲", DateTime(2025, 06, 05, 14), DateTime(2025, 06, 05, 15)),
-        _plan("여의도", DateTime(2025, 06, 06, 14), DateTime(2025, 06, 06, 15)),
-        _plan("고기집", DateTime(2025, 06, 06, 14), DateTime(2025, 06, 06, 15)),
-        _plan("성심당", DateTime(2025, 06, 07, 14), DateTime(2025, 06, 07, 15)),
+        if (sortedPlans.isEmpty)
+          Center(child: Text("일정이 없습니다. 일정을 추가해보세요."))
+        else
+          for (int i = 0; i < min(sortedPlans.length, 5); i++) _planBar(sortedPlans[i]),
       ],
     );
   }
 
-  InkWell _plan(String? planTitle, DateTime startAt, DateTime endAt) {
+  InkWell _planBar(Plan plan) {
     return InkWell(
       onTap: () {},
       child: Padding(
@@ -347,27 +372,36 @@ class _PlanSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(planTitle ?? ""),
+            Text(plan.planTitle.isEmpty ? "제목 없음" : plan.planTitle),
             Row(
-              children: DateUtils.isSameDay(startAt, endAt)
+              children: DateUtils.isSameDay(plan.startAt, plan.endAt)
                   ? <Widget>[
                       Text(
-                        "${startAt.year}.${startAt.month.toString().padLeft(2, "0")}.${startAt.day.toString().padLeft(2, "0")}",
+                        DateTime.now().year == plan.startAt.year
+                            ? monthDayFormat.format(plan.startAt)
+                            : yearMonthDayFormat.format(plan.startAt),
                       ),
                       Spacer(),
-                      Text(
-                        "${startAt.hour.toString().padLeft(2, "0")}:${startAt.minute.toString().padLeft(2, "0")} ~ ${endAt.hour.toString().padLeft(2, "0")}:${endAt.minute.toString().padLeft(2, "0")}",
-                      ),
+                      Text("${timeFormat.format(plan.startAt)} - ${timeFormat.format(plan.endAt)}"),
                     ]
                   : <Widget>[
-                      Text(
-                        "${startAt.year}.${startAt.month.toString().padLeft(2, "0")}.${startAt.day.toString().padLeft(2, "0")} ${startAt.hour.toString().padLeft(2, "0")}:${startAt.minute.toString().padLeft(2, "0")}",
+                      Expanded(
+                        child: Text(
+                          DateTime.now().year == plan.startAt.year
+                              ? monthDayTimeFormat.format(plan.startAt)
+                              : yearMonthDayTimeFormat.format(plan.startAt),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
-                      Spacer(),
-                      Text("~"),
-                      Spacer(),
-                      Text(
-                        "${endAt.year}.${endAt.month.toString().padLeft(2, "0")}.${endAt.day.toString().padLeft(2, "0")} ${endAt.hour.toString().padLeft(2, "0")}:${endAt.minute.toString().padLeft(2, "0")}",
+                      Text("-"),
+                      Expanded(
+                        child: Text(
+                          DateTime.now().year == plan.endAt.year
+                              ? monthDayTimeFormat.format(plan.endAt)
+                              : yearMonthDayTimeFormat.format(plan.endAt),
+                          textAlign: TextAlign.right,
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                     ],
             ),
