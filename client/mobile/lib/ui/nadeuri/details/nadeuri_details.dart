@@ -8,6 +8,7 @@ import 'package:mobile/domain/model/plan/plan.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/nadeuri/details/nadeuri_details_view_model.dart';
 import 'package:mobile/ui/nadeuri/plan/plan.dart';
+import 'package:mobile/ui/nadeuri/plan/plan_view_model.dart';
 import 'package:mobile/utils/result.dart';
 import 'package:provider/provider.dart';
 
@@ -310,7 +311,7 @@ class _PlanSection extends StatelessWidget {
                       ),
                     );
                     for (Plan plan in planMap[key]!) {
-                      plansForListView.add(_planBar(plan));
+                      plansForListView.add(_planBar(plan, context));
                     }
                     plansForListView.add(SizedBox(height: 16.0));
                   }
@@ -331,7 +332,10 @@ class _PlanSection extends StatelessWidget {
                           children: [
                             FloatingActionButton(
                               onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_) => PlanPage()));
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => PlanPage(planViewModel: PlanViewModel.create())),
+                                );
                               },
                               child: Icon(Icons.add),
                             ),
@@ -359,14 +363,21 @@ class _PlanSection extends StatelessWidget {
         if (sortedPlans.isEmpty)
           Center(child: Text("일정이 없습니다. 일정을 추가해보세요."))
         else
-          for (int i = 0; i < min(sortedPlans.length, 5); i++) _planBar(sortedPlans[i]),
+          for (int i = 0; i < min(sortedPlans.length, 5); i++) _planBar(sortedPlans[i], context),
       ],
     );
   }
 
-  InkWell _planBar(Plan plan) {
+  InkWell _planBar(Plan plan, BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => PlanPage(planViewModel: PlanViewModel.edit(plan: plan)),
+          ),
+        );
+      },
       child: Padding(
         padding: const EdgeInsets.all(4.0),
         child: Column(

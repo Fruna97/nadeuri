@@ -1,10 +1,11 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/ui/nadeuri/plan/plan_view_model.dart';
 
 class PlanPage extends StatefulWidget {
-  const PlanPage({super.key});
+  final PlanViewModel _planViewModel;
+
+  const PlanPage({super.key, required PlanViewModel planViewModel}) : _planViewModel = planViewModel;
 
   @override
   State<PlanPage> createState() => _PlanPageState();
@@ -12,6 +13,13 @@ class PlanPage extends StatefulWidget {
 
 class _PlanPageState extends State<PlanPage> {
   final TextEditingController planTitleController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    planTitleController.text = widget._planViewModel.plan.planTitle;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +46,7 @@ class _PlanPageState extends State<PlanPage> {
               decoration: InputDecoration(hintText: "일정 제목", helperText: "장소를 추가하면 장소 이름이 입력됩니다."),
             ),
             Divider(height: 32.0),
-            _DateTimeSection(),
+            _DateTimeSection(planViewModel: widget._planViewModel),
             Divider(height: 32.0),
             Stack(
               alignment: AlignmentGeometry.centerLeft,
@@ -57,7 +65,9 @@ class _PlanPageState extends State<PlanPage> {
 }
 
 class _DateTimeSection extends StatefulWidget {
-  const _DateTimeSection({super.key});
+  final PlanViewModel _planViewModel;
+
+  const _DateTimeSection({super.key, required PlanViewModel planViewModel}) : _planViewModel = planViewModel;
 
   @override
   State<_DateTimeSection> createState() => _DateTimeSectionState();
@@ -65,18 +75,6 @@ class _DateTimeSection extends StatefulWidget {
 
 class _DateTimeSectionState extends State<_DateTimeSection> {
   bool _dateOnly = false;
-  DateTime _fromDateTime = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
-    DateTime.now().hour + 1,
-  );
-  DateTime _toDateTime = DateTime(
-    DateTime.now().year,
-    DateTime.now().month,
-    DateTime.now().day,
-    DateTime.now().hour + 2,
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -102,64 +100,58 @@ class _DateTimeSectionState extends State<_DateTimeSection> {
             Expanded(
               child: InkWell(
                 onTap: () async {
-                  DateTime? dateTime = await showDatePicker(
+                  DateTime? newDate = await showDatePicker(
                     context: context,
-                    initialDate: _fromDateTime,
+                    initialDate: widget._planViewModel.plan.startAt,
                     firstDate: DateTime.now().subtract(Duration(days: 365)),
                     lastDate: DateTime.now().add(Duration(days: 365 * 10)),
                   );
-                  if (dateTime == null) {
+                  if (newDate == null) {
                     return;
                   }
 
-                  setState(() {
-                    _fromDateTime = DateTime(
-                      dateTime.year,
-                      dateTime.month,
-                      dateTime.day,
-                      _fromDateTime.hour,
-                      _fromDateTime.minute,
-                    );
-                    if (_toDateTime.isBefore(_fromDateTime) || _toDateTime.isAtSameMomentAs(_fromDateTime)) {
-                      _toDateTime = _fromDateTime.add(const Duration(hours: 1));
-                    }
-                  });
+                  widget._planViewModel.updateStartAt(
+                    newDate.copyWith(
+                      hour: widget._planViewModel.plan.startAt.hour,
+                      minute: widget._planViewModel.plan.startAt.minute,
+                    ),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(DateFormat("yyyy년 MM월 dd일").format(_fromDateTime)),
+                  child: ListenableBuilder(
+                    listenable: widget._planViewModel,
+                    builder: (context, child) =>
+                        Text(DateFormat("yyyy년 MM월 dd일").format(widget._planViewModel.plan.startAt)),
+                  ),
                 ),
               ),
             ),
             if (!_dateOnly)
               InkWell(
                 onTap: () async {
-                  TimeOfDay? timeOfDay = await showTimePicker(
+                  TimeOfDay? newTime = await showTimePicker(
                     context: context,
-                    initialTime: TimeOfDay(hour: _fromDateTime.hour, minute: _fromDateTime.minute),
+                    initialTime: TimeOfDay(
+                      hour: widget._planViewModel.plan.startAt.hour,
+                      minute: widget._planViewModel.plan.startAt.minute,
+                    ),
                   );
-                  if (timeOfDay == null) {
+                  if (newTime == null) {
                     return;
                   }
 
-                  setState(() {
-                    _fromDateTime = DateTime(
-                      _fromDateTime.year,
-                      _fromDateTime.month,
-                      _fromDateTime.day,
-                      timeOfDay.hour,
-                      timeOfDay.minute,
-                    );
-                    if (_toDateTime.isBefore(_fromDateTime) || _toDateTime.isAtSameMomentAs(_fromDateTime)) {
-                      _toDateTime = _fromDateTime.add(const Duration(hours: 1));
-                    }
-                  });
-                  log(_fromDateTime.toString());
-                  log(_toDateTime.toString());
+                  widget._planViewModel.updateStartAt(
+                    widget._planViewModel.plan.startAt.copyWith(hour: newTime.hour, minute: newTime.minute),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(DateFormat("h:mm aaa").format(_fromDateTime)),
+                  child: ListenableBuilder(
+                    listenable: widget._planViewModel,
+                    builder: (context, child) =>
+                        Text(DateFormat("h:mm aaa").format(widget._planViewModel.plan.startAt)),
+                  ),
                 ),
               ),
           ],
@@ -170,64 +162,57 @@ class _DateTimeSectionState extends State<_DateTimeSection> {
             Expanded(
               child: InkWell(
                 onTap: () async {
-                  DateTime? dateTime = await showDatePicker(
+                  DateTime? newDate = await showDatePicker(
                     context: context,
-                    initialDate: _toDateTime,
+                    initialDate: widget._planViewModel.plan.endAt,
                     firstDate: DateTime.now().subtract(Duration(days: 365)),
                     lastDate: DateTime.now().add(Duration(days: 365 * 10)),
                   );
-                  if (dateTime == null) {
+                  if (newDate == null) {
                     return;
                   }
 
-                  setState(() {
-                    _toDateTime = DateTime(
-                      dateTime.year,
-                      dateTime.month,
-                      dateTime.day,
-                      _toDateTime.hour,
-                      _toDateTime.minute,
-                    );
-                    if (_toDateTime.isBefore(_fromDateTime) || _toDateTime.isAtSameMomentAs(_fromDateTime)) {
-                      _fromDateTime = _toDateTime.subtract(const Duration(hours: 1));
-                    }
-                  });
+                  widget._planViewModel.updateEndAt(
+                    newDate.copyWith(
+                      hour: widget._planViewModel.plan.endAt.hour,
+                      minute: widget._planViewModel.plan.endAt.minute,
+                    ),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(DateFormat("yyyy년 MM월 dd일").format(_toDateTime)),
+                  child: ListenableBuilder(
+                    listenable: widget._planViewModel,
+                    builder: (context, child) =>
+                        Text(DateFormat("yyyy년 MM월 dd일").format(widget._planViewModel.plan.endAt)),
+                  ),
                 ),
               ),
             ),
             if (!_dateOnly)
               InkWell(
                 onTap: () async {
-                  TimeOfDay? timeOfDay = await showTimePicker(
+                  TimeOfDay? newTime = await showTimePicker(
                     context: context,
-                    initialTime: TimeOfDay(hour: _toDateTime.hour, minute: _toDateTime.minute),
+                    initialTime: TimeOfDay(
+                      hour: widget._planViewModel.plan.endAt.hour,
+                      minute: widget._planViewModel.plan.endAt.minute,
+                    ),
                   );
-                  if (timeOfDay == null) {
+                  if (newTime == null) {
                     return;
                   }
 
-                  setState(() {
-                    _toDateTime = DateTime(
-                      _toDateTime.year,
-                      _toDateTime.month,
-                      _toDateTime.day,
-                      timeOfDay.hour,
-                      timeOfDay.minute,
-                    );
-                    if (_toDateTime.isBefore(_fromDateTime) || _toDateTime.isAtSameMomentAs(_fromDateTime)) {
-                      _fromDateTime = _toDateTime.subtract(const Duration(hours: 1));
-                    }
-                  });
-                  log(_fromDateTime.toString());
-                  log(_toDateTime.toString());
+                  widget._planViewModel.updateEndAt(
+                    widget._planViewModel.plan.endAt.copyWith(hour: newTime.hour, minute: newTime.minute),
+                  );
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: Text(DateFormat("h:mm aaa").format(_toDateTime)),
+                  child: ListenableBuilder(
+                    listenable: widget._planViewModel,
+                    builder: (context, child) => Text(DateFormat("h:mm aaa").format(widget._planViewModel.plan.endAt)),
+                  ),
                 ),
               ),
           ],
