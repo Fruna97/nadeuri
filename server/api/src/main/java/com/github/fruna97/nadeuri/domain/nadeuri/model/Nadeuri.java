@@ -69,14 +69,14 @@ public class Nadeuri {
 
     /**
      * Principal에 해당하는 회원이 Nadeuri를 수정할 수 있는 권한을 가지고 있는지 확인합니다.
+     * <p>
+     * LAZY하게 Fetch되는 {@code members} 필드에 접근하기 위해, <strong>Managed(Attached) 상태의 엔티티에서 사용하는 것을
+     * 권장합니다.</strong>
      * 
      * @param principalDetails 회원의 정보가 담긴 Principal.
-     * @param nadeuri [principalDetails]에 해당하는 회원이 속해있는지 확인할 Nadeuri. {@code members} 필드에 접근하기 위해,
-     *        <strong>반드시 Managed(Attached) 상태의 엔티티를 전달해야합니다.</strong>
      * @return Principal에 해당하는 회원이 Nadeuri에 대한 수정 권한이 있는지 여부.
      */
     public boolean hasAuthorityToNadeuri(PrincipalDetails principalDetails) {
-        return members.stream()
-                .anyMatch(member -> member.getId().equals(principalDetails.getId()));
+        return members.stream().anyMatch(member -> member.getId().equals(principalDetails.getId()));
     }
 }
