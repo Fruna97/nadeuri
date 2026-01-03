@@ -8,4 +8,6 @@ import com.github.fruna97.nadeuri.security.PrincipalDetails;
 public interface PlanService {
 
     PlanSummaryResponse createPlan(PrincipalDetails principalDetails, UUID nadeuriUuid, CreatePlanRequest createPlanRequest);
+
+    PlanSummaryResponse getPlan(PrincipalDetails principalDetails, UUID nadeuriUuid, UUID planUuid);
 }

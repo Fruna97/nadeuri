@@ -79,4 +79,15 @@ public class Nadeuri {
     public boolean hasAuthorityToNadeuri(PrincipalDetails principalDetails) {
         return members.stream().anyMatch(member -> member.getId().equals(principalDetails.getId()));
     }
+
+    /**
+     * Nadeuri에 주어진 일정이 속해있는지 확인합니다.
+     * 
+     * @param planToCheck 확인할 일정 엔티티
+     * @return Nadeuri에 해당 일정이 속해있는지 여부
+     */
+    public boolean hasPlan(Plan planToCheck) {
+        return plans.stream()
+                .anyMatch(plan -> plan.getId().equals(planToCheck.getId()));
+    }
 }
