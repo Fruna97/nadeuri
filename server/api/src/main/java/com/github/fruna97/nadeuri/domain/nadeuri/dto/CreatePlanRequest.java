@@ -19,9 +19,9 @@ public class CreatePlanRequest {
 
     private String googlePlacesId;
 
-    private double latitude;
+    private Double latitude;
 
-    private double longitude;
+    private Double longitude;
 
     @NotNull
     private LocalDateTime startAt;
