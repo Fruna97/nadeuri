@@ -55,4 +55,24 @@ class PlanControllerTest {
         assertNotNull(body); // 응답 본문을 담고있는지
         assertThat(body.getData()).isEqualTo(planSummaryResponse); // 응답 본문의 데이터가 [PlanService.createPlan]가 반환한 [PlanSummaryResponse]와 동일한지
     }
+
+    @Test
+    void getPlan() {
+        // Given
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID nadeuriUuid = UUID.randomUUID();
+        UUID planUuid = UUID.randomUUID();
+
+        PlanSummaryResponse planSummaryResponse = mock(PlanSummaryResponse.class);
+        when(planService.getPlan(principalDetails, nadeuriUuid, planUuid)).thenReturn(planSummaryResponse);
+
+        // When
+        ResponseEntity<ResponseDto<PlanSummaryResponse>> result = planController.getPlan(principalDetails, nadeuriUuid, planUuid);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환 하는지
+        ResponseDto<PlanSummaryResponse> body = result.getBody();
+        assertNotNull(body); // 응답 본문을 담고있는지
+        assertThat(body.getData()).isEqualTo(planSummaryResponse); // 응답 본문의 데이터가 [PlanService.getPlan]가 반환한 [PlanSummaryResponse]와 동일한지
+    }
 }
