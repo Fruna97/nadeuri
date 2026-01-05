@@ -73,14 +73,14 @@ public class NadeuriServiceImpl implements NadeuriService {
     public NadeuriSummaryResponse updateNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid,
             UpdateNadeuriRequest updateNadeuriRequest) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid).orElseThrow();
-
         if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 수정 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
 
-        if (updateNadeuriRequest.getTitle() != null) nadeuri.setTitle(updateNadeuriRequest.getTitle());
+        nadeuri.setTitle(updateNadeuriRequest.getTitle());
 
-        return NadeuriSummaryResponse.fromEntity(nadeuri);
+        Nadeuri savedNadeuri = nadeuriRepository.save(nadeuri);
+        return NadeuriSummaryResponse.fromEntity(savedNadeuri);
     }
 }

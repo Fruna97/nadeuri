@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import java.util.ArrayList;
 import java.util.List;
@@ -184,63 +186,46 @@ class NadeuriServiceImplTest {
     @Test
     void updateNadeuri() {
         // Given
-        long memberId1 = 0L;
-        UUID memberUuid1 = UUID.randomUUID();
-        Member member1 = Member.builder()
-                .id(memberId1)
-                .uuid(memberUuid1).build();
-        PrincipalDetails principalDetails1 = new PrincipalDetails(memberId1, memberUuid1, null, null);
-        long memberId2 = 1L;
-        UUID memberUuid2 = UUID.randomUUID();
-        Member member2 = Member.builder()
-                .id(memberId2)
-                .uuid(memberUuid2).build();
-
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
-        String previousTitle = "Previous Title";
-        Nadeuri nadeuri = Nadeuri.builder()
-                .uuid(nadeuriUuid)
-                .title(previousTitle)
-                .members(List.of(member1, member2)).build();
-        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-
-        String newTitle = "New Title";
+        String newNadeuriTitle = "new_title";
         UpdateNadeuriRequest updateNadeuriTitleRequest = UpdateNadeuriRequest.builder()
-                .title(newTitle).build();
+                .title(newNadeuriTitle).build();
+
+        Nadeuri nadeuri = mock(Nadeuri.class);
+        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
+        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+
+        Nadeuri savedNadeuri = Nadeuri.builder()
+                .uuid(nadeuriUuid)
+                .title(newNadeuriTitle).build();
+        when(nadeuriRepository.save(nadeuri)).thenReturn(savedNadeuri);
 
         // When
-        NadeuriSummaryResponse result = nadeuriServiceImpl.updateNadeuri(principalDetails1, nadeuriUuid, updateNadeuriTitleRequest);
+        nadeuriServiceImpl.updateNadeuri(principalDetails, nadeuriUuid, updateNadeuriTitleRequest);
 
         // Then
-        assertThat(result.getTitle()).isEqualTo(newTitle); // 세로운 제목으로 업데이트 했는지
+        assertAll(() -> verify(nadeuri).setTitle(newNadeuriTitle)); // Entity의 Setter들을 정확한 매개변수를 넣어 모두 호출했는지
+        verify(nadeuriRepository).save(nadeuri); // 명시적으로 [save] 메서드를 호출했는지
     }
 
     @Test
     void updateNadeuri_수정권한이없는회원() {
         // Given
-        long memberHasAuthorityId = 0L;
-        Member memberHasAuthority = Member.builder()
-                .id(memberHasAuthorityId).build();
-
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
-        String previousTitle = "previous_test_title";
-        Nadeuri nadeuri = Nadeuri.builder()
-                .uuid(nadeuriUuid)
-                .title(previousTitle)
-                .members(List.of(memberHasAuthority)).build();
-
-        long memberWithoutAuthorityId = 1L;
-        PrincipalDetails principalDetailsWithoutAuthority = new PrincipalDetails(memberWithoutAuthorityId, null, null, null);
-        String newTitle = "new_test_title";
+        String newNadeuriTitle = "new_title";
         UpdateNadeuriRequest updateNadeuriTitleRequest = UpdateNadeuriRequest.builder()
-                .title(newTitle).build();
+                .title(newNadeuriTitle).build();
 
+        Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
+        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(false);
 
         // When
         // Then
         assertThrows(AuthenticationException.class, () -> {
-            nadeuriServiceImpl.updateNadeuri(principalDetailsWithoutAuthority, nadeuriUuid,
+            nadeuriServiceImpl.updateNadeuri(principalDetails, nadeuriUuid,
                     updateNadeuriTitleRequest);
         }); // Nadeuri에 참가중이지 않은 회원이 수정 요청을 했을 때, 인증 예외를 발생시키는지
     }
