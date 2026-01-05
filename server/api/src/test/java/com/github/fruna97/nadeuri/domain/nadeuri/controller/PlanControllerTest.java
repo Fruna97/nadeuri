@@ -16,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreatePlanRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.PlanSummaryResponse;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdatePlanRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.service.PlanService;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
@@ -74,5 +75,26 @@ class PlanControllerTest {
         ResponseDto<PlanSummaryResponse> body = result.getBody();
         assertNotNull(body); // 응답 본문을 담고있는지
         assertThat(body.getData()).isEqualTo(planSummaryResponse); // 응답 본문의 데이터가 [PlanService.getPlan]가 반환한 [PlanSummaryResponse]와 동일한지
+    }
+
+    @Test
+    void updatePlan() {
+        // Given
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID nadeuriUuid = UUID.randomUUID();
+        UUID planUuid = UUID.randomUUID();
+        UpdatePlanRequest updatePlanRequest = mock(UpdatePlanRequest.class);
+
+        PlanSummaryResponse planSummaryResponse = mock(PlanSummaryResponse.class);
+        when(planService.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest)).thenReturn(planSummaryResponse);
+
+        // When
+        ResponseEntity<ResponseDto<PlanSummaryResponse>> result = planController.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환 하는지
+        ResponseDto<PlanSummaryResponse> body = result.getBody();
+        assertNotNull(body); // 응답 본문을 담고있는지
+        assertThat(body.getData()).isEqualTo(planSummaryResponse); // 응답 본문의 데이터가 [PlanService.updatePlan]가 반환한 [PlanSummaryResponse]와 동일한지
     }
 }

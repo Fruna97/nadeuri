@@ -7,11 +7,13 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreatePlanRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.PlanSummaryResponse;
+import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdatePlanRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.service.PlanService;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 import jakarta.validation.Valid;
@@ -51,6 +53,21 @@ public class PlanController {
         return ResponseEntity.ok()
                 .body(ResponseDto.<PlanSummaryResponse>builder()
                         .message("일정이 조회되었습니다.")
+                        .data(planSummaryResponse).build());
+    }
+
+    @PutMapping("/nadeuri/{nadeuriUuid}/plan/{planUuid}")
+    public ResponseEntity<ResponseDto<PlanSummaryResponse>> updatePlan(
+            @AuthenticationPrincipal PrincipalDetails principalDetails,
+            @PathVariable("nadeuriUuid") UUID nadeuriUuid,
+            @PathVariable("planUuid") UUID planUuid,
+            @RequestBody @Valid UpdatePlanRequest updatePlanRequest) {
+        PlanSummaryResponse planSummaryResponse =
+                planService.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest);
+
+        return ResponseEntity.ok()
+                .body(ResponseDto.<PlanSummaryResponse>builder()
+                        .message("일정이 업데이트되었습니다.")
                         .data(planSummaryResponse).build());
     }
 }
