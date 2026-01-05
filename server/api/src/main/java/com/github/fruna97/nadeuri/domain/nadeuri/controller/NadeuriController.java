@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
@@ -69,7 +70,7 @@ public class NadeuriController {
                         .data(participatingNadeuris).build());
     }
 
-    @PatchMapping("/nadeuri/{uuid}")
+    @PutMapping("/nadeuri/{uuid}")
     public ResponseEntity<ResponseDto<NadeuriSummaryResponse>> updateNadeuri(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("uuid") UUID uuid, @RequestBody UpdateNadeuriRequest updateNadeuriTitleRequest) {
