@@ -78,7 +78,7 @@ public class PlanServiceImpl implements PlanService {
             throw new PlanNotFoundInNadeuriException(plan);
         }
 
-        plan.setPlanTitle(updatePlanRequest.getPlanTitle());
+        plan.setTitle(updatePlanRequest.getTitle());
         plan.setGooglePlacesId(updatePlanRequest.getGooglePlacesId());
         plan.setLatitude(updatePlanRequest.getLatitude());
         plan.setLongitude(updatePlanRequest.getLongitude());

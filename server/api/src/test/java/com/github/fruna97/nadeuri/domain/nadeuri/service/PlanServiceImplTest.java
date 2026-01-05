@@ -56,14 +56,14 @@ class PlanServiceImplTest {
         LocalDateTime startAt = LocalDateTime.of(2025, 12, 14, 12, 0);
         LocalDateTime endAt = LocalDateTime.of(2025, 12, 14, 13, 0);
         Plan plan = Plan.builder()
-                .planTitle(planTitle)
+                .title(planTitle)
                 .startAt(startAt)
                 .endAt(endAt)
                 .nadeuri(nadeuri).build();
         Plan savedPlan = Plan.builder()
                 .id(planId)
                 .uuid(planUuid)
-                .planTitle(planTitle)
+                .title(planTitle)
                 .startAt(startAt)
                 .endAt(endAt)
                 .nadeuri(nadeuri).build();
@@ -78,7 +78,7 @@ class PlanServiceImplTest {
         verify(planRepository).save(planCaptor.capture()); // [PlanRepository.save] 메서드가 호출 되었는지
         assertThat(planCaptor.getValue()).isEqualTo(plan); // [PlanRepository.save] 메서드에 인자가 제대로 전달되었는지
 
-        assertAll(() -> assertEquals(result.getPlanTitle(), planTitle),
+        assertAll(() -> assertEquals(result.getTitle(), planTitle),
                 () -> assertEquals(result.getStartAt(), startAt),
                 () -> assertEquals(result.getEndAt(), endAt)); // 저장된 정보들을 그대로 반환하는지
     }
@@ -118,7 +118,7 @@ class PlanServiceImplTest {
         Plan plan = Plan.builder()
                 .id(planId)
                 .uuid(planUuid)
-                .planTitle(planTitle)
+                .title(planTitle)
                 .startAt(startAt)
                 .endAt(endAt)
                 .nadeuri(nadeuri).build();
@@ -129,7 +129,7 @@ class PlanServiceImplTest {
         PlanSummaryResponse result = planServiceImpl.getPlan(principalDetails, nadeuriUuid, planUuid);
 
         // Then
-        assertAll(() -> assertEquals(result.getPlanTitle(), planTitle),
+        assertAll(() -> assertEquals(result.getTitle(), planTitle),
                 () -> assertEquals(result.getStartAt(), startAt),
                 () -> assertEquals(result.getEndAt(), endAt)); // 저장소에서 가져온 정보들을 그대로 반환하는지
     }
@@ -185,7 +185,7 @@ class PlanServiceImplTest {
         LocalDateTime newStartAt = LocalDateTime.now();
         LocalDateTime newEndAt = LocalDateTime.now();
         UpdatePlanRequest updatePlanRequest = UpdatePlanRequest.builder()
-                .planTitle(newPlanTitle)
+                .title(newPlanTitle)
                 .googlePlacesId(newGooglePlacesId)
                 .latitude(newLatitude)
                 .longitude(newLongitude)
@@ -203,7 +203,7 @@ class PlanServiceImplTest {
         Plan savedPlan = Plan.builder()
             .id(0L)
             .uuid(planUuid)
-            .planTitle(newPlanTitle)
+            .title(newPlanTitle)
             .googlePlacesId(newGooglePlacesId)
             .latitude(newLatitude)
             .longitude(newLongitude)
@@ -216,7 +216,7 @@ class PlanServiceImplTest {
         planServiceImpl.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest);
 
         // Then
-        assertAll(() -> verify(plan).setPlanTitle(newPlanTitle),
+        assertAll(() -> verify(plan).setTitle(newPlanTitle),
                 () -> verify(plan).setGooglePlacesId(newGooglePlacesId),
                 () -> verify(plan).setLatitude(newLatitude),
                 () -> verify(plan).setLongitude(newLongitude),

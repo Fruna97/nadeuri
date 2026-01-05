@@ -40,7 +40,7 @@ class PlanControllerTest {
         LocalDateTime startAt = LocalDateTime.of(2025, 12, 16, 13, 0);
         LocalDateTime endAt = LocalDateTime.of(2025, 12, 16, 17, 30);
         PlanSummaryResponse planSummaryResponse = PlanSummaryResponse.builder()
-                .planTitle(planTitle)
+                .title(planTitle)
                 .startAt(startAt)
                 .endAt(endAt).build();
 

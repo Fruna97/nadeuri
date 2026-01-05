@@ -16,7 +16,7 @@ public class UpdatePlanRequest {
 
     @NotNull
     @Size(max = 100)
-    private String planTitle;
+    private String title;
 
     private String googlePlacesId;
 

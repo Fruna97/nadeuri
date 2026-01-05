@@ -16,7 +16,7 @@ public class PlanSummaryResponse {
 
     private UUID uuid;
 
-    private String planTitle;
+    private String title;
 
     private String googlePlacesId;
 
@@ -33,7 +33,7 @@ public class PlanSummaryResponse {
     public static PlanSummaryResponse fromEntity(Plan plan) {
         return PlanSummaryResponse.builder()
                 .uuid(plan.getUuid())
-                .planTitle(plan.getPlanTitle())
+                .title(plan.getTitle())
                 .googlePlacesId(plan.getGooglePlacesId())
                 .latitude(plan.getLatitude())
                 .longitude(plan.getLongitude())

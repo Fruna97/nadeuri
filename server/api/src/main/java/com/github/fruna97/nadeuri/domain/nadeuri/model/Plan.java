@@ -33,7 +33,7 @@ public class Plan {
     private UUID uuid;
 
     @Column(nullable = false, length = 100)
-    private String planTitle;
+    private String title;
 
     private String googlePlacesId;
 

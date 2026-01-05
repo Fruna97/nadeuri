@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CreatePlanRequest {
 
-    private String planTitle;
+    private String title;
 
     private String googlePlacesId;
 
@@ -31,7 +31,7 @@ public class CreatePlanRequest {
 
     public Plan toEntity(Nadeuri nadeuri) {
         return Plan.builder()
-                .planTitle(planTitle)
+                .title(title)
                 .googlePlacesId(googlePlacesId)
                 .latitude(latitude)
                 .longitude(longitude)
