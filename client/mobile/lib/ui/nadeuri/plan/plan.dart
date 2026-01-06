@@ -18,7 +18,7 @@ class _PlanPageState extends State<PlanPage> {
   void initState() {
     super.initState();
 
-    planTitleController.text = widget._planViewModel.plan.planTitle;
+    planTitleController.text = widget._planViewModel.plan.title;
   }
 
   @override

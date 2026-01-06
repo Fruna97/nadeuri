@@ -9,7 +9,7 @@ part of 'plan_api_model.dart';
 _PlanApiModel _$PlanApiModelFromJson(Map<String, dynamic> json) =>
     _PlanApiModel(
       uuid: json['uuid'] as String?,
-      planTitle: json['planTitle'] as String,
+      title: json['title'] as String,
       googlePlacesId: json['googlePlacesId'] as String?,
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
@@ -21,7 +21,7 @@ _PlanApiModel _$PlanApiModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$PlanApiModelToJson(_PlanApiModel instance) =>
     <String, dynamic>{
       'uuid': instance.uuid,
-      'planTitle': instance.planTitle,
+      'title': instance.title,
       'googlePlacesId': instance.googlePlacesId,
       'latitude': instance.latitude,
       'longitude': instance.longitude,

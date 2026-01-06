@@ -11,7 +11,7 @@ abstract class PlanApiModel with _$PlanApiModel {
 
   const factory PlanApiModel({
     String? uuid,
-    required String planTitle,
+    required String title,
     String? googlePlacesId,
     double? latitude,
     double? longitude,
@@ -25,7 +25,7 @@ abstract class PlanApiModel with _$PlanApiModel {
   static PlanApiModel fromPlan(Plan plan) {
     return PlanApiModel(
       uuid: plan.uuid,
-      planTitle: plan.planTitle,
+      title: plan.title,
       googlePlacesId: plan.googlePlacesId,
       latitude: plan.latitude,
       longitude: plan.longitude,
@@ -38,7 +38,7 @@ abstract class PlanApiModel with _$PlanApiModel {
   Plan toPlan() {
     return Plan(
       uuid: uuid,
-      planTitle: planTitle,
+      title: title,
       googlePlacesId: googlePlacesId,
       latitude: latitude,
       longitude: longitude,

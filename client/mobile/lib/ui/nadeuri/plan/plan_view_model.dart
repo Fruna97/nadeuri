@@ -8,7 +8,7 @@ class PlanViewModel extends ChangeNotifier {
   PlanViewModel.create()
     : _isNew = true,
       _plan = Plan(
-        planTitle: "",
+        title: "",
         startAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour + 1),
         endAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour + 2),
         nadeuriUuid: "",
@@ -20,7 +20,7 @@ class PlanViewModel extends ChangeNotifier {
   Plan get plan => _plan;
 
   void updateTitle(String newTitle) {
-    _plan = _plan.copyWith(planTitle: newTitle);
+    _plan = _plan.copyWith(title: newTitle);
 
     notifyListeners();
   }

@@ -7,7 +7,7 @@ part 'plan.g.dart';
 abstract class Plan with _$Plan {
   const factory Plan({
     String? uuid,
-    required String planTitle,
+    required String title,
     String? googlePlacesId,
     double? latitude,
     double? longitude,

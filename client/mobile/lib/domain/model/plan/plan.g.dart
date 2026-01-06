@@ -8,7 +8,7 @@ part of 'plan.dart';
 
 _Plan _$PlanFromJson(Map<String, dynamic> json) => _Plan(
   uuid: json['uuid'] as String?,
-  planTitle: json['planTitle'] as String,
+  title: json['title'] as String,
   googlePlacesId: json['googlePlacesId'] as String?,
   latitude: (json['latitude'] as num?)?.toDouble(),
   longitude: (json['longitude'] as num?)?.toDouble(),
@@ -19,7 +19,7 @@ _Plan _$PlanFromJson(Map<String, dynamic> json) => _Plan(
 
 Map<String, dynamic> _$PlanToJson(_Plan instance) => <String, dynamic>{
   'uuid': instance.uuid,
-  'planTitle': instance.planTitle,
+  'title': instance.title,
   'googlePlacesId': instance.googlePlacesId,
   'latitude': instance.latitude,
   'longitude': instance.longitude,

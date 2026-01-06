@@ -383,7 +383,7 @@ class _PlanSection extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(plan.planTitle.isEmpty ? "제목 없음" : plan.planTitle),
+            Text(plan.title.isEmpty ? "제목 없음" : plan.title),
             Row(
               children: DateUtils.isSameDay(plan.startAt, plan.endAt)
                   ? <Widget>[
