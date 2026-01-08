@@ -9,12 +9,22 @@ import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/data/service/model/member/member_api_model.dart';
 import 'package:mobile/data/service/model/nadeuri/nadeuri_api_model.dart';
 import 'package:mobile/data/service/model/nadeuri/update_nadeuri_api_model.dart';
+import 'package:mobile/data/service/model/plan/plan_api_model.dart';
 import 'package:mobile/data/service/model/sign_in_request/sign_in_request.dart';
 import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
 import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/utils/result.dart';
 
-enum RequestMethod { signUp, getMyProfile, signIn, postNadeuri, getNadeuri, getParticipatingNadeuris, putNadeuri }
+enum RequestMethod {
+  signUp,
+  getMyProfile,
+  signIn,
+  postNadeuri,
+  getNadeuri,
+  getParticipatingNadeuris,
+  putNadeuri,
+  postPlan,
+}
 
 class ApiClient {
   final String _logTag = "ApiClient";
@@ -120,6 +130,15 @@ class ApiClient {
     );
   }
 
+  Future<Result<PlanApiModel>> postPlan(String nadeuriUuid, PlanApiModel planApiModel) async {
+    final String endpoint = "/nadeuri/$nadeuriUuid/plan";
+    return await _requestAndParse<PlanApiModel>(
+      RequestMethod.postPlan,
+      () => _dioWithToken.post(endpoint, data: planApiModel.toJson()),
+      (data) => PlanApiModel.fromJson(data as Map<String, dynamic>),
+    );
+  }
+
   /// HTTP 요청을 보내고 응답을 받아, 응답 본문의 데이터를 파싱.
   ///
   /// [requestMethod]는 응답 오류 시, 오류 정보 파싱을 위해 사용됨.
@@ -217,6 +236,12 @@ class ApiClient {
         _ => "unknownError",
       },
       RequestMethod.putNadeuri => switch (statusCode) {
+        HttpStatus.unauthorized => "unauthorized",
+        HttpStatus.notFound => "notFound",
+        HttpStatus.unprocessableEntity => "validationError",
+        _ => "unknownError",
+      },
+      RequestMethod.postPlan => switch (statusCode) {
         HttpStatus.unauthorized => "unauthorized",
         HttpStatus.notFound => "notFound",
         HttpStatus.unprocessableEntity => "validationError",
