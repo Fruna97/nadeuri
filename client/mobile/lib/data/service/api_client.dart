@@ -14,7 +14,7 @@ import 'package:mobile/data/service/model/sign_up_request/sign_up_request.dart';
 import 'package:mobile/data/service/model/token/token_api_model.dart';
 import 'package:mobile/utils/result.dart';
 
-enum RequestMethod { signUp, getMyProfile, signIn, postNadeuri, getNadeuri, getParticipatingNadeuris, updateNadeuri }
+enum RequestMethod { signUp, getMyProfile, signIn, postNadeuri, getNadeuri, getParticipatingNadeuris, putNadeuri }
 
 class ApiClient {
   final String _logTag = "ApiClient";
@@ -111,11 +111,11 @@ class ApiClient {
     );
   }
 
-  Future<Result<NadeuriApiModel>> updateNadeuri(String uuid, UpdateNadeuriApiModel updateNadeuriApiModel) async {
+  Future<Result<NadeuriApiModel>> putNadeuri(String uuid, UpdateNadeuriApiModel updateNadeuriApiModel) async {
     final String endpoint = "/nadeuri/$uuid";
     return await _requestAndParse<NadeuriApiModel>(
-      RequestMethod.updateNadeuri,
-      () => _dioWithToken.patch(endpoint, data: updateNadeuriApiModel.toJson()),
+      RequestMethod.putNadeuri,
+      () => _dioWithToken.put(endpoint, data: updateNadeuriApiModel.toJson()),
       (data) => NadeuriApiModel.fromJson(data as Map<String, dynamic>),
     );
   }
@@ -216,7 +216,7 @@ class ApiClient {
         HttpStatus.unauthorized => "unauthorized",
         _ => "unknownError",
       },
-      RequestMethod.updateNadeuri => switch (statusCode) {
+      RequestMethod.putNadeuri => switch (statusCode) {
         HttpStatus.unauthorized => "unauthorized",
         HttpStatus.notFound => "notFound",
         HttpStatus.unprocessableEntity => "validationError",

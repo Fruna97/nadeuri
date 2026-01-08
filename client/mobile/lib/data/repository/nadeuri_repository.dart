@@ -95,7 +95,7 @@ class NadeuriRepository {
   }
 
   Future<Result<Nadeuri>> updateNadeuri(String uuid, String title) async {
-    Result<NadeuriApiModel> result = await _apiClient.updateNadeuri(uuid, UpdateNadeuriApiModel(title: title));
+    Result<NadeuriApiModel> result = await _apiClient.putNadeuri(uuid, UpdateNadeuriApiModel(title: title));
 
     switch (result) {
       case Ok<NadeuriApiModel> _:
