@@ -334,7 +334,13 @@ class _PlanSection extends StatelessWidget {
                               onPressed: () {
                                 Navigator.push(
                                   context,
-                                  MaterialPageRoute(builder: (_) => PlanPage(planViewModel: PlanViewModel.create())),
+                                  MaterialPageRoute(
+                                    builder: (_) => PlanPage(
+                                      planViewModel: PlanViewModel.create(
+                                        nadeuriUuid: _nadeuriDetailsViewModel.nadeuri.uuid!,
+                                      ),
+                                    ),
+                                  ),
                                 );
                               },
                               child: Icon(Icons.add),

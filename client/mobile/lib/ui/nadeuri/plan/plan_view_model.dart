@@ -5,13 +5,13 @@ class PlanViewModel extends ChangeNotifier {
   final bool _isNew;
   Plan _plan;
 
-  PlanViewModel.create()
+  PlanViewModel.create({required String nadeuriUuid})
     : _isNew = true,
       _plan = Plan(
         title: "",
         startAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour + 1),
         endAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour + 2),
-        nadeuriUuid: "",
+        nadeuriUuid: nadeuriUuid,
       );
 
   PlanViewModel.edit({required Plan plan}) : _isNew = false, _plan = plan;
