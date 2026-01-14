@@ -13,6 +13,7 @@ import com.github.fruna97.nadeuri.domain.nadeuri.dto.NadeuriSummaryResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import com.github.fruna97.nadeuri.domain.nadeuri.repository.NadeuriRepository;
+import com.github.fruna97.nadeuri.exception.NadeuriNotFoundException;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
 import lombok.extern.slf4j.Slf4j;
 
@@ -49,7 +50,8 @@ public class NadeuriServiceImpl implements NadeuriService {
     @Override
     @Transactional(readOnly = true)
     public NadeuriSummaryResponse getNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid) {
-        Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid).orElseThrow();
+        Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
+                .orElseThrow(NadeuriNotFoundException::new);
 
         if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 조회 요청");
@@ -72,7 +74,8 @@ public class NadeuriServiceImpl implements NadeuriService {
     @Transactional
     public NadeuriSummaryResponse updateNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid,
             UpdateNadeuriRequest updateNadeuriRequest) {
-        Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid).orElseThrow();
+        Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
+                .orElseThrow(NadeuriNotFoundException::new);
         if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 수정 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
