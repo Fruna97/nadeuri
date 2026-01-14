@@ -2,6 +2,7 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/data/repository/nadeuri_repository.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/domain/model/plan/plan.dart';
@@ -337,6 +338,7 @@ class _PlanSection extends StatelessWidget {
                                   MaterialPageRoute(
                                     builder: (_) => PlanPage(
                                       planViewModel: PlanViewModel.create(
+                                        nadeuriRepository: context.read<NadeuriRepository>(),
                                         nadeuriUuid: _nadeuriDetailsViewModel.nadeuri.uuid!,
                                       ),
                                     ),
@@ -380,7 +382,9 @@ class _PlanSection extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => PlanPage(planViewModel: PlanViewModel.edit(plan: plan)),
+            builder: (_) => PlanPage(
+              planViewModel: PlanViewModel.edit(nadeuriRepository: context.read<NadeuriRepository>(), plan: plan),
+            ),
           ),
         );
       },

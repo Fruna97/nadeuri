@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/data/service/model/api_error/api_error.dart';
+import 'package:mobile/data/service/model/local_error/local_error.dart';
+import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/nadeuri/plan/plan_view_model.dart';
+import 'package:mobile/utils/result.dart';
+import 'package:provider/provider.dart';
 
 class PlanPage extends StatefulWidget {
   final PlanViewModel _planViewModel;
@@ -19,6 +24,8 @@ class _PlanPageState extends State<PlanPage> {
     super.initState();
 
     planTitleController.text = widget._planViewModel.plan.title;
+
+    widget._planViewModel.command.addListener(_onCommand);
   }
 
   @override
@@ -29,10 +36,29 @@ class _PlanPageState extends State<PlanPage> {
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: ElevatedButton(
-              onPressed: () {},
-              style: ElevatedButton.styleFrom(shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0))),
-              child: Text("저장"),
+            child: ListenableBuilder(
+              listenable: widget._planViewModel.command,
+              builder: (context, child) => AnimatedSwitcher(
+                duration: Duration(milliseconds: 100),
+                child: widget._planViewModel.command.running
+                    ? SizedBox(
+                        width: 80,
+                        child: Center(child: CircularProgressIndicator(key: const ValueKey("saving"))),
+                      )
+                    : SizedBox(
+                        width: 80,
+                        child: OutlinedButton(
+                          key: const ValueKey("save"),
+                          onPressed: () {
+                            widget._planViewModel.command.execute();
+                          },
+                          style: ElevatedButton.styleFrom(
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
+                          ),
+                          child: Text("저장"),
+                        ),
+                      ),
+              ),
             ),
           ),
         ],
@@ -44,6 +70,8 @@ class _PlanPageState extends State<PlanPage> {
             TextField(
               controller: planTitleController,
               decoration: InputDecoration(hintText: "일정 제목", helperText: "장소를 추가하면 장소 이름이 입력됩니다."),
+              maxLength: 100,
+              onTapOutside: (event) => widget._planViewModel.updateTitle(planTitleController.text),
             ),
             Divider(height: 32.0),
             _DateTimeSection(planViewModel: widget._planViewModel),
@@ -61,6 +89,53 @@ class _PlanPageState extends State<PlanPage> {
         ),
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    widget._planViewModel.command.removeListener(_onCommand);
+
+    super.dispose();
+  }
+
+  /// 추가/갱신 성공 시 이전 화면으로 이동
+  /// 인증 문제 시 로그인 페이지로 이동
+  /// 리소스 조회 실패 시 상위 페이지로 이동
+  /// 그 외 문제 시 스낵바 표시
+  void _onCommand() {
+    if (widget._planViewModel.command.completed) {
+      widget._planViewModel.command.clearResult();
+      Navigator.pop(context);
+      return;
+    }
+
+    if (widget._planViewModel.command.error) {
+      final Error result = widget._planViewModel.command.result! as Error;
+      final Exception error = result.error;
+      widget._planViewModel.command.clearResult();
+
+      if (error is Unauthorized || error is TokenNotFound) {
+        context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
+        Navigator.pushNamedAndRemoveUntil(context, "/sign-in", (route) => false);
+        return;
+      }
+
+      if (error is NotFound) {
+        if (error.resource == "NADEURI") {
+          context.read<AppSnackBar>().showSnackBar("해당하는 나들이가 존재하지 않습니다.");
+          Navigator.pushNamedAndRemoveUntil(context, "/home", (route) => false);
+          return;
+        }
+
+        if (error.resource == "PLAN") {
+          context.read<AppSnackBar>().showSnackBar("해당하는 일정이 존재하지 않습니다.");
+          Navigator.pop(context);
+          return;
+        }
+      }
+
+      context.read<AppSnackBar>().showSnackBar("문제가 발생했습니다!\n나중에 다시 시도해보세요.");
+    }
   }
 }
 
