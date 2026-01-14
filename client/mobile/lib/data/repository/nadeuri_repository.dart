@@ -57,7 +57,7 @@ class NadeuriRepository {
           case Unauthorized _:
             log("Result is Unauthorized", name: _logTag);
           case NotFound _:
-            log("Result is NotFound", name: _logTag);
+            log("Result is NotFound: $error", name: _logTag);
           case RequestTimeout _:
             log("Result is RequestTimeout", name: _logTag);
           case UnknownError _:
@@ -110,7 +110,7 @@ class NadeuriRepository {
           case Unauthorized _:
             log("Result is Unauthorized", name: _logTag);
           case NotFound _:
-            log("Result is NotFound", name: _logTag);
+            log("Result is NotFound: $error", name: _logTag);
           case RequestTimeout _:
             log("Result is RequestTimeout", name: _logTag);
           case ValidationError _:
@@ -137,7 +137,7 @@ class NadeuriRepository {
           case Unauthorized _:
             log("Result is Unauthorized", name: _logTag);
           case NotFound _:
-            log("Result is NotFound", name: _logTag);
+            log("Result is NotFound: $error", name: _logTag);
           case RequestTimeout _:
             log("Result is RequestTimeout", name: _logTag);
           case ValidationError _:
@@ -168,7 +168,7 @@ class NadeuriRepository {
           case Unauthorized _:
             log("Result is Unauthorized", name: _logTag);
           case NotFound _:
-            log("Result is NotFound", name: _logTag);
+            log("Result is NotFound: $error", name: _logTag);
           case RequestTimeout _:
             log("Result is RequestTimeout", name: _logTag);
           case ValidationError _:

@@ -176,11 +176,11 @@ return unknownError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  unauthorized,TResult Function()?  notFound,TResult Function()?  requestTimeout,TResult Function()?  duplicateEmail,TResult Function( Map<String, List<String>> info)?  validationError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  unauthorized,TResult Function( String resource)?  notFound,TResult Function()?  requestTimeout,TResult Function()?  duplicateEmail,TResult Function( Map<String, List<String>> info)?  validationError,TResult Function()?  unknownError,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case Unauthorized() when unauthorized != null:
 return unauthorized();case NotFound() when notFound != null:
-return notFound();case RequestTimeout() when requestTimeout != null:
+return notFound(_that.resource);case RequestTimeout() when requestTimeout != null:
 return requestTimeout();case DuplicateEmail() when duplicateEmail != null:
 return duplicateEmail();case ValidationError() when validationError != null:
 return validationError(_that.info);case UnknownError() when unknownError != null:
@@ -202,11 +202,11 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  unauthorized,required TResult Function()  notFound,required TResult Function()  requestTimeout,required TResult Function()  duplicateEmail,required TResult Function( Map<String, List<String>> info)  validationError,required TResult Function()  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  unauthorized,required TResult Function( String resource)  notFound,required TResult Function()  requestTimeout,required TResult Function()  duplicateEmail,required TResult Function( Map<String, List<String>> info)  validationError,required TResult Function()  unknownError,}) {final _that = this;
 switch (_that) {
 case Unauthorized():
 return unauthorized();case NotFound():
-return notFound();case RequestTimeout():
+return notFound(_that.resource);case RequestTimeout():
 return requestTimeout();case DuplicateEmail():
 return duplicateEmail();case ValidationError():
 return validationError(_that.info);case UnknownError():
@@ -227,11 +227,11 @@ return unknownError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  unauthorized,TResult? Function()?  notFound,TResult? Function()?  requestTimeout,TResult? Function()?  duplicateEmail,TResult? Function( Map<String, List<String>> info)?  validationError,TResult? Function()?  unknownError,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  unauthorized,TResult? Function( String resource)?  notFound,TResult? Function()?  requestTimeout,TResult? Function()?  duplicateEmail,TResult? Function( Map<String, List<String>> info)?  validationError,TResult? Function()?  unknownError,}) {final _that = this;
 switch (_that) {
 case Unauthorized() when unauthorized != null:
 return unauthorized();case NotFound() when notFound != null:
-return notFound();case RequestTimeout() when requestTimeout != null:
+return notFound(_that.resource);case RequestTimeout() when requestTimeout != null:
 return requestTimeout();case DuplicateEmail() when duplicateEmail != null:
 return duplicateEmail();case ValidationError() when validationError != null:
 return validationError(_that.info);case UnknownError() when unknownError != null:
@@ -286,15 +286,20 @@ String toString() {
 @JsonSerializable()
 
 class NotFound implements ApiError {
-  const NotFound({final  String? $type}): $type = $type ?? 'notFound';
+  const NotFound({required this.resource, final  String? $type}): $type = $type ?? 'notFound';
   factory NotFound.fromJson(Map<String, dynamic> json) => _$NotFoundFromJson(json);
 
-
+ final  String resource;
 
 @JsonKey(name: 'runtimeType')
 final String $type;
 
 
+/// Create a copy of ApiError
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$NotFoundCopyWith<NotFound> get copyWith => _$NotFoundCopyWithImpl<NotFound>(this, _$identity);
 
 @override
 Map<String, dynamic> toJson() {
@@ -303,23 +308,52 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotFound);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is NotFound&&(identical(other.resource, resource) || other.resource == resource));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,resource);
 
 @override
 String toString() {
-  return 'ApiError.notFound()';
+  return 'ApiError.notFound(resource: $resource)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class $NotFoundCopyWith<$Res> implements $ApiErrorCopyWith<$Res> {
+  factory $NotFoundCopyWith(NotFound value, $Res Function(NotFound) _then) = _$NotFoundCopyWithImpl;
+@useResult
+$Res call({
+ String resource
+});
 
 
+
+
+}
+/// @nodoc
+class _$NotFoundCopyWithImpl<$Res>
+    implements $NotFoundCopyWith<$Res> {
+  _$NotFoundCopyWithImpl(this._self, this._then);
+
+  final NotFound _self;
+  final $Res Function(NotFound) _then;
+
+/// Create a copy of ApiError
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? resource = null,}) {
+  return _then(NotFound(
+resource: null == resource ? _self.resource : resource // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 @JsonSerializable()
