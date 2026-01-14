@@ -12,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.github.fruna97.nadeuri.common.dto.ResourceNotFoundError;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 
@@ -67,6 +68,28 @@ public class CustomExceptionHandler {
                 .body(ResponseDto.<Void>builder()
                         .message("요청한 리소스가 존재하지 않습니다.")
                         .data(null).build());
+    }
+
+    @ExceptionHandler(NadeuriNotFoundException.class)
+    public ResponseEntity<ResponseDto<ResourceNotFoundError>> nadeuriNotFoundHandler(
+            NadeuriNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ResponseDto.<ResourceNotFoundError>builder()
+                        .message("해당하는 나들이가 존재하지 않습니다.")
+                        .data(ResourceNotFoundError.builder()
+                                .resource("NADEURI").build()).build());
+    }
+
+    @ExceptionHandler(PlanNotFoundException.class)
+    public ResponseEntity<ResponseDto<ResourceNotFoundError>> planNotFoundHandler(
+            PlanNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ResponseDto.<ResourceNotFoundError>builder()
+                        .message("해당하는 일정이 존재하지 않습니다.")
+                        .data(ResourceNotFoundError.builder()
+                                .resource("PLAN").build()).build());
     }
 
     @ExceptionHandler(AuthenticationException.class)
