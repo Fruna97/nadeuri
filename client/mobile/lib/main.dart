@@ -14,8 +14,6 @@ import 'package:mobile/ui/sign_up/sign_up_view_model.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-final RouteObserver<ModalRoute<void>> routeObserver = RouteObserver<ModalRoute<void>>();
-
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -31,6 +29,7 @@ Future<void> main() async {
         ),
         Provider<SharedPreferencesWithCache>(create: (_) => prefsWithCache),
         Provider<AppSnackBar>(create: (_) => AppSnackBar()),
+        Provider<RouteObserver<ModalRoute<void>>>(create: (_) => RouteObserver<ModalRoute<void>>()),
         Provider<ApiClient>(
           create: (context) => ApiClient(
             host: "http://10.0.2.2",
@@ -86,7 +85,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue),
         useMaterial3: true,
       ),
-      navigatorObservers: [routeObserver],
+      navigatorObservers: [context.read<RouteObserver<ModalRoute<void>>>()],
       routes: {
         '/home': (BuildContext context) => ChangeNotifierProvider(
           create: (_) => HomeViewModel(

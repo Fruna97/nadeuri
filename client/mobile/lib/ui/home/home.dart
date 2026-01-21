@@ -6,7 +6,6 @@ import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/domain/model/member/member.dart';
 import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
-import 'package:mobile/main.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/home/home_view_model.dart';
 import 'package:mobile/ui/nadeuri/details/nadeuri_details.dart';
@@ -23,12 +22,14 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> with RouteAware {
   late final HomeViewModel _homeViewModel;
+  late final RouteObserver<ModalRoute<void>> _routeObserver;
 
   @override
   void initState() {
     super.initState();
 
     _homeViewModel = context.read<HomeViewModel>();
+    _routeObserver = context.read<RouteObserver<ModalRoute<void>>>();
 
     _homeViewModel.load.addListener(_onLoad);
     _homeViewModel.createNadeuri.addListener(_onCreateNadeuri);
@@ -38,7 +39,7 @@ class _HomePageState extends State<HomePage> with RouteAware {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    routeObserver.subscribe(this, ModalRoute.of(context)!);
+    _routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
@@ -87,6 +88,8 @@ class _HomePageState extends State<HomePage> with RouteAware {
   void dispose() {
     _homeViewModel.createNadeuri.removeListener(_onCreateNadeuri);
     _homeViewModel.load.removeListener(_onLoad);
+
+    _routeObserver.unsubscribe(this);
 
     super.dispose();
   }
