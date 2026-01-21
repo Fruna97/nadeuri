@@ -29,12 +29,23 @@ class NadeuriDetailsPage extends StatefulWidget {
   State<NadeuriDetailsPage> createState() => _NadeuriDetailsPageState();
 }
 
-class _NadeuriDetailsPageState extends State<NadeuriDetailsPage> {
+class _NadeuriDetailsPageState extends State<NadeuriDetailsPage> with RouteAware {
+  late final RouteObserver<ModalRoute<void>> _routeObserver;
+
   @override
   void initState() {
     super.initState();
 
+    _routeObserver = context.read<RouteObserver<ModalRoute<void>>>();
+
     widget._nadeuriDetailsViewModel.load.addListener(_onLoad);
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _routeObserver.subscribe(this, ModalRoute.of(context)!);
   }
 
   @override
@@ -64,15 +75,25 @@ class _NadeuriDetailsPageState extends State<NadeuriDetailsPage> {
   void dispose() {
     widget._nadeuriDetailsViewModel.load.removeListener(_onLoad);
 
+    _routeObserver.unsubscribe(this);
+
     super.dispose();
   }
 
+  @override
+  void didPopNext() {
+    super.didPopNext();
+
+    widget._nadeuriDetailsViewModel.load.execute();
+  }
+
+  /// 인증에 문제가 있으면 로그인 페이지로 이동
+  /// Nadeuri 조회 실패 시 홈 화면으로 이동
   void _onLoad() {
     if (widget._nadeuriDetailsViewModel.load.error && mounted) {
       final Error result = widget._nadeuriDetailsViewModel.load.result! as Error;
       final Exception error = result.error;
 
-      // 인증에 문제가 있으면 로그인 페이지로 이동.
       if (error is Unauthorized || error is TokenNotFound) {
         widget._nadeuriDetailsViewModel.load.clearResult();
         context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
@@ -80,7 +101,6 @@ class _NadeuriDetailsPageState extends State<NadeuriDetailsPage> {
         return;
       }
 
-      // Nadeuri가 존재하지 않으면 홈화면으로 이동.
       if (error is NotFound) {
         widget._nadeuriDetailsViewModel.load.clearResult();
         context.read<AppSnackBar>().showSnackBar("나들이 정보가 없습니다.");
@@ -283,152 +303,41 @@ class _PlanSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Plan> sortedPlans = List.from(_nadeuriDetailsViewModel.nadeuri.plans)
-      ..sort((a, b) => a.startAt.compareTo(b.startAt));
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        InkWell(
-          onTap: () {
-            showDialog(
-              context: context,
-              builder: (context) {
-                Widget dialogContents;
-                List<Widget> plansForListView = <Widget>[];
-                if (sortedPlans.isEmpty) {
-                  dialogContents = Center(child: Text("일정이 없습니다. 일정을 추가해보세요."));
-                } else {
-                  Map<DateTime, List<Plan>> planMap = <DateTime, List<Plan>>{};
-                  for (Plan plan in sortedPlans) {
-                    DateTime key = DateTime(plan.startAt.year, plan.startAt.month, plan.startAt.day);
-                    planMap.putIfAbsent(key, () => <Plan>[]).add(plan);
-                  }
-                  for (DateTime key in planMap.keys.toList()..sort()) {
-                    plansForListView.add(
-                      Text(
-                        yearMonthDayFormat.format(key),
-                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold),
-                      ),
-                    );
-                    for (Plan plan in planMap[key]!) {
-                      plansForListView.add(_planBar(plan, context));
-                    }
-                    plansForListView.add(SizedBox(height: 16.0));
-                  }
-                  dialogContents = ListView(children: plansForListView);
-                }
-                return Dialog(
-                  child: Container(
-                    padding: EdgeInsets.all(24.0),
-                    height: 500,
-                    child: Column(
-                      children: [
-                        Text("일정들", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                        Divider(height: 32.0),
-                        Expanded(child: dialogContents),
-                        SizedBox(height: 12.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            FloatingActionButton(
-                              onPressed: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (_) => PlanPage(
-                                      planViewModel: PlanViewModel.create(
-                                        nadeuriRepository: context.read<NadeuriRepository>(),
-                                        nadeuriUuid: _nadeuriDetailsViewModel.nadeuri.uuid!,
-                                      ),
-                                    ),
-                                  ),
-                                );
-                              },
-                              child: Icon(Icons.add),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-          child: Padding(
-            padding: const EdgeInsets.symmetric(vertical: 8.0),
-            child: Row(
-              children: [
-                Text("일정들", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
-                Spacer(),
-                Text("더보기", style: TextStyle(color: Colors.blue)),
-              ],
-            ),
-          ),
-        ),
-        SizedBox(height: 8.0),
-        if (sortedPlans.isEmpty)
-          Center(child: Text("일정이 없습니다. 일정을 추가해보세요."))
-        else
-          for (int i = 0; i < min(sortedPlans.length, 5); i++) _planBar(sortedPlans[i], context),
-      ],
-    );
-  }
-
-  InkWell _planBar(Plan plan, BuildContext context) {
-    return InkWell(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => PlanPage(
-              planViewModel: PlanViewModel.edit(nadeuriRepository: context.read<NadeuriRepository>(), plan: plan),
-            ),
-          ),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.all(4.0),
-        child: Column(
+    return AnimatedBuilder(
+      animation: _nadeuriDetailsViewModel,
+      builder: (context, _) {
+        return Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(plan.title.isEmpty ? "제목 없음" : plan.title),
-            Row(
-              children: DateUtils.isSameDay(plan.startAt, plan.endAt)
-                  ? <Widget>[
-                      Text(
-                        DateTime.now().year == plan.startAt.year
-                            ? monthDayFormat.format(plan.startAt)
-                            : yearMonthDayFormat.format(plan.startAt),
-                      ),
-                      Spacer(),
-                      Text("${timeFormat.format(plan.startAt)} - ${timeFormat.format(plan.endAt)}"),
-                    ]
-                  : <Widget>[
-                      Expanded(
-                        child: Text(
-                          DateTime.now().year == plan.startAt.year
-                              ? monthDayTimeFormat.format(plan.startAt)
-                              : yearMonthDayTimeFormat.format(plan.startAt),
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                      Text("-"),
-                      Expanded(
-                        child: Text(
-                          DateTime.now().year == plan.endAt.year
-                              ? monthDayTimeFormat.format(plan.endAt)
-                              : yearMonthDayTimeFormat.format(plan.endAt),
-                          textAlign: TextAlign.right,
-                          overflow: TextOverflow.ellipsis,
-                        ),
-                      ),
-                    ],
+            InkWell(
+              onTap: () {
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return _PlansDialog(nadeuriDetailsViewModel: _nadeuriDetailsViewModel);
+                  },
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Row(
+                  children: [
+                    Text("일정들", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                    Spacer(),
+                    Text("더보기", style: TextStyle(color: Colors.blue)),
+                  ],
+                ),
+              ),
             ),
+            SizedBox(height: 8.0),
+            if (_nadeuriDetailsViewModel.sortedPlans.isEmpty)
+              Center(child: Text("일정이 없습니다. 일정을 추가해보세요."))
+            else
+              for (int i = 0; i < min(_nadeuriDetailsViewModel.sortedPlans.length, 5); i++)
+                _planBar(_nadeuriDetailsViewModel.sortedPlans[i], context),
           ],
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -471,4 +380,167 @@ class _SettlementSection extends StatelessWidget {
       ),
     );
   }
+}
+
+class _PlansDialog extends StatefulWidget {
+  final NadeuriDetailsViewModel _nadeuriDetailsViewModel;
+
+  const _PlansDialog({super.key, required NadeuriDetailsViewModel nadeuriDetailsViewModel})
+    : _nadeuriDetailsViewModel = nadeuriDetailsViewModel;
+
+  @override
+  State<_PlansDialog> createState() => _PlansDialogState();
+}
+
+class _PlansDialogState extends State<_PlansDialog> with RouteAware {
+  late final RouteObserver<ModalRoute<void>> _routeObserver;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _routeObserver = context.read<RouteObserver<ModalRoute<void>>>();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    _routeObserver.subscribe(this, ModalRoute.of(context)!);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: widget._nadeuriDetailsViewModel,
+      builder: (context, _) {
+        Widget dialogContents;
+        List<Widget> plansForListView = <Widget>[];
+        if (widget._nadeuriDetailsViewModel.sortedPlans.isEmpty) {
+          dialogContents = Center(child: Text("일정이 없습니다. 일정을 추가해보세요."));
+        } else {
+          Map<DateTime, List<Plan>> planMap = <DateTime, List<Plan>>{};
+          for (Plan plan in widget._nadeuriDetailsViewModel.sortedPlans) {
+            DateTime key = DateTime(plan.startAt.year, plan.startAt.month, plan.startAt.day);
+            planMap.putIfAbsent(key, () => <Plan>[]).add(plan);
+          }
+          for (DateTime key in planMap.keys.toList()..sort()) {
+            plansForListView.add(
+              Text(yearMonthDayFormat.format(key), style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold)),
+            );
+            for (Plan plan in planMap[key]!) {
+              plansForListView.add(_planBar(plan, context));
+            }
+            plansForListView.add(SizedBox(height: 16.0));
+          }
+          dialogContents = ListView(children: plansForListView);
+        }
+        return Dialog(
+          child: Container(
+            padding: EdgeInsets.all(24.0),
+            height: 500,
+            child: Column(
+              children: [
+                Text("일정들", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+                Divider(height: 32.0),
+                Expanded(child: dialogContents),
+                SizedBox(height: 12.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FloatingActionButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => PlanPage(
+                              planViewModel: PlanViewModel.create(
+                                nadeuriRepository: context.read<NadeuriRepository>(),
+                                nadeuriUuid: widget._nadeuriDetailsViewModel.nadeuri.uuid!,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      child: Icon(Icons.add),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  void dispose() {
+    _routeObserver.unsubscribe(this);
+
+    super.dispose();
+  }
+
+  @override
+  void didPopNext() {
+    super.didPopNext();
+
+    widget._nadeuriDetailsViewModel.load.execute();
+  }
+}
+
+InkWell _planBar(Plan plan, BuildContext context) {
+  return InkWell(
+    onTap: () {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => PlanPage(
+            planViewModel: PlanViewModel.edit(nadeuriRepository: context.read<NadeuriRepository>(), plan: plan),
+          ),
+        ),
+      );
+    },
+    child: Padding(
+      padding: const EdgeInsets.all(4.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(plan.title.isEmpty ? "제목 없음" : plan.title),
+          Row(
+            children: DateUtils.isSameDay(plan.startAt, plan.endAt)
+                ? <Widget>[
+                    Text(
+                      DateTime.now().year == plan.startAt.year
+                          ? monthDayFormat.format(plan.startAt)
+                          : yearMonthDayFormat.format(plan.startAt),
+                    ),
+                    Spacer(),
+                    Text("${timeFormat.format(plan.startAt)} - ${timeFormat.format(plan.endAt)}"),
+                  ]
+                : <Widget>[
+                    Expanded(
+                      child: Text(
+                        DateTime.now().year == plan.startAt.year
+                            ? monthDayTimeFormat.format(plan.startAt)
+                            : yearMonthDayTimeFormat.format(plan.startAt),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text("-"),
+                    Expanded(
+                      child: Text(
+                        DateTime.now().year == plan.endAt.year
+                            ? monthDayTimeFormat.format(plan.endAt)
+                            : yearMonthDayTimeFormat.format(plan.endAt),
+                        textAlign: TextAlign.right,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                  ],
+          ),
+        ],
+      ),
+    ),
+  );
 }
