@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$Plan {
 
- String? get uuid; String get title; String? get googlePlacesId; double? get latitude; double? get longitude; DateTime get startAt; DateTime get endAt; String get nadeuriUuid;
+ String? get uuid; String get title; String? get googlePlacesId; double? get latitude; double? get longitude; bool get allDay; DateTime get startAt; DateTime get endAt; String get nadeuriUuid;
 /// Create a copy of Plan
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $PlanCopyWith<Plan> get copyWith => _$PlanCopyWithImpl<Plan>(this as Plan, _$ide
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is Plan&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.title, title) || other.title == title)&&(identical(other.googlePlacesId, googlePlacesId) || other.googlePlacesId == googlePlacesId)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt)&&(identical(other.nadeuriUuid, nadeuriUuid) || other.nadeuriUuid == nadeuriUuid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Plan&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.title, title) || other.title == title)&&(identical(other.googlePlacesId, googlePlacesId) || other.googlePlacesId == googlePlacesId)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.allDay, allDay) || other.allDay == allDay)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt)&&(identical(other.nadeuriUuid, nadeuriUuid) || other.nadeuriUuid == nadeuriUuid));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uuid,title,googlePlacesId,latitude,longitude,startAt,endAt,nadeuriUuid);
+int get hashCode => Object.hash(runtimeType,uuid,title,googlePlacesId,latitude,longitude,allDay,startAt,endAt,nadeuriUuid);
 
 @override
 String toString() {
-  return 'Plan(uuid: $uuid, title: $title, googlePlacesId: $googlePlacesId, latitude: $latitude, longitude: $longitude, startAt: $startAt, endAt: $endAt, nadeuriUuid: $nadeuriUuid)';
+  return 'Plan(uuid: $uuid, title: $title, googlePlacesId: $googlePlacesId, latitude: $latitude, longitude: $longitude, allDay: $allDay, startAt: $startAt, endAt: $endAt, nadeuriUuid: $nadeuriUuid)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $PlanCopyWith<$Res>  {
   factory $PlanCopyWith(Plan value, $Res Function(Plan) _then) = _$PlanCopyWithImpl;
 @useResult
 $Res call({
- String? uuid, String title, String? googlePlacesId, double? latitude, double? longitude, DateTime startAt, DateTime endAt, String nadeuriUuid
+ String? uuid, String title, String? googlePlacesId, double? latitude, double? longitude, bool allDay, DateTime startAt, DateTime endAt, String nadeuriUuid
 });
 
 
@@ -65,14 +65,15 @@ class _$PlanCopyWithImpl<$Res>
 
 /// Create a copy of Plan
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? uuid = freezed,Object? title = null,Object? googlePlacesId = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? startAt = null,Object? endAt = null,Object? nadeuriUuid = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? uuid = freezed,Object? title = null,Object? googlePlacesId = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? allDay = null,Object? startAt = null,Object? endAt = null,Object? nadeuriUuid = null,}) {
   return _then(_self.copyWith(
 uuid: freezed == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
 as String?,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,googlePlacesId: freezed == googlePlacesId ? _self.googlePlacesId : googlePlacesId // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
-as double?,startAt: null == startAt ? _self.startAt : startAt // ignore: cast_nullable_to_non_nullable
+as double?,allDay: null == allDay ? _self.allDay : allDay // ignore: cast_nullable_to_non_nullable
+as bool,startAt: null == startAt ? _self.startAt : startAt // ignore: cast_nullable_to_non_nullable
 as DateTime,endAt: null == endAt ? _self.endAt : endAt // ignore: cast_nullable_to_non_nullable
 as DateTime,nadeuriUuid: null == nadeuriUuid ? _self.nadeuriUuid : nadeuriUuid // ignore: cast_nullable_to_non_nullable
 as String,
@@ -160,10 +161,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? uuid,  String title,  String? googlePlacesId,  double? latitude,  double? longitude,  DateTime startAt,  DateTime endAt,  String nadeuriUuid)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? uuid,  String title,  String? googlePlacesId,  double? latitude,  double? longitude,  bool allDay,  DateTime startAt,  DateTime endAt,  String nadeuriUuid)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Plan() when $default != null:
-return $default(_that.uuid,_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.startAt,_that.endAt,_that.nadeuriUuid);case _:
+return $default(_that.uuid,_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.allDay,_that.startAt,_that.endAt,_that.nadeuriUuid);case _:
   return orElse();
 
 }
@@ -181,10 +182,10 @@ return $default(_that.uuid,_that.title,_that.googlePlacesId,_that.latitude,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? uuid,  String title,  String? googlePlacesId,  double? latitude,  double? longitude,  DateTime startAt,  DateTime endAt,  String nadeuriUuid)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? uuid,  String title,  String? googlePlacesId,  double? latitude,  double? longitude,  bool allDay,  DateTime startAt,  DateTime endAt,  String nadeuriUuid)  $default,) {final _that = this;
 switch (_that) {
 case _Plan():
-return $default(_that.uuid,_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.startAt,_that.endAt,_that.nadeuriUuid);case _:
+return $default(_that.uuid,_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.allDay,_that.startAt,_that.endAt,_that.nadeuriUuid);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -201,10 +202,10 @@ return $default(_that.uuid,_that.title,_that.googlePlacesId,_that.latitude,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? uuid,  String title,  String? googlePlacesId,  double? latitude,  double? longitude,  DateTime startAt,  DateTime endAt,  String nadeuriUuid)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? uuid,  String title,  String? googlePlacesId,  double? latitude,  double? longitude,  bool allDay,  DateTime startAt,  DateTime endAt,  String nadeuriUuid)?  $default,) {final _that = this;
 switch (_that) {
 case _Plan() when $default != null:
-return $default(_that.uuid,_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.startAt,_that.endAt,_that.nadeuriUuid);case _:
+return $default(_that.uuid,_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.allDay,_that.startAt,_that.endAt,_that.nadeuriUuid);case _:
   return null;
 
 }
@@ -216,7 +217,7 @@ return $default(_that.uuid,_that.title,_that.googlePlacesId,_that.latitude,_that
 @JsonSerializable()
 
 class _Plan implements Plan {
-  const _Plan({this.uuid, required this.title, this.googlePlacesId, this.latitude, this.longitude, required this.startAt, required this.endAt, required this.nadeuriUuid});
+  const _Plan({this.uuid, required this.title, this.googlePlacesId, this.latitude, this.longitude, required this.allDay, required this.startAt, required this.endAt, required this.nadeuriUuid});
   factory _Plan.fromJson(Map<String, dynamic> json) => _$PlanFromJson(json);
 
 @override final  String? uuid;
@@ -224,6 +225,7 @@ class _Plan implements Plan {
 @override final  String? googlePlacesId;
 @override final  double? latitude;
 @override final  double? longitude;
+@override final  bool allDay;
 @override final  DateTime startAt;
 @override final  DateTime endAt;
 @override final  String nadeuriUuid;
@@ -241,16 +243,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Plan&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.title, title) || other.title == title)&&(identical(other.googlePlacesId, googlePlacesId) || other.googlePlacesId == googlePlacesId)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt)&&(identical(other.nadeuriUuid, nadeuriUuid) || other.nadeuriUuid == nadeuriUuid));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Plan&&(identical(other.uuid, uuid) || other.uuid == uuid)&&(identical(other.title, title) || other.title == title)&&(identical(other.googlePlacesId, googlePlacesId) || other.googlePlacesId == googlePlacesId)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.allDay, allDay) || other.allDay == allDay)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt)&&(identical(other.nadeuriUuid, nadeuriUuid) || other.nadeuriUuid == nadeuriUuid));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,uuid,title,googlePlacesId,latitude,longitude,startAt,endAt,nadeuriUuid);
+int get hashCode => Object.hash(runtimeType,uuid,title,googlePlacesId,latitude,longitude,allDay,startAt,endAt,nadeuriUuid);
 
 @override
 String toString() {
-  return 'Plan(uuid: $uuid, title: $title, googlePlacesId: $googlePlacesId, latitude: $latitude, longitude: $longitude, startAt: $startAt, endAt: $endAt, nadeuriUuid: $nadeuriUuid)';
+  return 'Plan(uuid: $uuid, title: $title, googlePlacesId: $googlePlacesId, latitude: $latitude, longitude: $longitude, allDay: $allDay, startAt: $startAt, endAt: $endAt, nadeuriUuid: $nadeuriUuid)';
 }
 
 
@@ -261,7 +263,7 @@ abstract mixin class _$PlanCopyWith<$Res> implements $PlanCopyWith<$Res> {
   factory _$PlanCopyWith(_Plan value, $Res Function(_Plan) _then) = __$PlanCopyWithImpl;
 @override @useResult
 $Res call({
- String? uuid, String title, String? googlePlacesId, double? latitude, double? longitude, DateTime startAt, DateTime endAt, String nadeuriUuid
+ String? uuid, String title, String? googlePlacesId, double? latitude, double? longitude, bool allDay, DateTime startAt, DateTime endAt, String nadeuriUuid
 });
 
 
@@ -278,14 +280,15 @@ class __$PlanCopyWithImpl<$Res>
 
 /// Create a copy of Plan
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? uuid = freezed,Object? title = null,Object? googlePlacesId = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? startAt = null,Object? endAt = null,Object? nadeuriUuid = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? uuid = freezed,Object? title = null,Object? googlePlacesId = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? allDay = null,Object? startAt = null,Object? endAt = null,Object? nadeuriUuid = null,}) {
   return _then(_Plan(
 uuid: freezed == uuid ? _self.uuid : uuid // ignore: cast_nullable_to_non_nullable
 as String?,title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,googlePlacesId: freezed == googlePlacesId ? _self.googlePlacesId : googlePlacesId // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
-as double?,startAt: null == startAt ? _self.startAt : startAt // ignore: cast_nullable_to_non_nullable
+as double?,allDay: null == allDay ? _self.allDay : allDay // ignore: cast_nullable_to_non_nullable
+as bool,startAt: null == startAt ? _self.startAt : startAt // ignore: cast_nullable_to_non_nullable
 as DateTime,endAt: null == endAt ? _self.endAt : endAt // ignore: cast_nullable_to_non_nullable
 as DateTime,nadeuriUuid: null == nadeuriUuid ? _self.nadeuriUuid : nadeuriUuid // ignore: cast_nullable_to_non_nullable
 as String,

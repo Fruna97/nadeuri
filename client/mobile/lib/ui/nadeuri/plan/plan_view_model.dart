@@ -24,6 +24,7 @@ class PlanViewModel extends ChangeNotifier {
       _nadeuriRepository = nadeuriRepository,
       _plan = Plan(
         title: "",
+        allDay: false,
         startAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour + 1),
         endAt: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day, DateTime.now().hour + 2),
         nadeuriUuid: nadeuriUuid,
@@ -88,6 +89,12 @@ class PlanViewModel extends ChangeNotifier {
 
   void updateLongitude(double? newLongitude) {
     _plan = _plan.copyWith(longitude: newLongitude);
+
+    notifyListeners();
+  }
+
+  void updateAllDay(bool newAllDay) {
+    _plan = _plan.copyWith(allDay: newAllDay);
 
     notifyListeners();
   }

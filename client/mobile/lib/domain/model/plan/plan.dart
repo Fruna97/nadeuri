@@ -11,6 +11,7 @@ abstract class Plan with _$Plan {
     String? googlePlacesId,
     double? latitude,
     double? longitude,
+    required bool allDay,
     required DateTime startAt,
     required DateTime endAt,
     required String nadeuriUuid,

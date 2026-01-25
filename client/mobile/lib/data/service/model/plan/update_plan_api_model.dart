@@ -13,6 +13,7 @@ abstract class UpdatePlanApiModel with _$UpdatePlanApiModel {
     String? googlePlacesId,
     double? latitude,
     double? longitude,
+    required bool allDay,
     required DateTime startAt,
     required DateTime endAt,
   }) = _UpdatePlanApiModel;
@@ -25,6 +26,7 @@ abstract class UpdatePlanApiModel with _$UpdatePlanApiModel {
       googlePlacesId: plan.googlePlacesId,
       latitude: plan.latitude,
       longitude: plan.longitude,
+      allDay: plan.allDay,
       startAt: plan.startAt,
       endAt: plan.endAt,
     );

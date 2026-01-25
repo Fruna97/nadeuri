@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UpdatePlanApiModel {
 
- String get title; String? get googlePlacesId; double? get latitude; double? get longitude; DateTime get startAt; DateTime get endAt;
+ String get title; String? get googlePlacesId; double? get latitude; double? get longitude; bool get allDay; DateTime get startAt; DateTime get endAt;
 /// Create a copy of UpdatePlanApiModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UpdatePlanApiModelCopyWith<UpdatePlanApiModel> get copyWith => _$UpdatePlanApiM
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdatePlanApiModel&&(identical(other.title, title) || other.title == title)&&(identical(other.googlePlacesId, googlePlacesId) || other.googlePlacesId == googlePlacesId)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UpdatePlanApiModel&&(identical(other.title, title) || other.title == title)&&(identical(other.googlePlacesId, googlePlacesId) || other.googlePlacesId == googlePlacesId)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.allDay, allDay) || other.allDay == allDay)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,googlePlacesId,latitude,longitude,startAt,endAt);
+int get hashCode => Object.hash(runtimeType,title,googlePlacesId,latitude,longitude,allDay,startAt,endAt);
 
 @override
 String toString() {
-  return 'UpdatePlanApiModel(title: $title, googlePlacesId: $googlePlacesId, latitude: $latitude, longitude: $longitude, startAt: $startAt, endAt: $endAt)';
+  return 'UpdatePlanApiModel(title: $title, googlePlacesId: $googlePlacesId, latitude: $latitude, longitude: $longitude, allDay: $allDay, startAt: $startAt, endAt: $endAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UpdatePlanApiModelCopyWith<$Res>  {
   factory $UpdatePlanApiModelCopyWith(UpdatePlanApiModel value, $Res Function(UpdatePlanApiModel) _then) = _$UpdatePlanApiModelCopyWithImpl;
 @useResult
 $Res call({
- String title, String? googlePlacesId, double? latitude, double? longitude, DateTime startAt, DateTime endAt
+ String title, String? googlePlacesId, double? latitude, double? longitude, bool allDay, DateTime startAt, DateTime endAt
 });
 
 
@@ -65,13 +65,14 @@ class _$UpdatePlanApiModelCopyWithImpl<$Res>
 
 /// Create a copy of UpdatePlanApiModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? googlePlacesId = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? startAt = null,Object? endAt = null,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? title = null,Object? googlePlacesId = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? allDay = null,Object? startAt = null,Object? endAt = null,}) {
   return _then(_self.copyWith(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,googlePlacesId: freezed == googlePlacesId ? _self.googlePlacesId : googlePlacesId // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
-as double?,startAt: null == startAt ? _self.startAt : startAt // ignore: cast_nullable_to_non_nullable
+as double?,allDay: null == allDay ? _self.allDay : allDay // ignore: cast_nullable_to_non_nullable
+as bool,startAt: null == startAt ? _self.startAt : startAt // ignore: cast_nullable_to_non_nullable
 as DateTime,endAt: null == endAt ? _self.endAt : endAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
@@ -158,10 +159,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  String? googlePlacesId,  double? latitude,  double? longitude,  DateTime startAt,  DateTime endAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String title,  String? googlePlacesId,  double? latitude,  double? longitude,  bool allDay,  DateTime startAt,  DateTime endAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UpdatePlanApiModel() when $default != null:
-return $default(_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.startAt,_that.endAt);case _:
+return $default(_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.allDay,_that.startAt,_that.endAt);case _:
   return orElse();
 
 }
@@ -179,10 +180,10 @@ return $default(_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  String? googlePlacesId,  double? latitude,  double? longitude,  DateTime startAt,  DateTime endAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String title,  String? googlePlacesId,  double? latitude,  double? longitude,  bool allDay,  DateTime startAt,  DateTime endAt)  $default,) {final _that = this;
 switch (_that) {
 case _UpdatePlanApiModel():
-return $default(_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.startAt,_that.endAt);case _:
+return $default(_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.allDay,_that.startAt,_that.endAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -199,10 +200,10 @@ return $default(_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  String? googlePlacesId,  double? latitude,  double? longitude,  DateTime startAt,  DateTime endAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String title,  String? googlePlacesId,  double? latitude,  double? longitude,  bool allDay,  DateTime startAt,  DateTime endAt)?  $default,) {final _that = this;
 switch (_that) {
 case _UpdatePlanApiModel() when $default != null:
-return $default(_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.startAt,_that.endAt);case _:
+return $default(_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,_that.allDay,_that.startAt,_that.endAt);case _:
   return null;
 
 }
@@ -214,13 +215,14 @@ return $default(_that.title,_that.googlePlacesId,_that.latitude,_that.longitude,
 @JsonSerializable()
 
 class _UpdatePlanApiModel extends UpdatePlanApiModel {
-  const _UpdatePlanApiModel({required this.title, this.googlePlacesId, this.latitude, this.longitude, required this.startAt, required this.endAt}): super._();
+  const _UpdatePlanApiModel({required this.title, this.googlePlacesId, this.latitude, this.longitude, required this.allDay, required this.startAt, required this.endAt}): super._();
   factory _UpdatePlanApiModel.fromJson(Map<String, dynamic> json) => _$UpdatePlanApiModelFromJson(json);
 
 @override final  String title;
 @override final  String? googlePlacesId;
 @override final  double? latitude;
 @override final  double? longitude;
+@override final  bool allDay;
 @override final  DateTime startAt;
 @override final  DateTime endAt;
 
@@ -237,16 +239,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdatePlanApiModel&&(identical(other.title, title) || other.title == title)&&(identical(other.googlePlacesId, googlePlacesId) || other.googlePlacesId == googlePlacesId)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UpdatePlanApiModel&&(identical(other.title, title) || other.title == title)&&(identical(other.googlePlacesId, googlePlacesId) || other.googlePlacesId == googlePlacesId)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.allDay, allDay) || other.allDay == allDay)&&(identical(other.startAt, startAt) || other.startAt == startAt)&&(identical(other.endAt, endAt) || other.endAt == endAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,title,googlePlacesId,latitude,longitude,startAt,endAt);
+int get hashCode => Object.hash(runtimeType,title,googlePlacesId,latitude,longitude,allDay,startAt,endAt);
 
 @override
 String toString() {
-  return 'UpdatePlanApiModel(title: $title, googlePlacesId: $googlePlacesId, latitude: $latitude, longitude: $longitude, startAt: $startAt, endAt: $endAt)';
+  return 'UpdatePlanApiModel(title: $title, googlePlacesId: $googlePlacesId, latitude: $latitude, longitude: $longitude, allDay: $allDay, startAt: $startAt, endAt: $endAt)';
 }
 
 
@@ -257,7 +259,7 @@ abstract mixin class _$UpdatePlanApiModelCopyWith<$Res> implements $UpdatePlanAp
   factory _$UpdatePlanApiModelCopyWith(_UpdatePlanApiModel value, $Res Function(_UpdatePlanApiModel) _then) = __$UpdatePlanApiModelCopyWithImpl;
 @override @useResult
 $Res call({
- String title, String? googlePlacesId, double? latitude, double? longitude, DateTime startAt, DateTime endAt
+ String title, String? googlePlacesId, double? latitude, double? longitude, bool allDay, DateTime startAt, DateTime endAt
 });
 
 
@@ -274,13 +276,14 @@ class __$UpdatePlanApiModelCopyWithImpl<$Res>
 
 /// Create a copy of UpdatePlanApiModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? googlePlacesId = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? startAt = null,Object? endAt = null,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? title = null,Object? googlePlacesId = freezed,Object? latitude = freezed,Object? longitude = freezed,Object? allDay = null,Object? startAt = null,Object? endAt = null,}) {
   return _then(_UpdatePlanApiModel(
 title: null == title ? _self.title : title // ignore: cast_nullable_to_non_nullable
 as String,googlePlacesId: freezed == googlePlacesId ? _self.googlePlacesId : googlePlacesId // ignore: cast_nullable_to_non_nullable
 as String?,latitude: freezed == latitude ? _self.latitude : latitude // ignore: cast_nullable_to_non_nullable
 as double?,longitude: freezed == longitude ? _self.longitude : longitude // ignore: cast_nullable_to_non_nullable
-as double?,startAt: null == startAt ? _self.startAt : startAt // ignore: cast_nullable_to_non_nullable
+as double?,allDay: null == allDay ? _self.allDay : allDay // ignore: cast_nullable_to_non_nullable
+as bool,startAt: null == startAt ? _self.startAt : startAt // ignore: cast_nullable_to_non_nullable
 as DateTime,endAt: null == endAt ? _self.endAt : endAt // ignore: cast_nullable_to_non_nullable
 as DateTime,
   ));
