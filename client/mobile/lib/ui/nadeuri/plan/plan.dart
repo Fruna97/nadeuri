@@ -139,17 +139,10 @@ class _PlanPageState extends State<PlanPage> {
   }
 }
 
-class _DateTimeSection extends StatefulWidget {
+class _DateTimeSection extends StatelessWidget {
   final PlanViewModel _planViewModel;
 
   const _DateTimeSection({super.key, required PlanViewModel planViewModel}) : _planViewModel = planViewModel;
-
-  @override
-  State<_DateTimeSection> createState() => _DateTimeSectionState();
-}
-
-class _DateTimeSectionState extends State<_DateTimeSection> {
-  bool _dateOnly = false;
 
   @override
   Widget build(BuildContext context) {
@@ -160,12 +153,15 @@ class _DateTimeSectionState extends State<_DateTimeSection> {
             Icon(Icons.access_time, color: Colors.blue),
             Spacer(),
             Text("시간 미정 "),
-            Switch(
-              value: _dateOnly,
-              onChanged: (value) {
-                setState(() {
-                  _dateOnly = value;
-                });
+            ListenableBuilder(
+              listenable: _planViewModel,
+              builder: (context, child) {
+                return Switch(
+                  value: _planViewModel.plan.allDay,
+                  onChanged: (value) {
+                    _planViewModel.updateAllDay(value);
+                  },
+                );
               },
             ),
           ],
@@ -177,7 +173,7 @@ class _DateTimeSectionState extends State<_DateTimeSection> {
                 onTap: () async {
                   DateTime? newDate = await showDatePicker(
                     context: context,
-                    initialDate: widget._planViewModel.plan.startAt,
+                    initialDate: _planViewModel.plan.startAt,
                     firstDate: DateTime.now().subtract(Duration(days: 365)),
                     lastDate: DateTime.now().add(Duration(days: 365 * 10)),
                   );
@@ -185,50 +181,55 @@ class _DateTimeSectionState extends State<_DateTimeSection> {
                     return;
                   }
 
-                  widget._planViewModel.updateStartAt(
+                  _planViewModel.updateStartAt(
                     newDate.copyWith(
-                      hour: widget._planViewModel.plan.startAt.hour,
-                      minute: widget._planViewModel.plan.startAt.minute,
+                      hour: _planViewModel.plan.startAt.hour,
+                      minute: _planViewModel.plan.startAt.minute,
                     ),
                   );
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: ListenableBuilder(
-                    listenable: widget._planViewModel,
-                    builder: (context, child) =>
-                        Text(DateFormat("yyyy년 MM월 dd일").format(widget._planViewModel.plan.startAt)),
+                    listenable: _planViewModel,
+                    builder: (context, child) => Text(DateFormat("yyyy년 MM월 dd일").format(_planViewModel.plan.startAt)),
                   ),
                 ),
               ),
             ),
-            if (!_dateOnly)
-              InkWell(
-                onTap: () async {
-                  TimeOfDay? newTime = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay(
-                      hour: widget._planViewModel.plan.startAt.hour,
-                      minute: widget._planViewModel.plan.startAt.minute,
-                    ),
-                  );
-                  if (newTime == null) {
-                    return;
-                  }
+            ListenableBuilder(
+              listenable: _planViewModel,
+              builder: (context, child) {
+                return Visibility(
+                  visible: !_planViewModel.plan.allDay,
+                  child: InkWell(
+                    onTap: () async {
+                      TimeOfDay? newTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay(
+                          hour: _planViewModel.plan.startAt.hour,
+                          minute: _planViewModel.plan.startAt.minute,
+                        ),
+                      );
+                      if (newTime == null) {
+                        return;
+                      }
 
-                  widget._planViewModel.updateStartAt(
-                    widget._planViewModel.plan.startAt.copyWith(hour: newTime.hour, minute: newTime.minute),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ListenableBuilder(
-                    listenable: widget._planViewModel,
-                    builder: (context, child) =>
-                        Text(DateFormat("h:mm aaa").format(widget._planViewModel.plan.startAt)),
+                      _planViewModel.updateStartAt(
+                        _planViewModel.plan.startAt.copyWith(hour: newTime.hour, minute: newTime.minute),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: ListenableBuilder(
+                        listenable: _planViewModel,
+                        builder: (context, child) => Text(DateFormat("h:mm aaa").format(_planViewModel.plan.startAt)),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
+            ),
           ],
         ),
         Icon(Icons.keyboard_arrow_down),
@@ -239,7 +240,7 @@ class _DateTimeSectionState extends State<_DateTimeSection> {
                 onTap: () async {
                   DateTime? newDate = await showDatePicker(
                     context: context,
-                    initialDate: widget._planViewModel.plan.endAt,
+                    initialDate: _planViewModel.plan.endAt,
                     firstDate: DateTime.now().subtract(Duration(days: 365)),
                     lastDate: DateTime.now().add(Duration(days: 365 * 10)),
                   );
@@ -247,49 +248,52 @@ class _DateTimeSectionState extends State<_DateTimeSection> {
                     return;
                   }
 
-                  widget._planViewModel.updateEndAt(
-                    newDate.copyWith(
-                      hour: widget._planViewModel.plan.endAt.hour,
-                      minute: widget._planViewModel.plan.endAt.minute,
-                    ),
+                  _planViewModel.updateEndAt(
+                    newDate.copyWith(hour: _planViewModel.plan.endAt.hour, minute: _planViewModel.plan.endAt.minute),
                   );
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(vertical: 8.0),
                   child: ListenableBuilder(
-                    listenable: widget._planViewModel,
-                    builder: (context, child) =>
-                        Text(DateFormat("yyyy년 MM월 dd일").format(widget._planViewModel.plan.endAt)),
+                    listenable: _planViewModel,
+                    builder: (context, child) => Text(DateFormat("yyyy년 MM월 dd일").format(_planViewModel.plan.endAt)),
                   ),
                 ),
               ),
             ),
-            if (!_dateOnly)
-              InkWell(
-                onTap: () async {
-                  TimeOfDay? newTime = await showTimePicker(
-                    context: context,
-                    initialTime: TimeOfDay(
-                      hour: widget._planViewModel.plan.endAt.hour,
-                      minute: widget._planViewModel.plan.endAt.minute,
-                    ),
-                  );
-                  if (newTime == null) {
-                    return;
-                  }
+            ListenableBuilder(
+              listenable: _planViewModel,
+              builder: (context, child) {
+                return Visibility(
+                  visible: !_planViewModel.plan.allDay,
+                  child: InkWell(
+                    onTap: () async {
+                      TimeOfDay? newTime = await showTimePicker(
+                        context: context,
+                        initialTime: TimeOfDay(
+                          hour: _planViewModel.plan.endAt.hour,
+                          minute: _planViewModel.plan.endAt.minute,
+                        ),
+                      );
+                      if (newTime == null) {
+                        return;
+                      }
 
-                  widget._planViewModel.updateEndAt(
-                    widget._planViewModel.plan.endAt.copyWith(hour: newTime.hour, minute: newTime.minute),
-                  );
-                },
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: ListenableBuilder(
-                    listenable: widget._planViewModel,
-                    builder: (context, child) => Text(DateFormat("h:mm aaa").format(widget._planViewModel.plan.endAt)),
+                      _planViewModel.updateEndAt(
+                        _planViewModel.plan.endAt.copyWith(hour: newTime.hour, minute: newTime.minute),
+                      );
+                    },
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: ListenableBuilder(
+                        listenable: _planViewModel,
+                        builder: (context, child) => Text(DateFormat("h:mm aaa").format(_planViewModel.plan.endAt)),
+                      ),
+                    ),
                   ),
-                ),
-              ),
+                );
+              },
+            ),
           ],
         ),
       ],

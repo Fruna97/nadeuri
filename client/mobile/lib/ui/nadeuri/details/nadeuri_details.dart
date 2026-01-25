@@ -16,8 +16,6 @@ import 'package:provider/provider.dart';
 final DateFormat timeFormat = DateFormat("h:mm aaa");
 final DateFormat monthDayFormat = DateFormat("MM월 dd일");
 final DateFormat yearMonthDayFormat = DateFormat("yyyy년 MM월 dd일");
-final DateFormat monthDayTimeFormat = DateFormat("MM월 dd일 h:mm aaa");
-final DateFormat yearMonthDayTimeFormat = DateFormat("yyyy년 MM월 dd일 h:mm aaa");
 
 class NadeuriDetailsPage extends StatefulWidget {
   final NadeuriDetailsViewModel _nadeuriDetailsViewModel;
@@ -496,7 +494,19 @@ InkWell _planBar(Plan plan, BuildContext context) {
         context,
         MaterialPageRoute(
           builder: (_) => PlanPage(
-            planViewModel: PlanViewModel.edit(nadeuriRepository: context.read<NadeuriRepository>(), plan: plan),
+            planViewModel: PlanViewModel.edit(
+              nadeuriRepository: context.read<NadeuriRepository>(),
+              plan: plan.allDay
+                  ? plan.copyWith(
+                      startAt: _isSameDay(plan.startAt, DateTime.now())
+                          ? DateTime(plan.startAt.year, plan.startAt.month, plan.startAt.day, plan.startAt.hour + 1)
+                          : DateTime(plan.startAt.year, plan.startAt.month, plan.startAt.day, 8),
+                      endAt: _isSameDay(plan.endAt, DateTime.now())
+                          ? DateTime(plan.endAt.year, plan.endAt.month, plan.endAt.day - 1, plan.endAt.hour + 2)
+                          : DateTime(plan.endAt.year, plan.endAt.month, plan.endAt.day - 1, 9),
+                    )
+                  : plan,
+            ),
           ),
         ),
       );
@@ -508,22 +518,28 @@ InkWell _planBar(Plan plan, BuildContext context) {
         children: [
           Text(plan.title.isEmpty ? "제목 없음" : plan.title),
           Row(
-            children: DateUtils.isSameDay(plan.startAt, plan.endAt)
+            children:
+                DateUtils.isSameDay(
+                  plan.startAt,
+                  plan.allDay ? plan.endAt.subtract(const Duration(days: 1)) : plan.endAt,
+                )
                 ? <Widget>[
-                    Text(
-                      DateTime.now().year == plan.startAt.year
-                          ? monthDayFormat.format(plan.startAt)
-                          : yearMonthDayFormat.format(plan.startAt),
-                    ),
-                    Spacer(),
-                    Text("${timeFormat.format(plan.startAt)} - ${timeFormat.format(plan.endAt)}"),
+                    Text(monthDayFormat.format(plan.startAt)),
+                    if (!plan.allDay) ...[
+                      Spacer(),
+                      Text("${timeFormat.format(plan.startAt)} - ${timeFormat.format(plan.endAt)}"),
+                    ],
                   ]
                 : <Widget>[
                     Expanded(
                       child: Text(
                         DateTime.now().year == plan.startAt.year
-                            ? monthDayTimeFormat.format(plan.startAt)
-                            : yearMonthDayTimeFormat.format(plan.startAt),
+                            ? plan.allDay
+                                  ? monthDayFormat.format(plan.startAt)
+                                  : "${monthDayFormat.format(plan.startAt)} ${timeFormat.format(plan.startAt)}"
+                            : plan.allDay
+                            ? yearMonthDayFormat.format(plan.startAt)
+                            : "${yearMonthDayFormat.format(plan.startAt)} ${timeFormat.format(plan.startAt)}",
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),
@@ -531,8 +547,12 @@ InkWell _planBar(Plan plan, BuildContext context) {
                     Expanded(
                       child: Text(
                         DateTime.now().year == plan.endAt.year
-                            ? monthDayTimeFormat.format(plan.endAt)
-                            : yearMonthDayTimeFormat.format(plan.endAt),
+                            ? plan.allDay
+                                  ? monthDayFormat.format(plan.endAt.subtract(const Duration(days: 1)))
+                                  : "${monthDayFormat.format(plan.endAt)} ${timeFormat.format(plan.endAt)}"
+                            : plan.allDay
+                            ? yearMonthDayFormat.format(plan.endAt.subtract(const Duration(days: 1)))
+                            : "${yearMonthDayFormat.format(plan.endAt)} ${timeFormat.format(plan.endAt)}",
                         textAlign: TextAlign.right,
                         overflow: TextOverflow.ellipsis,
                       ),
@@ -543,4 +563,8 @@ InkWell _planBar(Plan plan, BuildContext context) {
       ),
     ),
   );
+}
+
+bool _isSameDay(DateTime dateTime1, DateTime dateTime2) {
+  return (dateTime1.year == dateTime2.year) && (dateTime1.month == dateTime2.month) && (dateTime1.day == dateTime2.day);
 }
