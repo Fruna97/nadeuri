@@ -1,5 +1,7 @@
 package com.github.fruna97.nadeuri.domain.nadeuri.service;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -43,8 +45,10 @@ public class PlanServiceImpl implements PlanService {
         }
 
         Plan plan = createPlanRequest.toEntity(nadeuri);
-        Plan savedPlan = planRepository.save(plan);
 
+        preprocessByAllDay(plan);
+
+        Plan savedPlan = planRepository.save(plan);
         return PlanSummaryResponse.fromEntity(savedPlan);
     }
 
@@ -87,10 +91,30 @@ public class PlanServiceImpl implements PlanService {
         plan.setGooglePlacesId(updatePlanRequest.getGooglePlacesId());
         plan.setLatitude(updatePlanRequest.getLatitude());
         plan.setLongitude(updatePlanRequest.getLongitude());
+        plan.setAllDay(updatePlanRequest.getAllDay());
         plan.setStartAt(updatePlanRequest.getStartAt());
         plan.setEndAt(updatePlanRequest.getEndAt());
 
+        preprocessByAllDay(plan);
+
         Plan savedPlan = planRepository.save(plan);
         return PlanSummaryResponse.fromEntity(savedPlan);
+    }
+
+    /**
+     * {@code allDay} 필드가 True인 경우, {@code startAt}과 {@code endAt}의 시간을 00시 00분으로 변경하고 범위를 Exclusive하게 변경
+     * @param plan
+     */
+    private void preprocessByAllDay(Plan plan) {
+        if (!plan.isAllDay()) {
+            return;
+        }
+
+        plan.setStartAt(LocalDateTime.of(
+                plan.getStartAt().toLocalDate(),
+                LocalTime.of(0, 0)));
+        plan.setEndAt(LocalDateTime.of(
+                plan.getEndAt().toLocalDate().plusDays(1),
+                LocalTime.of(0, 0)));
     }
 }

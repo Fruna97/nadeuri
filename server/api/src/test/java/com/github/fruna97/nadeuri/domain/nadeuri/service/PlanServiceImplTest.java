@@ -52,18 +52,21 @@ class PlanServiceImplTest {
 
         long planId = 0L;
         UUID planUuid = UUID.randomUUID();
-        String planTitle = "test_plan";
+        String title = "test_plan";
+        boolean allDay = false;
         LocalDateTime startAt = LocalDateTime.of(2025, 12, 14, 12, 0);
         LocalDateTime endAt = LocalDateTime.of(2025, 12, 14, 13, 0);
         Plan plan = Plan.builder()
-                .title(planTitle)
+                .title(title)
+                .allDay(allDay)
                 .startAt(startAt)
                 .endAt(endAt)
                 .nadeuri(nadeuri).build();
         Plan savedPlan = Plan.builder()
                 .id(planId)
                 .uuid(planUuid)
-                .title(planTitle)
+                .title(title)
+                .allDay(allDay)
                 .startAt(startAt)
                 .endAt(endAt)
                 .nadeuri(nadeuri).build();
@@ -78,9 +81,51 @@ class PlanServiceImplTest {
         verify(planRepository).save(planCaptor.capture()); // [PlanRepository.save] 메서드가 호출 되었는지
         assertThat(planCaptor.getValue()).isEqualTo(plan); // [PlanRepository.save] 메서드에 인자가 제대로 전달되었는지
 
-        assertAll(() -> assertEquals(result.getTitle(), planTitle),
+        assertAll(() -> assertEquals(result.getTitle(), title),
+                () -> assertEquals(result.isAllDay(), allDay),
                 () -> assertEquals(result.getStartAt(), startAt),
                 () -> assertEquals(result.getEndAt(), endAt)); // 저장된 정보들을 그대로 반환하는지
+    }
+
+    @Test
+    void createPlan_AllDayTrue() {
+        // Given
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID nadeuriUuid = UUID.randomUUID();
+        CreatePlanRequest createPlanRequest = mock(CreatePlanRequest.class);
+
+        Nadeuri nadeuri = mock(Nadeuri.class);
+        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
+        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+
+        String title = "test_plan";
+        boolean allDay = true;
+        LocalDateTime startAt = LocalDateTime.of(2025, 12, 14, 12, 0);
+        LocalDateTime endAt = LocalDateTime.of(2025, 12, 14, 13, 0);
+        Plan plan = Plan.builder()
+                .title(title)
+                .allDay(allDay)
+                .startAt(startAt)
+                .endAt(endAt)
+                .nadeuri(nadeuri).build();
+        when(createPlanRequest.toEntity(nadeuri)).thenReturn(plan);
+
+        Plan savedPlan = mock(Plan.class);
+        when(planRepository.save(plan)).thenReturn(savedPlan);
+        when(savedPlan.getNadeuri()).thenReturn(nadeuri);
+        when(nadeuri.getUuid()).thenReturn(nadeuriUuid);
+
+        // When
+        planServiceImpl.createPlan(principalDetails, nadeuriUuid, createPlanRequest);
+
+        // Then
+        ArgumentCaptor<Plan> planCaptor = ArgumentCaptor.forClass(Plan.class);
+        verify(planRepository).save(planCaptor.capture()); // [PlanRepository.save] 메서드가 호출 되었는지
+        Plan capturedPlan = planCaptor.getValue();
+        assertAll(
+                () -> assertEquals(capturedPlan.getStartAt(), LocalDateTime.of(2025, 12, 14, 0, 0)),
+                () -> assertEquals(capturedPlan.getStartAt(), LocalDateTime.of(2025, 12, 14, 0, 0))
+        ); // [allDay]가 True 일 때, [startAt]과 [endAt]의 시간을 00시 00분으로 설정하고, Exclusive하게 전처리 하는지
     }
 
     @Test
@@ -112,13 +157,15 @@ class PlanServiceImplTest {
         when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
 
         long planId = 0L;
-        String planTitle = "test_plan";
+        String title = "test_plan";
+        boolean allDay = false;
         LocalDateTime startAt = LocalDateTime.of(2025, 12, 14, 12, 0);
         LocalDateTime endAt = LocalDateTime.of(2025, 12, 14, 13, 0);
         Plan plan = Plan.builder()
                 .id(planId)
                 .uuid(planUuid)
-                .title(planTitle)
+                .title(title)
+                .allDay(allDay)
                 .startAt(startAt)
                 .endAt(endAt)
                 .nadeuri(nadeuri).build();
@@ -129,7 +176,7 @@ class PlanServiceImplTest {
         PlanSummaryResponse result = planServiceImpl.getPlan(principalDetails, nadeuriUuid, planUuid);
 
         // Then
-        assertAll(() -> assertEquals(result.getTitle(), planTitle),
+        assertAll(() -> assertEquals(result.getTitle(), title),
                 () -> assertEquals(result.getStartAt(), startAt),
                 () -> assertEquals(result.getEndAt(), endAt)); // 저장소에서 가져온 정보들을 그대로 반환하는지
     }
@@ -178,17 +225,19 @@ class PlanServiceImplTest {
         PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
-        String newPlanTitle = "new_title";
+        String newTitle = "new_title";
         String newGooglePlacesId = "new_google_places_id";
         Double newLatitude = 37.240778;
         Double newLongitude = 131.869556;
+        boolean newAllDay = false;
         LocalDateTime newStartAt = LocalDateTime.now();
         LocalDateTime newEndAt = LocalDateTime.now();
         UpdatePlanRequest updatePlanRequest = UpdatePlanRequest.builder()
-                .title(newPlanTitle)
+                .title(newTitle)
                 .googlePlacesId(newGooglePlacesId)
                 .latitude(newLatitude)
                 .longitude(newLongitude)
+                .allDay(newAllDay)
                 .startAt(newStartAt)
                 .endAt(newEndAt).build();
 
@@ -203,10 +252,11 @@ class PlanServiceImplTest {
         Plan savedPlan = Plan.builder()
             .id(0L)
             .uuid(planUuid)
-            .title(newPlanTitle)
+            .title(newTitle)
             .googlePlacesId(newGooglePlacesId)
             .latitude(newLatitude)
             .longitude(newLongitude)
+            .allDay(newAllDay)
             .startAt(newStartAt)
             .endAt(newEndAt)
             .nadeuri(nadeuri).build();
@@ -216,14 +266,77 @@ class PlanServiceImplTest {
         planServiceImpl.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest);
 
         // Then
-        assertAll(() -> verify(plan).setTitle(newPlanTitle),
+        assertAll(() -> verify(plan).setTitle(newTitle),
                 () -> verify(plan).setGooglePlacesId(newGooglePlacesId),
                 () -> verify(plan).setLatitude(newLatitude),
                 () -> verify(plan).setLongitude(newLongitude),
                 () -> verify(plan).setLatitude(newLatitude),
+                () -> verify(plan).setAllDay(newAllDay),
                 () -> verify(plan).setStartAt(newStartAt),
                 () -> verify(plan).setEndAt(newEndAt)); // Entity의 Setter들을 정확한 매개변수를 넣어 모두 호출했는지
         verify(planRepository).save(plan); // 명시적으로 [save] 메서드를 호출했는지
+    }
+
+    @Test
+    void updatePlan_AllDayTrue() {
+        // Given
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID nadeuriUuid = UUID.randomUUID();
+        UUID planUuid = UUID.randomUUID();
+        String newTitle = "new_title";
+        String newGooglePlacesId = "new_google_places_id";
+        Double newLatitude = 37.240778;
+        Double newLongitude = 131.869556;
+        boolean newAllDay = true;
+        LocalDateTime newStartAt = LocalDateTime.of(2026, 1, 26, 11, 0);
+        LocalDateTime newEndAt = LocalDateTime.of(2026, 1, 28, 17, 0);
+        UpdatePlanRequest updatePlanRequest = UpdatePlanRequest.builder()
+                .title(newTitle)
+                .googlePlacesId(newGooglePlacesId)
+                .latitude(newLatitude)
+                .longitude(newLongitude)
+                .allDay(newAllDay)
+                .startAt(newStartAt)
+                .endAt(newEndAt).build();
+
+        Nadeuri nadeuri = mock(Nadeuri.class);
+        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
+        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+
+        String oldTitle = "old_title";
+        String oldGooglePlacesId = "old_google_places_id";
+        Double oldLatitude = 37.240778;
+        Double oldLongitude = 131.869556;
+        boolean oldAllDay = false;
+        LocalDateTime oldStartAt = LocalDateTime.of(2025, 12, 14, 12, 0);
+        LocalDateTime oldEndAt = LocalDateTime.of(2025, 12, 14, 13, 0);
+        Plan plan = Plan.builder()
+                .title(oldTitle)
+                .googlePlacesId(oldGooglePlacesId)
+                .latitude(oldLatitude)
+                .longitude(oldLongitude)
+                .allDay(oldAllDay)
+                .startAt(oldStartAt)
+                .endAt(oldEndAt).build();
+        when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
+        when(nadeuri.hasPlan(plan)).thenReturn(true);
+
+        Plan savedPlan = mock(Plan.class);
+        when(planRepository.save(plan)).thenReturn(savedPlan);
+        when(savedPlan.getNadeuri()).thenReturn(nadeuri);
+        when(nadeuri.getUuid()).thenReturn(nadeuriUuid);
+
+        // When
+        planServiceImpl.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest);
+
+        // Then
+        ArgumentCaptor<Plan> planCaptor = ArgumentCaptor.forClass(Plan.class);
+        verify(planRepository).save(planCaptor.capture()); // 명시적으로 [save] 메서드를 호출했는지
+        Plan capturedPlan = planCaptor.getValue();
+        assertAll(
+                () -> assertEquals(capturedPlan.getStartAt(), LocalDateTime.of(2026, 1, 26, 0, 0)),
+                () -> assertEquals(capturedPlan.getEndAt(), LocalDateTime.of(2026, 1, 29, 0, 0))
+        ); // [allDay]가 True 일 때, [startAt]과 [endAt]의 시간을 00시 00분으로 설정하고, Exclusive하게 전처리 하는지
     }
 
     @Test
