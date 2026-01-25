@@ -25,6 +25,9 @@ public class UpdatePlanRequest {
     private Double longitude;
 
     @NotNull
+    private Boolean allDay;
+
+    @NotNull
     private LocalDateTime startAt;
 
     @NotNull

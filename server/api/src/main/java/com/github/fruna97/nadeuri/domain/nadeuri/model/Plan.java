@@ -42,6 +42,9 @@ public class Plan {
     private Double longitude;
 
     @Column(nullable = false)
+    private boolean allDay;
+
+    @Column(nullable = false)
     private LocalDateTime startAt;
 
     @Column(nullable = false)

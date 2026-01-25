@@ -24,6 +24,9 @@ public class CreatePlanRequest {
     private Double longitude;
 
     @NotNull
+    private Boolean allDay;
+
+    @NotNull
     private LocalDateTime startAt;
 
     @NotNull
@@ -35,6 +38,7 @@ public class CreatePlanRequest {
                 .googlePlacesId(googlePlacesId)
                 .latitude(latitude)
                 .longitude(longitude)
+                .allDay(allDay)
                 .startAt(startAt)
                 .endAt(endAt)
                 .nadeuri(nadeuri).build();

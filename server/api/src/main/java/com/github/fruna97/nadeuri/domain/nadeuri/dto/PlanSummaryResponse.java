@@ -24,6 +24,8 @@ public class PlanSummaryResponse {
 
     private Double longitude;
 
+    private boolean allDay;
+
     private LocalDateTime startAt;
 
     private LocalDateTime endAt;
@@ -37,6 +39,7 @@ public class PlanSummaryResponse {
                 .googlePlacesId(plan.getGooglePlacesId())
                 .latitude(plan.getLatitude())
                 .longitude(plan.getLongitude())
+                .allDay(plan.isAllDay())
                 .startAt(plan.getStartAt())
                 .endAt(plan.getEndAt())
                 .nadeuriUuid(plan.getNadeuri().getUuid()).build();
