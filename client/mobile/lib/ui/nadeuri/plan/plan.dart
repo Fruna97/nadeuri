@@ -4,6 +4,8 @@ import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/nadeuri/plan/plan_view_model.dart';
+import 'package:mobile/ui/nadeuri/select_place/select_place.dart';
+import 'package:mobile/ui/nadeuri/select_place/select_place_view_model.dart';
 import 'package:mobile/utils/result.dart';
 import 'package:provider/provider.dart';
 
@@ -32,7 +34,6 @@ class _PlanPageState extends State<PlanPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
         actions: <Widget>[
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -81,7 +82,17 @@ class _PlanPageState extends State<PlanPage> {
               children: [
                 Icon(Icons.location_on_outlined, color: Colors.blue),
                 Align(
-                  child: TextButton(onPressed: () {}, child: Text("장소추가")),
+                  child: TextButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SelectPlacePage(selectPlaceViewModel: SelectPlaceViewModel()),
+                        ),
+                      );
+                    },
+                    child: Text("장소추가"),
+                  ),
                 ),
               ],
             ),
