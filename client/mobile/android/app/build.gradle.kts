@@ -44,3 +44,7 @@ android {
 flutter {
     source = "../.."
 }
+
+dependencies {
+    implementation("com.google.android.libraries.places:places:5.1.1")
+}
