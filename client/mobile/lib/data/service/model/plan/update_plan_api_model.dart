@@ -11,8 +11,6 @@ abstract class UpdatePlanApiModel with _$UpdatePlanApiModel {
   const factory UpdatePlanApiModel({
     required String title,
     String? googlePlacesId,
-    double? latitude,
-    double? longitude,
     required bool allDay,
     required DateTime startAt,
     required DateTime endAt,
@@ -24,8 +22,6 @@ abstract class UpdatePlanApiModel with _$UpdatePlanApiModel {
     return UpdatePlanApiModel(
       title: plan.title,
       googlePlacesId: plan.googlePlacesId,
-      latitude: plan.latitude,
-      longitude: plan.longitude,
       allDay: plan.allDay,
       startAt: plan.startAt,
       endAt: plan.endAt,

@@ -81,18 +81,6 @@ class PlanViewModel extends ChangeNotifier {
     notifyListeners();
   }
 
-  void updateLatitude(double? newLatitude) {
-    _plan = _plan.copyWith(latitude: newLatitude);
-
-    notifyListeners();
-  }
-
-  void updateLongitude(double? newLongitude) {
-    _plan = _plan.copyWith(longitude: newLongitude);
-
-    notifyListeners();
-  }
-
   void updateAllDay(bool newAllDay) {
     _plan = _plan.copyWith(allDay: newAllDay);
 
