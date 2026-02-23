@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:mobile/data/repository/auth_repository.dart';
 import 'package:mobile/data/repository/member_repository.dart';
 import 'package:mobile/data/repository/nadeuri_repository.dart';
 import 'package:mobile/data/service/api_client.dart';
+import 'package:mobile/data/service/platform_client.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/home/home.dart';
 import 'package:mobile/ui/home/home_view_model.dart';
@@ -30,6 +32,7 @@ Future<void> main() async {
         Provider<SharedPreferencesWithCache>(create: (_) => prefsWithCache),
         Provider<AppSnackBar>(create: (_) => AppSnackBar()),
         Provider<RouteObserver<ModalRoute<void>>>(create: (_) => RouteObserver<ModalRoute<void>>()),
+        Provider(create: (context) => MethodChannel("com.github.fruna97")),
         Provider<ApiClient>(
           create: (context) => ApiClient(
             host: "http://10.0.2.2",
@@ -38,6 +41,7 @@ Future<void> main() async {
             flutterSecureStorage: context.read<FlutterSecureStorage>(),
           ),
         ),
+        Provider(create: (context) => PlatformClient(methodChannel: context.read<MethodChannel>())),
         Provider<MemberRepository>(
           create: (context) => MemberRepository(
             apiClient: context.read<ApiClient>(),
@@ -50,7 +54,10 @@ Future<void> main() async {
             flutterSecureStorage: context.read<FlutterSecureStorage>(),
           ),
         ),
-        Provider<NadeuriRepository>(create: (context) => NadeuriRepository(apiClient: context.read<ApiClient>())),
+        Provider<NadeuriRepository>(
+          create: (context) =>
+              NadeuriRepository(apiClient: context.read<ApiClient>(), platformClient: context.read<PlatformClient>()),
+        ),
       ],
       child: const MyApp(),
     ),
