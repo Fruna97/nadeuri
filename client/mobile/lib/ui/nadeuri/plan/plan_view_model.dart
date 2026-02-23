@@ -43,7 +43,7 @@ class PlanViewModel extends ChangeNotifier {
 
   bool get isNewPlan => _isNewPlan;
   Plan get plan => _plan;
-  Command0 get command => _isNewPlan ? createPlan : updatePlan;
+  Command0 get save => _isNewPlan ? createPlan : updatePlan;
 
   Future<Result> _createPlan() async {
     Result<Plan> result = await _nadeuriRepository.createPlan(plan);

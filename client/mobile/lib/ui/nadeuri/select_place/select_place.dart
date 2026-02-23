@@ -45,9 +45,9 @@ class _SelectPlacePageState extends State<SelectPlacePage> {
   }).toSet();
 
   _BottomSheetState get _bottomSheetState {
-    if (_selectedPlace != null) return _BottomSheetState.selected;
     if (widget._selectPlaceViewModel.places.isEmpty) return _BottomSheetState.empty;
-    return _BottomSheetState.list;
+    if (_selectedPlace == null) return _BottomSheetState.list;
+    return _BottomSheetState.selected;
   }
 
   double get _mapBottomPadding => switch (_bottomSheetState) {
@@ -67,17 +67,20 @@ class _SelectPlacePageState extends State<SelectPlacePage> {
     return PopScope(
       canPop: _bottomSheetState == _BottomSheetState.empty,
       onPopInvokedWithResult: (didPop, result) {
-        if (!didPop) {
-          if (_selectedPlace != null) {
-            setState(() {
-              _selectedPlace = null;
-            });
-            return;
-          }
+        if (didPop) {
+          return;
+        }
 
-          if (widget._selectPlaceViewModel.places.isNotEmpty) {
-            widget._selectPlaceViewModel.clearPlace();
-          }
+        if (_bottomSheetState == _BottomSheetState.selected) {
+          setState(() {
+            _selectedPlace = null;
+          });
+          return;
+        }
+
+        if (_bottomSheetState == _BottomSheetState.list) {
+          widget._selectPlaceViewModel.clearPlace();
+          return;
         }
       },
       child: Scaffold(
@@ -171,7 +174,12 @@ class _SelectPlacePageState extends State<SelectPlacePage> {
                             ],
                           ),
                         ),
-                        FilledButton(onPressed: () {}, child: const Text("추가하기")),
+                        FilledButton(
+                          onPressed: () {
+                            Navigator.pop<Place>(context, _selectedPlace);
+                          },
+                          child: const Text("추가하기"),
+                        ),
                       ],
                     ),
                   ),

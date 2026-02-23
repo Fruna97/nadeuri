@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mobile/data/repository/nadeuri_repository.dart';
 import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
+import 'package:mobile/domain/model/place/place.dart';
 import 'package:mobile/ui/core/app_snack_bar.dart';
 import 'package:mobile/ui/nadeuri/plan/plan_view_model.dart';
 import 'package:mobile/ui/nadeuri/select_place/select_place.dart';
 import 'package:mobile/ui/nadeuri/select_place/select_place_view_model.dart';
 import 'package:mobile/utils/result.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class PlanPage extends StatefulWidget {
   final PlanViewModel _planViewModel;
@@ -19,15 +22,15 @@ class PlanPage extends StatefulWidget {
 }
 
 class _PlanPageState extends State<PlanPage> {
-  final TextEditingController planTitleController = TextEditingController();
+  final TextEditingController _planTitleController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
 
-    planTitleController.text = widget._planViewModel.plan.title;
+    _planTitleController.text = widget._planViewModel.plan.title;
 
-    widget._planViewModel.command.addListener(_onCommand);
+    widget._planViewModel.save.addListener(_onSave);
   }
 
   @override
@@ -38,10 +41,10 @@ class _PlanPageState extends State<PlanPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: ListenableBuilder(
-              listenable: widget._planViewModel.command,
+              listenable: widget._planViewModel.save,
               builder: (context, child) => AnimatedSwitcher(
                 duration: Duration(milliseconds: 100),
-                child: widget._planViewModel.command.running
+                child: widget._planViewModel.save.running
                     ? SizedBox(
                         width: 80,
                         child: Center(child: CircularProgressIndicator(key: const ValueKey("saving"))),
@@ -51,7 +54,7 @@ class _PlanPageState extends State<PlanPage> {
                         child: OutlinedButton(
                           key: const ValueKey("save"),
                           onPressed: () {
-                            widget._planViewModel.command.execute();
+                            widget._planViewModel.save.execute();
                           },
                           style: ElevatedButton.styleFrom(
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8.0)),
@@ -69,29 +72,69 @@ class _PlanPageState extends State<PlanPage> {
           padding: const EdgeInsets.symmetric(horizontal: 20.0),
           children: [
             TextField(
-              controller: planTitleController,
+              controller: _planTitleController,
               decoration: InputDecoration(hintText: "일정 제목", helperText: "장소를 추가하면 장소 이름이 입력됩니다."),
               maxLength: 100,
-              onTapOutside: (event) => widget._planViewModel.updateTitle(planTitleController.text),
+              onTapOutside: (event) => widget._planViewModel.updateTitle(_planTitleController.text),
             ),
             Divider(height: 32.0),
             _DateTimeSection(planViewModel: widget._planViewModel),
             Divider(height: 32.0),
-            Stack(
-              alignment: AlignmentGeometry.centerLeft,
+            Row(
               children: [
                 Icon(Icons.location_on_outlined, color: Colors.blue),
-                Align(
-                  child: TextButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SelectPlacePage(selectPlaceViewModel: SelectPlaceViewModel()),
-                        ),
-                      );
-                    },
-                    child: Text("장소추가"),
+                ListenableBuilder(
+                  listenable: widget._planViewModel,
+                  builder: (context, child) => Expanded(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        if (widget._planViewModel.plan.googlePlacesId == null)
+                          TextButton(
+                            onPressed: () async {
+                              Place? selectedPlace = await Navigator.push<Place>(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => SelectPlacePage(
+                                    selectPlaceViewModel: SelectPlaceViewModel(
+                                      nadeuriRepository: context.read<NadeuriRepository>(),
+                                    ),
+                                  ),
+                                ),
+                              );
+
+                              if (selectedPlace == null) {
+                                return;
+                              }
+
+                              widget._planViewModel.updateGooglePlacesId(selectedPlace.id);
+                              String? displayName = selectedPlace.displayName;
+                              if (displayName != null) {
+                                widget._planViewModel.updateTitle(displayName);
+                                _planTitleController.text = displayName;
+                              }
+                            },
+                            child: Text("장소추가"),
+                          )
+                        else ...[
+                          /// 앱 또는 브라우저를 통해 구글 지도에서 장소를 보여줌
+                          TextButton(
+                            onPressed: () {
+                              final String uri =
+                                  "https://www.google.com/maps/search/?api=1&query= &query_place_id=${widget._planViewModel.plan.googlePlacesId}";
+                              launchUrl(Uri.parse(uri), mode: LaunchMode.externalApplication);
+                            },
+                            child: Text("구글 지도에서 장소 보기"),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              widget._planViewModel.updateGooglePlacesId(null);
+                            },
+                            icon: Icon(Icons.delete_forever_outlined, size: 18, color: Colors.redAccent),
+                          ),
+                        ],
+                      ],
+                    ),
                   ),
                 ),
               ],
@@ -104,7 +147,7 @@ class _PlanPageState extends State<PlanPage> {
 
   @override
   void dispose() {
-    widget._planViewModel.command.removeListener(_onCommand);
+    widget._planViewModel.save.removeListener(_onSave);
 
     super.dispose();
   }
@@ -113,17 +156,17 @@ class _PlanPageState extends State<PlanPage> {
   /// 인증 문제 시 로그인 페이지로 이동
   /// 리소스 조회 실패 시 상위 페이지로 이동
   /// 그 외 문제 시 스낵바 표시
-  void _onCommand() {
-    if (widget._planViewModel.command.completed) {
-      widget._planViewModel.command.clearResult();
+  void _onSave() {
+    if (widget._planViewModel.save.completed) {
+      widget._planViewModel.save.clearResult();
       Navigator.pop(context);
       return;
     }
 
-    if (widget._planViewModel.command.error) {
-      final Error result = widget._planViewModel.command.result! as Error;
+    if (widget._planViewModel.save.error) {
+      final Error result = widget._planViewModel.save.result! as Error;
       final Exception error = result.error;
-      widget._planViewModel.command.clearResult();
+      widget._planViewModel.save.clearResult();
 
       if (error is Unauthorized || error is TokenNotFound) {
         context.read<AppSnackBar>().showSnackBar("세션이 만료되었습니다.\n다시 로그인해주세요!");
