@@ -20,10 +20,6 @@ public class PlanSummaryResponse {
 
     private String googlePlacesId;
 
-    private Double latitude;
-
-    private Double longitude;
-
     private boolean allDay;
 
     private LocalDateTime startAt;
@@ -37,8 +33,6 @@ public class PlanSummaryResponse {
                 .uuid(plan.getUuid())
                 .title(plan.getTitle())
                 .googlePlacesId(plan.getGooglePlacesId())
-                .latitude(plan.getLatitude())
-                .longitude(plan.getLongitude())
                 .allDay(plan.isAllDay())
                 .startAt(plan.getStartAt())
                 .endAt(plan.getEndAt())

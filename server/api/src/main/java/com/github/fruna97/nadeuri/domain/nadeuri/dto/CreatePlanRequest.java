@@ -19,10 +19,6 @@ public class CreatePlanRequest {
 
     private String googlePlacesId;
 
-    private Double latitude;
-
-    private Double longitude;
-
     @NotNull
     private Boolean allDay;
 
@@ -36,8 +32,6 @@ public class CreatePlanRequest {
         return Plan.builder()
                 .title(title)
                 .googlePlacesId(googlePlacesId)
-                .latitude(latitude)
-                .longitude(longitude)
                 .allDay(allDay)
                 .startAt(startAt)
                 .endAt(endAt)

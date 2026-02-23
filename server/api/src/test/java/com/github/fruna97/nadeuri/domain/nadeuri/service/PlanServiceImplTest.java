@@ -227,16 +227,12 @@ class PlanServiceImplTest {
         UUID planUuid = UUID.randomUUID();
         String newTitle = "new_title";
         String newGooglePlacesId = "new_google_places_id";
-        Double newLatitude = 37.240778;
-        Double newLongitude = 131.869556;
         boolean newAllDay = false;
         LocalDateTime newStartAt = LocalDateTime.now();
         LocalDateTime newEndAt = LocalDateTime.now();
         UpdatePlanRequest updatePlanRequest = UpdatePlanRequest.builder()
                 .title(newTitle)
                 .googlePlacesId(newGooglePlacesId)
-                .latitude(newLatitude)
-                .longitude(newLongitude)
                 .allDay(newAllDay)
                 .startAt(newStartAt)
                 .endAt(newEndAt).build();
@@ -254,8 +250,6 @@ class PlanServiceImplTest {
             .uuid(planUuid)
             .title(newTitle)
             .googlePlacesId(newGooglePlacesId)
-            .latitude(newLatitude)
-            .longitude(newLongitude)
             .allDay(newAllDay)
             .startAt(newStartAt)
             .endAt(newEndAt)
@@ -268,9 +262,6 @@ class PlanServiceImplTest {
         // Then
         assertAll(() -> verify(plan).setTitle(newTitle),
                 () -> verify(plan).setGooglePlacesId(newGooglePlacesId),
-                () -> verify(plan).setLatitude(newLatitude),
-                () -> verify(plan).setLongitude(newLongitude),
-                () -> verify(plan).setLatitude(newLatitude),
                 () -> verify(plan).setAllDay(newAllDay),
                 () -> verify(plan).setStartAt(newStartAt),
                 () -> verify(plan).setEndAt(newEndAt)); // Entity의 Setter들을 정확한 매개변수를 넣어 모두 호출했는지
@@ -285,16 +276,12 @@ class PlanServiceImplTest {
         UUID planUuid = UUID.randomUUID();
         String newTitle = "new_title";
         String newGooglePlacesId = "new_google_places_id";
-        Double newLatitude = 37.240778;
-        Double newLongitude = 131.869556;
         boolean newAllDay = true;
         LocalDateTime newStartAt = LocalDateTime.of(2026, 1, 26, 11, 0);
         LocalDateTime newEndAt = LocalDateTime.of(2026, 1, 28, 17, 0);
         UpdatePlanRequest updatePlanRequest = UpdatePlanRequest.builder()
                 .title(newTitle)
                 .googlePlacesId(newGooglePlacesId)
-                .latitude(newLatitude)
-                .longitude(newLongitude)
                 .allDay(newAllDay)
                 .startAt(newStartAt)
                 .endAt(newEndAt).build();
@@ -305,16 +292,12 @@ class PlanServiceImplTest {
 
         String oldTitle = "old_title";
         String oldGooglePlacesId = "old_google_places_id";
-        Double oldLatitude = 37.240778;
-        Double oldLongitude = 131.869556;
         boolean oldAllDay = false;
         LocalDateTime oldStartAt = LocalDateTime.of(2025, 12, 14, 12, 0);
         LocalDateTime oldEndAt = LocalDateTime.of(2025, 12, 14, 13, 0);
         Plan plan = Plan.builder()
                 .title(oldTitle)
                 .googlePlacesId(oldGooglePlacesId)
-                .latitude(oldLatitude)
-                .longitude(oldLongitude)
                 .allDay(oldAllDay)
                 .startAt(oldStartAt)
                 .endAt(oldEndAt).build();

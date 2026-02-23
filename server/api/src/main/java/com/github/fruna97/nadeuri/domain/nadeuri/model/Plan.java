@@ -37,10 +37,6 @@ public class Plan {
 
     private String googlePlacesId;
 
-    private Double latitude;
-
-    private Double longitude;
-
     @Column(nullable = false)
     private boolean allDay;
 

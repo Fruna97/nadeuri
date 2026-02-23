@@ -89,8 +89,6 @@ public class PlanServiceImpl implements PlanService {
 
         plan.setTitle(updatePlanRequest.getTitle());
         plan.setGooglePlacesId(updatePlanRequest.getGooglePlacesId());
-        plan.setLatitude(updatePlanRequest.getLatitude());
-        plan.setLongitude(updatePlanRequest.getLongitude());
         plan.setAllDay(updatePlanRequest.getAllDay());
         plan.setStartAt(updatePlanRequest.getStartAt());
         plan.setEndAt(updatePlanRequest.getEndAt());

@@ -20,10 +20,6 @@ public class UpdatePlanRequest {
 
     private String googlePlacesId;
 
-    private Double latitude;
-
-    private Double longitude;
-
     @NotNull
     private Boolean allDay;
 
