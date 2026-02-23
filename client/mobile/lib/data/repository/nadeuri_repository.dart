@@ -5,9 +5,13 @@ import 'package:mobile/data/service/model/api_error/api_error.dart';
 import 'package:mobile/data/service/model/local_error/local_error.dart';
 import 'package:mobile/data/service/model/nadeuri/nadeuri_api_model.dart';
 import 'package:mobile/data/service/model/nadeuri/update_nadeuri_api_model.dart';
+import 'package:mobile/data/service/model/place/place_dto.dart';
 import 'package:mobile/data/service/model/plan/plan_api_model.dart';
 import 'package:mobile/data/service/model/plan/update_plan_api_model.dart';
+import 'package:mobile/data/service/model/search_by_text_request/search_by_text_request.dart';
+import 'package:mobile/data/service/platform_client.dart';
 import 'package:mobile/domain/model/nadeuri/nadeuri.dart';
+import 'package:mobile/domain/model/place/place.dart';
 import 'package:mobile/domain/model/plan/plan.dart';
 import 'package:mobile/utils/result.dart';
 
@@ -15,8 +19,11 @@ class NadeuriRepository {
   final String _logTag = "NadeuriRepository";
 
   final ApiClient _apiClient;
+  final PlatformClient _platformClient;
 
-  NadeuriRepository({required ApiClient apiClient}) : _apiClient = apiClient;
+  NadeuriRepository({required ApiClient apiClient, required PlatformClient platformClient})
+    : _apiClient = apiClient,
+      _platformClient = platformClient;
 
   Future<Result<Nadeuri>> createNadeuri(Nadeuri nadeuri) async {
     NadeuriApiModel nadeuriApiModel = NadeuriApiModel.fromNadeuri(nadeuri);
@@ -179,6 +186,21 @@ class NadeuriRepository {
             log("Result is TokenNotFound", name: _logTag);
         }
         return Result.error(error);
+    }
+  }
+
+  Future<Result<List<Place>>> textSearch(String textQuery, double? latitude, double? longitude) async {
+    Result<List<PlaceDto>> result = await _platformClient.searchByText(
+      SearchByTextRequest(textQuery: textQuery, latitude: latitude, longitude: longitude),
+    );
+
+    switch (result) {
+      case Ok<List<PlaceDto>> _:
+        log("Result is Ok: ${result.value}", name: _logTag);
+        return Result.ok(result.value.map((element) => element.toPlace()).toList());
+      case Error<List<PlaceDto>> _:
+        log("Result is Error:${result.error}", name: _logTag);
+        return Result.error(result.error);
     }
   }
 }
