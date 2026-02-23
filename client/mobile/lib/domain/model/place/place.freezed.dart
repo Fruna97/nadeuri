@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'place_dto.dart';
+part of 'place.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -11,41 +11,38 @@ part of 'place_dto.dart';
 
 // dart format off
 T _$identity<T>(T value) => value;
-
 /// @nodoc
-mixin _$PlaceDto {
+mixin _$Place {
 
  String get id; String? get displayName; String? get formattedAddress; double get latitude; double get longitude; String? get primaryTypeDisplayName;
-/// Create a copy of PlaceDto
+/// Create a copy of Place
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-$PlaceDtoCopyWith<PlaceDto> get copyWith => _$PlaceDtoCopyWithImpl<PlaceDto>(this as PlaceDto, _$identity);
+$PlaceCopyWith<Place> get copyWith => _$PlaceCopyWithImpl<Place>(this as Place, _$identity);
 
-  /// Serializes this PlaceDto to a JSON map.
-  Map<String, dynamic> toJson();
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is PlaceDto&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.formattedAddress, formattedAddress) || other.formattedAddress == formattedAddress)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.primaryTypeDisplayName, primaryTypeDisplayName) || other.primaryTypeDisplayName == primaryTypeDisplayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is Place&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.formattedAddress, formattedAddress) || other.formattedAddress == formattedAddress)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.primaryTypeDisplayName, primaryTypeDisplayName) || other.primaryTypeDisplayName == primaryTypeDisplayName));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,id,displayName,formattedAddress,latitude,longitude,primaryTypeDisplayName);
 
 @override
 String toString() {
-  return 'PlaceDto(id: $id, displayName: $displayName, formattedAddress: $formattedAddress, latitude: $latitude, longitude: $longitude, primaryTypeDisplayName: $primaryTypeDisplayName)';
+  return 'Place(id: $id, displayName: $displayName, formattedAddress: $formattedAddress, latitude: $latitude, longitude: $longitude, primaryTypeDisplayName: $primaryTypeDisplayName)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class $PlaceDtoCopyWith<$Res>  {
-  factory $PlaceDtoCopyWith(PlaceDto value, $Res Function(PlaceDto) _then) = _$PlaceDtoCopyWithImpl;
+abstract mixin class $PlaceCopyWith<$Res>  {
+  factory $PlaceCopyWith(Place value, $Res Function(Place) _then) = _$PlaceCopyWithImpl;
 @useResult
 $Res call({
  String id, String? displayName, String? formattedAddress, double latitude, double longitude, String? primaryTypeDisplayName
@@ -56,14 +53,14 @@ $Res call({
 
 }
 /// @nodoc
-class _$PlaceDtoCopyWithImpl<$Res>
-    implements $PlaceDtoCopyWith<$Res> {
-  _$PlaceDtoCopyWithImpl(this._self, this._then);
+class _$PlaceCopyWithImpl<$Res>
+    implements $PlaceCopyWith<$Res> {
+  _$PlaceCopyWithImpl(this._self, this._then);
 
-  final PlaceDto _self;
-  final $Res Function(PlaceDto) _then;
+  final Place _self;
+  final $Res Function(Place) _then;
 
-/// Create a copy of PlaceDto
+/// Create a copy of Place
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') @override $Res call({Object? id = null,Object? displayName = freezed,Object? formattedAddress = freezed,Object? latitude = null,Object? longitude = null,Object? primaryTypeDisplayName = freezed,}) {
   return _then(_self.copyWith(
@@ -80,8 +77,8 @@ as String?,
 }
 
 
-/// Adds pattern-matching-related methods to [PlaceDto].
-extension PlaceDtoPatterns on PlaceDto {
+/// Adds pattern-matching-related methods to [Place].
+extension PlacePatterns on Place {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -94,10 +91,10 @@ extension PlaceDtoPatterns on PlaceDto {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _PlaceDto value)?  $default,{required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _Place value)?  $default,{required TResult orElse(),}){
 final _that = this;
 switch (_that) {
-case _PlaceDto() when $default != null:
+case _Place() when $default != null:
 return $default(_that);case _:
   return orElse();
 
@@ -116,10 +113,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _PlaceDto value)  $default,){
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _Place value)  $default,){
 final _that = this;
 switch (_that) {
-case _PlaceDto():
+case _Place():
 return $default(_that);case _:
   throw StateError('Unexpected subclass');
 
@@ -137,10 +134,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _PlaceDto value)?  $default,){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _Place value)?  $default,){
 final _that = this;
 switch (_that) {
-case _PlaceDto() when $default != null:
+case _Place() when $default != null:
 return $default(_that);case _:
   return null;
 
@@ -160,7 +157,7 @@ return $default(_that);case _:
 
 @optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String id,  String? displayName,  String? formattedAddress,  double latitude,  double longitude,  String? primaryTypeDisplayName)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
-case _PlaceDto() when $default != null:
+case _Place() when $default != null:
 return $default(_that.id,_that.displayName,_that.formattedAddress,_that.latitude,_that.longitude,_that.primaryTypeDisplayName);case _:
   return orElse();
 
@@ -181,7 +178,7 @@ return $default(_that.id,_that.displayName,_that.formattedAddress,_that.latitude
 
 @optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String id,  String? displayName,  String? formattedAddress,  double latitude,  double longitude,  String? primaryTypeDisplayName)  $default,) {final _that = this;
 switch (_that) {
-case _PlaceDto():
+case _Place():
 return $default(_that.id,_that.displayName,_that.formattedAddress,_that.latitude,_that.longitude,_that.primaryTypeDisplayName);case _:
   throw StateError('Unexpected subclass');
 
@@ -201,7 +198,7 @@ return $default(_that.id,_that.displayName,_that.formattedAddress,_that.latitude
 
 @optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String id,  String? displayName,  String? formattedAddress,  double latitude,  double longitude,  String? primaryTypeDisplayName)?  $default,) {final _that = this;
 switch (_that) {
-case _PlaceDto() when $default != null:
+case _Place() when $default != null:
 return $default(_that.id,_that.displayName,_that.formattedAddress,_that.latitude,_that.longitude,_that.primaryTypeDisplayName);case _:
   return null;
 
@@ -211,11 +208,11 @@ return $default(_that.id,_that.displayName,_that.formattedAddress,_that.latitude
 }
 
 /// @nodoc
-@JsonSerializable()
 
-class _PlaceDto extends PlaceDto {
-  const _PlaceDto({required this.id, this.displayName, this.formattedAddress, required this.latitude, required this.longitude, this.primaryTypeDisplayName}): super._();
-  factory _PlaceDto.fromJson(Map<String, dynamic> json) => _$PlaceDtoFromJson(json);
+
+class _Place implements Place {
+  const _Place({required this.id, this.displayName, this.formattedAddress, required this.latitude, required this.longitude, this.primaryTypeDisplayName});
+  
 
 @override final  String id;
 @override final  String? displayName;
@@ -224,37 +221,34 @@ class _PlaceDto extends PlaceDto {
 @override final  double longitude;
 @override final  String? primaryTypeDisplayName;
 
-/// Create a copy of PlaceDto
+/// Create a copy of Place
 /// with the given fields replaced by the non-null parameter values.
 @override @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$PlaceDtoCopyWith<_PlaceDto> get copyWith => __$PlaceDtoCopyWithImpl<_PlaceDto>(this, _$identity);
+_$PlaceCopyWith<_Place> get copyWith => __$PlaceCopyWithImpl<_Place>(this, _$identity);
 
-@override
-Map<String, dynamic> toJson() {
-  return _$PlaceDtoToJson(this, );
-}
+
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _PlaceDto&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.formattedAddress, formattedAddress) || other.formattedAddress == formattedAddress)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.primaryTypeDisplayName, primaryTypeDisplayName) || other.primaryTypeDisplayName == primaryTypeDisplayName));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _Place&&(identical(other.id, id) || other.id == id)&&(identical(other.displayName, displayName) || other.displayName == displayName)&&(identical(other.formattedAddress, formattedAddress) || other.formattedAddress == formattedAddress)&&(identical(other.latitude, latitude) || other.latitude == latitude)&&(identical(other.longitude, longitude) || other.longitude == longitude)&&(identical(other.primaryTypeDisplayName, primaryTypeDisplayName) || other.primaryTypeDisplayName == primaryTypeDisplayName));
 }
 
-@JsonKey(includeFromJson: false, includeToJson: false)
+
 @override
 int get hashCode => Object.hash(runtimeType,id,displayName,formattedAddress,latitude,longitude,primaryTypeDisplayName);
 
 @override
 String toString() {
-  return 'PlaceDto(id: $id, displayName: $displayName, formattedAddress: $formattedAddress, latitude: $latitude, longitude: $longitude, primaryTypeDisplayName: $primaryTypeDisplayName)';
+  return 'Place(id: $id, displayName: $displayName, formattedAddress: $formattedAddress, latitude: $latitude, longitude: $longitude, primaryTypeDisplayName: $primaryTypeDisplayName)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$PlaceDtoCopyWith<$Res> implements $PlaceDtoCopyWith<$Res> {
-  factory _$PlaceDtoCopyWith(_PlaceDto value, $Res Function(_PlaceDto) _then) = __$PlaceDtoCopyWithImpl;
+abstract mixin class _$PlaceCopyWith<$Res> implements $PlaceCopyWith<$Res> {
+  factory _$PlaceCopyWith(_Place value, $Res Function(_Place) _then) = __$PlaceCopyWithImpl;
 @override @useResult
 $Res call({
  String id, String? displayName, String? formattedAddress, double latitude, double longitude, String? primaryTypeDisplayName
@@ -265,17 +259,17 @@ $Res call({
 
 }
 /// @nodoc
-class __$PlaceDtoCopyWithImpl<$Res>
-    implements _$PlaceDtoCopyWith<$Res> {
-  __$PlaceDtoCopyWithImpl(this._self, this._then);
+class __$PlaceCopyWithImpl<$Res>
+    implements _$PlaceCopyWith<$Res> {
+  __$PlaceCopyWithImpl(this._self, this._then);
 
-  final _PlaceDto _self;
-  final $Res Function(_PlaceDto) _then;
+  final _Place _self;
+  final $Res Function(_Place) _then;
 
-/// Create a copy of PlaceDto
+/// Create a copy of Place
 /// with the given fields replaced by the non-null parameter values.
 @override @pragma('vm:prefer-inline') $Res call({Object? id = null,Object? displayName = freezed,Object? formattedAddress = freezed,Object? latitude = null,Object? longitude = null,Object? primaryTypeDisplayName = freezed,}) {
-  return _then(_PlaceDto(
+  return _then(_Place(
 id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String,displayName: freezed == displayName ? _self.displayName : displayName // ignore: cast_nullable_to_non_nullable
 as String?,formattedAddress: freezed == formattedAddress ? _self.formattedAddress : formattedAddress // ignore: cast_nullable_to_non_nullable
