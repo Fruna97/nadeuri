@@ -57,6 +57,7 @@ public class Nadeuri {
 
     @OneToMany(mappedBy = "nadeuri")
     @Builder.Default
+    @Fetch(FetchMode.SUBSELECT)
     private List<Plan> plans = new ArrayList<>();
 
     // TODO: Spring Data JPA 4.0.0 이상에서 Hibernate의 @UuidGenerator 사용으로 리팩터링할 것 (GitHub Issue #6)
