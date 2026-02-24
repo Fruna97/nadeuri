@@ -8,6 +8,7 @@ import org.hibernate.annotations.FetchMode;
 import com.fasterxml.uuid.Generators;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.security.PrincipalDetails;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -55,7 +56,7 @@ public class Nadeuri {
     @Fetch(FetchMode.SUBSELECT)
     private List<Member> members = new ArrayList<>();
 
-    @OneToMany(mappedBy = "nadeuri")
+    @OneToMany(mappedBy = "nadeuri", cascade = CascadeType.REMOVE, orphanRemoval = true)
     @Builder.Default
     @Fetch(FetchMode.SUBSELECT)
     private List<Plan> plans = new ArrayList<>();
