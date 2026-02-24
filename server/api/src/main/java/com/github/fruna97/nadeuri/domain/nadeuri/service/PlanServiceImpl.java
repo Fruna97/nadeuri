@@ -64,7 +64,7 @@ public class PlanServiceImpl implements PlanService {
         }
 
         Plan plan = planRepository.findByUuid(planUuid).orElseThrow(PlanNotFoundException::new);
-        if (!nadeuri.hasPlan(plan)) {
+        if (!plan.getNadeuri().getUuid().equals(nadeuriUuid)) {
             throw new PlanNotFoundInNadeuriException(plan);
         }
 
@@ -83,7 +83,7 @@ public class PlanServiceImpl implements PlanService {
         }
 
         Plan plan = planRepository.findByUuid(planUuid).orElseThrow(PlanNotFoundException::new);
-        if (!nadeuri.hasPlan(plan)) {
+        if (!plan.getNadeuri().getUuid().equals(nadeuriUuid)) {
             throw new PlanNotFoundInNadeuriException(plan);
         }
 
@@ -110,7 +110,7 @@ public class PlanServiceImpl implements PlanService {
         }
 
         Plan plan = planRepository.findByUuid(planUuid).orElseThrow(PlanNotFoundException::new);
-        if (!nadeuri.hasPlan(plan)) {
+        if (!plan.getNadeuri().getUuid().equals(nadeuriUuid)) {
             throw new PlanNotFoundInNadeuriException(plan);
         }
         planRepository.delete(plan);

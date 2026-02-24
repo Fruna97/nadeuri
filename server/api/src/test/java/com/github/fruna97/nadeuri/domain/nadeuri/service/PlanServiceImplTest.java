@@ -170,7 +170,7 @@ class PlanServiceImplTest {
                 .endAt(endAt)
                 .nadeuri(nadeuri).build();
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
-        when(nadeuri.hasPlan(plan)).thenReturn(true);
+        when(nadeuri.getUuid()).thenReturn(nadeuriUuid);
 
         // When
         PlanSummaryResponse result = planServiceImpl.getPlan(principalDetails, nadeuriUuid, planUuid);
@@ -211,7 +211,8 @@ class PlanServiceImplTest {
 
         Plan plan = mock(Plan.class);
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
-        when(nadeuri.hasPlan(plan)).thenReturn(false);
+        when(plan.getNadeuri()).thenReturn(nadeuri);
+        when(nadeuri.getUuid()).thenReturn(UUID.randomUUID());
 
         // When
         // Then
@@ -243,7 +244,8 @@ class PlanServiceImplTest {
 
         Plan plan = mock(Plan.class);
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
-        when(nadeuri.hasPlan(plan)).thenReturn(true);
+        when(plan.getNadeuri()).thenReturn(nadeuri);
+        when(nadeuri.getUuid()).thenReturn(nadeuriUuid);
 
         Plan savedPlan = Plan.builder()
             .id(0L)
@@ -300,9 +302,10 @@ class PlanServiceImplTest {
                 .googlePlacesId(oldGooglePlacesId)
                 .allDay(oldAllDay)
                 .startAt(oldStartAt)
-                .endAt(oldEndAt).build();
+                .endAt(oldEndAt)
+                .nadeuri(nadeuri).build();
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
-        when(nadeuri.hasPlan(plan)).thenReturn(true);
+        when(nadeuri.getUuid()).thenReturn(nadeuriUuid);
 
         Plan savedPlan = mock(Plan.class);
         when(planRepository.save(plan)).thenReturn(savedPlan);
@@ -354,7 +357,8 @@ class PlanServiceImplTest {
 
         Plan plan = mock(Plan.class);
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
-        when(nadeuri.hasPlan(plan)).thenReturn(false);
+        when(plan.getNadeuri()).thenReturn(nadeuri);
+        when(nadeuri.getUuid()).thenReturn(UUID.randomUUID());
 
         // When
         // Then
@@ -375,7 +379,8 @@ class PlanServiceImplTest {
 
         Plan plan = mock(Plan.class);
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
-        when(nadeuri.hasPlan(plan)).thenReturn(true);
+        when(plan.getNadeuri()).thenReturn(nadeuri);
+        when(nadeuri.getUuid()).thenReturn(nadeuriUuid);
 
         // When
         planServiceImpl.deletePlan(principalDetails, nadeuriUuid, planUuid);
@@ -413,7 +418,8 @@ class PlanServiceImplTest {
 
         Plan plan = mock(Plan.class);
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
-        when(nadeuri.hasPlan(plan)).thenReturn(false);
+        when(plan.getNadeuri()).thenReturn(nadeuri);
+        when(nadeuri.getUuid()).thenReturn(UUID.randomUUID());
 
         // When
         // Then
