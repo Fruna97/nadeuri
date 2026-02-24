@@ -97,4 +97,18 @@ class PlanControllerTest {
         assertNotNull(body); // 응답 본문을 담고있는지
         assertThat(body.getData()).isEqualTo(planSummaryResponse); // 응답 본문의 데이터가 [PlanService.updatePlan]가 반환한 [PlanSummaryResponse]와 동일한지
     }
+
+    @Test
+    void deletePlan() {
+        // Given
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID nadeuriUuid = UUID.randomUUID();
+        UUID planUuid = UUID.randomUUID();
+
+        // When
+        ResponseEntity<ResponseDto<Void>> result = planController.deletePlan(principalDetails, nadeuriUuid, planUuid);
+
+        // Then
+        assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환 하는지
+    }
 }
