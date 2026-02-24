@@ -71,20 +71,19 @@ class MemberControllerTest {
     @Test
     void getMyProfile() {
         // Given
-        long id = 0L;
         UUID uuid = UUID.randomUUID();
         String email = "test_email@test.com";
         String password = "test_password";
         String nickname = "test_nickname";
         String profileImageUrl = "test_url";
-        PrincipalDetails principalDetails = new PrincipalDetails(id, uuid, email, password);
+        PrincipalDetails principalDetails = PrincipalDetails.ofSignIn(uuid, email, password);
 
         MemberSummaryResponse memberSummaryResponse = MemberSummaryResponse.builder()
                 .uuid(uuid)
                 .email(email)
                 .nickname(nickname)
                 .profileImageUrl(profileImageUrl).build();
-        when(memberService.getMyProfile(principalDetails)).thenReturn(memberSummaryResponse);
+        when(memberService.getMyProfile(uuid)).thenReturn(memberSummaryResponse);
 
         // When
         ResponseEntity<ResponseDto<MemberSummaryResponse>> result = memberController.getMyProfile(principalDetails);

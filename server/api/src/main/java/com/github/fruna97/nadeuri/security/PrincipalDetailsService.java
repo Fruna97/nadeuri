@@ -1,7 +1,6 @@
 package com.github.fruna97.nadeuri.security;
 
 import java.util.Optional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -28,8 +27,7 @@ public class PrincipalDetailsService implements UserDetailsService {
             throw new UsernameNotFoundException("존재하지 않는 회원 입니다: " + email);
         }
 
-        return new PrincipalDetails(
-                member.get().getId(),
+        return PrincipalDetails.ofSignIn(
                 member.get().getUuid(),
                 member.get().getEmail(),
                 member.get().getPassword());

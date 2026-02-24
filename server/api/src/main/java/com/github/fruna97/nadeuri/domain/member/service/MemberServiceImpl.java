@@ -1,5 +1,6 @@
 package com.github.fruna97.nadeuri.domain.member.service;
 
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -11,7 +12,6 @@ import com.github.fruna97.nadeuri.domain.member.dto.SignUpRequest;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
-import com.github.fruna97.nadeuri.security.PrincipalDetails;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -48,11 +48,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberSummaryResponse getMyProfile(PrincipalDetails principalDetails) {
-        long id = principalDetails.getId();
-
-        Member member = memberRepository.findById(id).orElseThrow(() -> {
-            log.warn("존재하지 않는 회원 조회. ID : " + id);
+    public MemberSummaryResponse getMyProfile(UUID memberUuid) {
+        Member member = memberRepository.findByUuid(memberUuid).orElseThrow(() -> {
+            log.warn("존재하지 않는 회원 조회. UUID : " + memberUuid);
             return new BadCredentialsException("자격 증명에 실패하였습니다.");
         });
 

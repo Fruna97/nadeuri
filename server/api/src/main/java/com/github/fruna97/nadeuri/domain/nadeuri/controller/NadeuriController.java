@@ -33,7 +33,8 @@ public class NadeuriController {
     public ResponseEntity<ResponseDto<NadeuriSummaryResponse>> createNadeuri(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @RequestBody @Valid CreateNadeuriRequest createNadeuriRequest) {
-        NadeuriSummaryResponse nadeuriSummaryResponse = nadeuriService.createNadeuri(principalDetails, createNadeuriRequest);
+        NadeuriSummaryResponse nadeuriSummaryResponse =
+                nadeuriService.createNadeuri(principalDetails.getUuid(), createNadeuriRequest);
 
         return ResponseEntity
                 .ok()
@@ -47,7 +48,7 @@ public class NadeuriController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("uuid") UUID uuid) {
         NadeuriSummaryResponse nadeuriSummaryResponse =
-                nadeuriService.getNadeuri(principalDetails, uuid);
+                nadeuriService.getNadeuri(principalDetails.getUuid(), uuid);
 
         return ResponseEntity
                 .ok()
@@ -60,7 +61,7 @@ public class NadeuriController {
     public ResponseEntity<ResponseDto<List<NadeuriSummaryResponse>>> participatingNadeuris(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<NadeuriSummaryResponse> participatingNadeuris =
-                nadeuriService.getParticipatingNadeuris(principalDetails);
+                nadeuriService.getParticipatingNadeuris(principalDetails.getUuid());
 
         return ResponseEntity
                 .ok()
@@ -74,7 +75,8 @@ public class NadeuriController {
             @AuthenticationPrincipal PrincipalDetails principalDetails,
             @PathVariable("uuid") UUID uuid,
             @RequestBody @Valid UpdateNadeuriRequest updateNadeuriTitleRequest) {
-        NadeuriSummaryResponse nadeuriSummaryResponse = nadeuriService.updateNadeuri(principalDetails, uuid, updateNadeuriTitleRequest);
+        NadeuriSummaryResponse nadeuriSummaryResponse = 
+                nadeuriService.updateNadeuri(principalDetails.getUuid(), uuid, updateNadeuriTitleRequest);
 
         return ResponseEntity
                 .ok()

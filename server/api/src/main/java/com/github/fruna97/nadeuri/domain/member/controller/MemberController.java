@@ -39,7 +39,8 @@ public class MemberController {
     @GetMapping("/member")
     public ResponseEntity<ResponseDto<MemberSummaryResponse>> getMyProfile(
             @AuthenticationPrincipal PrincipalDetails principalDetails) {
-        MemberSummaryResponse memberSummaryResponse = memberService.getMyProfile(principalDetails);
+        MemberSummaryResponse memberSummaryResponse =
+                memberService.getMyProfile(principalDetails.getUuid());
 
         return ResponseEntity
                 .ok()

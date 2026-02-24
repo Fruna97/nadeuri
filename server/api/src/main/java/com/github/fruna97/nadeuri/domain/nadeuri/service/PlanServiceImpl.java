@@ -17,7 +17,6 @@ import com.github.fruna97.nadeuri.domain.nadeuri.repository.PlanRepository;
 import com.github.fruna97.nadeuri.exception.NadeuriNotFoundException;
 import com.github.fruna97.nadeuri.exception.PlanNotFoundException;
 import com.github.fruna97.nadeuri.exception.PlanNotFoundInNadeuriException;
-import com.github.fruna97.nadeuri.security.PrincipalDetails;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -35,11 +34,11 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional
-    public PlanSummaryResponse createPlan(PrincipalDetails principalDetails, UUID nadeuriUuid,
+    public PlanSummaryResponse createPlan(UUID memberUuid, UUID nadeuriUuid,
             CreatePlanRequest createPlanRequest) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
                 .orElseThrow(NadeuriNotFoundException::new);
-        if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
+        if (!nadeuri.hasAuthorityToNadeuri(memberUuid)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 생성 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
@@ -54,11 +53,11 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional(readOnly = true)
-    public PlanSummaryResponse getPlan(PrincipalDetails principalDetails, UUID nadeuriUuid,
+    public PlanSummaryResponse getPlan(UUID memberUuid, UUID nadeuriUuid,
             UUID planUuid) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
                 .orElseThrow(NadeuriNotFoundException::new);
-        if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
+        if (!nadeuri.hasAuthorityToNadeuri(memberUuid)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 조회 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
@@ -73,11 +72,11 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional
-    public PlanSummaryResponse updatePlan(PrincipalDetails principalDetails, UUID nadeuriUuid,
+    public PlanSummaryResponse updatePlan(UUID memberUuid, UUID nadeuriUuid,
             UUID planUuid, UpdatePlanRequest updatePlanRequest) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
                 .orElseThrow(NadeuriNotFoundException::new);
-        if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
+        if (!nadeuri.hasAuthorityToNadeuri(memberUuid)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 수정 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
@@ -101,10 +100,10 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional
-    public void deletePlan(PrincipalDetails principalDetails, UUID nadeuriUuid, UUID planUuid) {
+    public void deletePlan(UUID memberUuid, UUID nadeuriUuid, UUID planUuid) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
                 .orElseThrow(NadeuriNotFoundException::new);
-        if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
+        if (!nadeuri.hasAuthorityToNadeuri(memberUuid)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 삭제 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }

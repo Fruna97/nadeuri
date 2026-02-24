@@ -23,21 +23,22 @@ class AuthControllerIntegrationTest {
 
     @Autowired
     private MockMvc mockMvc;
+
     @MockitoBean
     private UserDetailsService userDetailsService;
+
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Test
     void signIn() throws Exception {
         // Given
-        long id = 0L;
         UUID uuid = UUID.randomUUID();
         String email = "test_email@test.com";
         String password = "test_password";
         String encodedPassword = passwordEncoder.encode(password);
 
-        PrincipalDetails principalDetails = new PrincipalDetails(id, uuid, email, encodedPassword);
+        PrincipalDetails principalDetails = PrincipalDetails.ofSignIn(uuid, email, encodedPassword);
         when(userDetailsService.loadUserByUsername(email)).thenReturn(principalDetails);
 
         // When
@@ -58,13 +59,12 @@ class AuthControllerIntegrationTest {
     @Test
     void signInWithWrongCredentials() throws Exception {
         // Given
-        long id = 0L;
         UUID uuid = UUID.randomUUID();
         String email = "test_email@test.com";
         String password = "test_password";
         String encodedPassword = passwordEncoder.encode(password);
 
-        PrincipalDetails principalDetails = new PrincipalDetails(id, uuid, email, encodedPassword);
+        PrincipalDetails principalDetails = PrincipalDetails.ofSignIn(uuid, email, encodedPassword);
         when(userDetailsService.loadUserByUsername(email)).thenReturn(principalDetails);
 
         // When

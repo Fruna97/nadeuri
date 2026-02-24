@@ -7,7 +7,6 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import com.fasterxml.uuid.Generators;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
-import com.github.fruna97.nadeuri.security.PrincipalDetails;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -70,15 +69,15 @@ public class Nadeuri {
     }
 
     /**
-     * Principal에 해당하는 회원이 Nadeuri를 수정할 수 있는 권한을 가지고 있는지 확인합니다.
+     * UUID에 해당하는 회원이 Nadeuri를 수정할 수 있는 권한을 가지고 있는지 확인합니다.
      * <p>
      * LAZY하게 Fetch되는 {@code members} 필드에 접근하기 위해, <strong>Managed(Attached) 상태의 엔티티에서 사용하는 것을
      * 권장합니다.</strong>
      * 
-     * @param principalDetails 회원의 정보가 담긴 Principal.
-     * @return Principal에 해당하는 회원이 Nadeuri에 대한 수정 권한이 있는지 여부.
+     * @param memberUuid 회원의 UUID.
+     * @return UUID에 해당하는 회원이 Nadeuri에 대한 수정 권한이 있는지 여부.
      */
-    public boolean hasAuthorityToNadeuri(PrincipalDetails principalDetails) {
-        return members.stream().anyMatch(member -> member.getId().equals(principalDetails.getId()));
+    public boolean hasAuthorityToNadeuri(UUID memberUuid) {
+        return members.stream().anyMatch(member -> member.getUuid().equals(memberUuid));
     }
 }

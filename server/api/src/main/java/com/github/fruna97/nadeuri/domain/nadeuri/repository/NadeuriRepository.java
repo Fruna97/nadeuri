@@ -10,5 +10,5 @@ public interface NadeuriRepository extends JpaRepository<Nadeuri, Long> {
 
     Optional<Nadeuri> findByUuid(UUID uuid);
 
-    List<Nadeuri> findByMembers_Id(long id);
+    List<Nadeuri> findByMembers_Uuid(UUID uuid);
 }
