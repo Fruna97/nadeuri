@@ -341,7 +341,7 @@ class PlanServiceImplTest {
     }
 
     @Test
-    void updateNadeuri_나들이에없는일정갱신() {
+    void updateNadeuri_나들이에없는일정() {
         // Given
         PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
@@ -360,5 +360,64 @@ class PlanServiceImplTest {
         // Then
         assertThrows(PlanNotFoundInNadeuriException.class, () -> planServiceImpl
                 .updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest)); // Nadeuri에 속하지 않은 일정 갱신 요청 시, 관련 예외를 발생시키는지
+    }
+
+    @Test
+    void deleteNadeuri() {
+        // Given
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID nadeuriUuid = UUID.randomUUID();
+        UUID planUuid = UUID.randomUUID();
+
+        Nadeuri nadeuri = mock(Nadeuri.class);
+        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
+        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+
+        Plan plan = mock(Plan.class);
+        when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
+        when(nadeuri.hasPlan(plan)).thenReturn(true);
+
+        // When
+        planServiceImpl.deletePlan(principalDetails, nadeuriUuid, planUuid);
+
+        // Then
+        verify(planRepository).delete(plan); // [plan]을 담아 [delete] 메서드를 호출했는지
+    }
+
+    @Test
+    void deleteNadeuri_수정권한이없는회원() {
+        // Given
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID nadeuriUuid = UUID.randomUUID();
+        UUID planUuid = UUID.randomUUID();
+
+        Nadeuri nadeuri = mock(Nadeuri.class);
+        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
+        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(false);
+
+        // When
+        // Then
+        assertThrows(AuthenticationException.class, () -> planServiceImpl.deletePlan(principalDetails, nadeuriUuid, planUuid)); // Nadeuri에 참가중이지 않은 회원이 일정 삭제 요청을 했을 때, 인증 예외를 발생시키는지
+    }
+
+    @Test
+    void deleteNadeuri_나들이에없는일정() {
+        // Given
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID nadeuriUuid = UUID.randomUUID();
+        UUID planUuid = UUID.randomUUID();
+
+        Nadeuri nadeuri = mock(Nadeuri.class);
+        when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
+        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+
+        Plan plan = mock(Plan.class);
+        when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
+        when(nadeuri.hasPlan(plan)).thenReturn(false);
+
+        // When
+        // Then
+        assertThrows(PlanNotFoundInNadeuriException.class, () -> planServiceImpl
+                .deletePlan(principalDetails, nadeuriUuid, planUuid)); // Nadeuri에 속하지 않은 일정 삭제 요청 시, 관련 예외를 발생시키는지
     }
 }

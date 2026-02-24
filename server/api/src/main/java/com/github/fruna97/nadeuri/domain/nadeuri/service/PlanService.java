@@ -14,4 +14,6 @@ public interface PlanService {
 
     PlanSummaryResponse updatePlan(PrincipalDetails principalDetails, UUID nadeuriUuid,
             UUID planUuid, UpdatePlanRequest updatePlanRequest);
+
+    void deletePlan(PrincipalDetails principalDetails, UUID nadeuriUuid, UUID planUuid);
 }

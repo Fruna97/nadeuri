@@ -99,6 +99,23 @@ public class PlanServiceImpl implements PlanService {
         return PlanSummaryResponse.fromEntity(savedPlan);
     }
 
+    @Override
+    @Transactional
+    public void deletePlan(PrincipalDetails principalDetails, UUID nadeuriUuid, UUID planUuid) {
+        Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
+                .orElseThrow(NadeuriNotFoundException::new);
+        if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
+            log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 수정 요청");
+            throw new BadCredentialsException("자격 증명에 실패하였습니다.");
+        }
+
+        Plan plan = planRepository.findByUuid(planUuid).orElseThrow(PlanNotFoundException::new);
+        if (!nadeuri.hasPlan(plan)) {
+            throw new PlanNotFoundInNadeuriException(plan);
+        }
+        planRepository.delete(plan);
+    }
+
     /**
      * {@code allDay} 필드가 True인 경우, {@code startAt}과 {@code endAt}의 시간을 00시 00분으로 변경하고 범위를 Exclusive하게 변경
      * @param plan
