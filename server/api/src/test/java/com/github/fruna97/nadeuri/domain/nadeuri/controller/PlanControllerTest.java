@@ -6,6 +6,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.time.LocalDateTime;
 import java.util.UUID;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -23,17 +24,26 @@ import com.github.fruna97.nadeuri.security.PrincipalDetails;
 @ExtendWith(MockitoExtension.class)
 class PlanControllerTest {
 
+    private final UUID memberUuid = UUID.randomUUID();
+
     @Mock
-    PlanService planService;
+    private PlanService planService;
+
+    @Mock
+    private PrincipalDetails principalDetails;
 
     @InjectMocks
-    PlanController planController;
+    private PlanController planController;
+
+    @BeforeEach
+    void beforeEach() {
+        when(principalDetails.getUuid()).thenReturn(memberUuid);
+    }
 
     @Test
     void createPlan() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
-        UUID uuid = UUID.randomUUID();
+        UUID nadeuriUuid = UUID.randomUUID();
         CreatePlanRequest createPlanRequest = mock(CreatePlanRequest.class);
 
         String planTitle = "test_plan";
@@ -44,11 +54,11 @@ class PlanControllerTest {
                 .startAt(startAt)
                 .endAt(endAt).build();
 
-        when(planService.createPlan(principalDetails, uuid, createPlanRequest)).thenReturn(planSummaryResponse);
+        when(planService.createPlan(memberUuid, nadeuriUuid, createPlanRequest)).thenReturn(planSummaryResponse);
 
         // When
         ResponseEntity<ResponseDto<PlanSummaryResponse>> result =
-                planController.createPlan(principalDetails, uuid, createPlanRequest);
+                planController.createPlan(principalDetails, nadeuriUuid, createPlanRequest);
 
         // Then
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환 하는지
@@ -60,12 +70,11 @@ class PlanControllerTest {
     @Test
     void getPlan() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
 
         PlanSummaryResponse planSummaryResponse = mock(PlanSummaryResponse.class);
-        when(planService.getPlan(principalDetails, nadeuriUuid, planUuid)).thenReturn(planSummaryResponse);
+        when(planService.getPlan(memberUuid, nadeuriUuid, planUuid)).thenReturn(planSummaryResponse);
 
         // When
         ResponseEntity<ResponseDto<PlanSummaryResponse>> result = planController.getPlan(principalDetails, nadeuriUuid, planUuid);
@@ -80,13 +89,12 @@ class PlanControllerTest {
     @Test
     void updatePlan() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
         UpdatePlanRequest updatePlanRequest = mock(UpdatePlanRequest.class);
 
         PlanSummaryResponse planSummaryResponse = mock(PlanSummaryResponse.class);
-        when(planService.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest)).thenReturn(planSummaryResponse);
+        when(planService.updatePlan(memberUuid, nadeuriUuid, planUuid, updatePlanRequest)).thenReturn(planSummaryResponse);
 
         // When
         ResponseEntity<ResponseDto<PlanSummaryResponse>> result = planController.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest);
@@ -101,7 +109,6 @@ class PlanControllerTest {
     @Test
     void deletePlan() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
 

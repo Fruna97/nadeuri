@@ -29,9 +29,9 @@ import com.github.fruna97.nadeuri.common.dto.ResponseDto;
 class MemberControllerIntegrationTest {
 
     @Autowired
-    MockMvc mockMvc;
+    private MockMvc mockMvc;
     @Autowired
-    ObjectMapper objectMapper;
+    private ObjectMapper objectMapper;
 
     @Test
     void signUp() throws Exception {

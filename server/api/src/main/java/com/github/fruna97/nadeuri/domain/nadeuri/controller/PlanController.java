@@ -35,7 +35,7 @@ public class PlanController {
             @PathVariable("nadeuriUuid") UUID nadeuriUuid,
             @RequestBody @Valid CreatePlanRequest createPlanRequest) {
         PlanSummaryResponse planSummaryResponse =
-                planService.createPlan(principalDetails, nadeuriUuid, createPlanRequest);
+                planService.createPlan(principalDetails.getUuid(), nadeuriUuid, createPlanRequest);
 
         return ResponseEntity.ok()
                 .body(ResponseDto.<PlanSummaryResponse>builder()
@@ -49,7 +49,7 @@ public class PlanController {
             @PathVariable("nadeuriUuid") UUID nadeuriUuid,
             @PathVariable("planUuid") UUID planUuid) {
         PlanSummaryResponse planSummaryResponse =
-                planService.getPlan(principalDetails, nadeuriUuid, planUuid);
+                planService.getPlan(principalDetails.getUuid(), nadeuriUuid, planUuid);
 
         return ResponseEntity.ok()
                 .body(ResponseDto.<PlanSummaryResponse>builder()
@@ -64,7 +64,7 @@ public class PlanController {
             @PathVariable("planUuid") UUID planUuid,
             @RequestBody @Valid UpdatePlanRequest updatePlanRequest) {
         PlanSummaryResponse planSummaryResponse =
-                planService.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest);
+                planService.updatePlan(principalDetails.getUuid(), nadeuriUuid, planUuid, updatePlanRequest);
 
         return ResponseEntity.ok()
                 .body(ResponseDto.<PlanSummaryResponse>builder()
@@ -78,7 +78,7 @@ public class PlanController {
             @PathVariable("nadeuriUuid") UUID nadeuriUuid,
             @PathVariable("planUuid") UUID planUuid
     ) {
-        planService.deletePlan(principalDetails, nadeuriUuid, planUuid);
+        planService.deletePlan(principalDetails.getUuid(), nadeuriUuid, planUuid);
 
         return ResponseEntity.ok()
                 .body(ResponseDto.<Void>builder()

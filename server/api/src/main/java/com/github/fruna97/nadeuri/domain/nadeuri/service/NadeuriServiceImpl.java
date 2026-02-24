@@ -14,7 +14,6 @@ import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import com.github.fruna97.nadeuri.domain.nadeuri.repository.NadeuriRepository;
 import com.github.fruna97.nadeuri.exception.NadeuriNotFoundException;
-import com.github.fruna97.nadeuri.security.PrincipalDetails;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -33,9 +32,13 @@ public class NadeuriServiceImpl implements NadeuriService {
 
     @Override
     @Transactional
-    public NadeuriSummaryResponse createNadeuri(PrincipalDetails principalDetails, CreateNadeuriRequest createNadeuriRequest) {
+    public NadeuriSummaryResponse createNadeuri(UUID memberUuid, CreateNadeuriRequest createNadeuriRequest) {
         String title = createNadeuriRequest.getTitle();
-        Member owner = memberRepository.getReferenceById(principalDetails.getId());
+        Member owner = memberRepository.findByUuid(memberUuid)
+                .orElseThrow(() -> {
+                    log.warn("존재하지 않는 회원 조회. UUID : " + memberUuid);
+                    return new BadCredentialsException("자격 증명에 실패하였습니다.");
+                });
 
         Nadeuri nadeuri = Nadeuri.builder()
                 .title(title)
@@ -49,11 +52,11 @@ public class NadeuriServiceImpl implements NadeuriService {
 
     @Override
     @Transactional(readOnly = true)
-    public NadeuriSummaryResponse getNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid) {
+    public NadeuriSummaryResponse getNadeuri(UUID memberUuid, UUID nadeuriUuid) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
                 .orElseThrow(NadeuriNotFoundException::new);
 
-        if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
+        if (!nadeuri.hasAuthorityToNadeuri(memberUuid)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 조회 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
@@ -63,8 +66,8 @@ public class NadeuriServiceImpl implements NadeuriService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<NadeuriSummaryResponse> getParticipatingNadeuris(PrincipalDetails principalDetails) {
-        List<Nadeuri> participatingNadeuris = nadeuriRepository.findByMembers_Id(principalDetails.getId());
+    public List<NadeuriSummaryResponse> getParticipatingNadeuris(UUID memberUuid) {
+        List<Nadeuri> participatingNadeuris = nadeuriRepository.findByMembers_Uuid(memberUuid);
 
         return participatingNadeuris.stream()
                 .map(NadeuriSummaryResponse::fromEntity).toList();
@@ -72,11 +75,11 @@ public class NadeuriServiceImpl implements NadeuriService {
 
     @Override
     @Transactional
-    public NadeuriSummaryResponse updateNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid,
+    public NadeuriSummaryResponse updateNadeuri(UUID memberUuid, UUID nadeuriUuid,
             UpdateNadeuriRequest updateNadeuriRequest) {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
                 .orElseThrow(NadeuriNotFoundException::new);
-        if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
+        if (!nadeuri.hasAuthorityToNadeuri(memberUuid)) {
             log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 수정 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }

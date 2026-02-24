@@ -2,10 +2,10 @@ package com.github.fruna97.nadeuri.security.filter;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.UUID;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -46,8 +46,7 @@ class JwtAuthorizationFilterTest {
         MockHttpServletResponse response = new MockHttpServletResponse();
         MockFilterChain filterChain = new MockFilterChain();
 
-        PrincipalDetails principalDetails =
-                new PrincipalDetails(0L, UUID.randomUUID(), "test_email@test.com", "test_password");
+        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         Authentication authentication =
                 new UsernamePasswordAuthenticationToken(principalDetails, null, null);
         when(jwtService.getAuthenticationFromAccessToken(accessToken))

@@ -23,20 +23,19 @@ import com.github.fruna97.nadeuri.domain.member.dto.SignUpRequest;
 import com.github.fruna97.nadeuri.domain.member.model.Member;
 import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 import com.github.fruna97.nadeuri.exception.DuplicateEmailException;
-import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
 @ExtendWith(MockitoExtension.class)
 class MemberServiceImplTest {
 
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Mock
-    MemberRepository memberRepository;
+    private MemberRepository memberRepository;
 
-    MemberService memberService;
+    private MemberService memberService;
 
     @Captor
-    ArgumentCaptor<Member> memberCaptor;
+    private ArgumentCaptor<Member> memberCaptor;
 
     @BeforeEach
     void beforeEach() {
@@ -94,24 +93,20 @@ class MemberServiceImplTest {
     @Test
     void getProfile() {
         // Given
-        long id = 0L;
-        UUID uuid = UUID.randomUUID();
-        String email = "test_email@test.com";
-        String password = "test_password";
+        UUID memberUuid = UUID.randomUUID();
+        String memberEmail = "test_email@test.com";
+        String memberPassword = "test_password";
         Member member = Member.builder()
-                .id(0L)
-                .uuid(uuid)
-                .email(email)
-                .password(password).build();
-        when(memberRepository.findById(0L)).thenReturn(Optional.of(member));
-
-        PrincipalDetails principalDetails = new PrincipalDetails(id, uuid, email, password);
+                .uuid(memberUuid)
+                .email(memberEmail)
+                .password(memberPassword).build();
+        when(memberRepository.findByUuid(memberUuid)).thenReturn(Optional.of(member));
 
         // When
-        MemberSummaryResponse result = memberService.getMyProfile(principalDetails);
+        MemberSummaryResponse result = memberService.getMyProfile(memberUuid);
 
         // Then
-        assertThat(result.getUuid()).isEqualTo(uuid); // 저장된 회원의 UUID를 그대로 반환하는지
-        assertThat(result.getEmail()).isEqualTo(email); // 저장된 회원의 이메일을 그대로 반환하는지
+        assertThat(result.getUuid()).isEqualTo(memberUuid); // 저장된 회원의 UUID를 그대로 반환하는지
+        assertThat(result.getEmail()).isEqualTo(memberEmail); // 저장된 회원의 이메일을 그대로 반환하는지
     }
 }

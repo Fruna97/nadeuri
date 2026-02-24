@@ -28,16 +28,16 @@ import com.github.fruna97.nadeuri.domain.member.repository.MemberRepository;
 @ExtendWith(MockitoExtension.class)
 class JwtServiceImplTest {
 
-    JwtService jwtService;
-
-    RefreshTokenRepository refreshTokenRepository;
-
-    @Mock
-    MemberRepository memberRepository;
-
     private final String secretKey = "test_secret_key";
     private final Duration accessTokenDuration = Duration.ofMinutes(30);
     private final Duration refreshTokenDuration = Duration.ofDays(3);
+
+    private RefreshTokenRepository refreshTokenRepository;
+
+    @Mock
+    private MemberRepository memberRepository;
+
+    private JwtService jwtService;
 
     @BeforeEach
     void beforeEach() {
@@ -92,17 +92,9 @@ class JwtServiceImplTest {
     @Test
     void getAuthenticationFromAccessToken() {
         // Given
-        UUID uuid = UUID.randomUUID();
-        Member member = Member.builder()
-                .id(0L)
-                .uuid(uuid)
-                .email("test_email")
-                .password("test_password")
-                .build();
-        when(memberRepository.findByUuid(uuid)).thenReturn(Optional.of(member));
-
+        UUID memberUuid = UUID.randomUUID();
         String accessToken = JWT.create()
-                .withSubject(uuid.toString())
+                .withSubject(memberUuid.toString())
                 .withClaim("type", TokenType.ACCESS.name())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 3600))
                 .sign(Algorithm.HMAC512(secretKey));
@@ -117,9 +109,9 @@ class JwtServiceImplTest {
     @Test
     void getAuthenticationFromAccessToken_만료토큰() {
         // Given
-        UUID uuid = UUID.randomUUID();
+        UUID memberUuid = UUID.randomUUID();
         String accessToken = JWT.create()
-                .withSubject(uuid.toString())
+                .withSubject(memberUuid.toString())
                 .withClaim("type", TokenType.ACCESS.name())
                 .withExpiresAt(new Date(System.currentTimeMillis() - 3600))
                 .sign(Algorithm.HMAC512(secretKey));
@@ -134,9 +126,9 @@ class JwtServiceImplTest {
     @Test
     void getAuthenticationFromAccessToken_위변조토큰() {
         // Given
-        UUID uuid = UUID.randomUUID();
+        UUID memberUuid = UUID.randomUUID();
         String accessToken = JWT.create()
-                .withSubject(uuid.toString())
+                .withSubject(memberUuid.toString())
                 .withClaim("type", TokenType.ACCESS.name())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 3600))
                 .sign(Algorithm.HMAC512(secretKey));
@@ -152,9 +144,9 @@ class JwtServiceImplTest {
     @Test
     void getAuthenticationFromAccessToken_유형이다른토큰() {
         // Given
-        UUID uuid = UUID.randomUUID();
+        UUID memberUuid = UUID.randomUUID();
         String accessToken = JWT.create()
-                .withSubject(uuid.toString())
+                .withSubject(memberUuid.toString())
                 .withClaim("type", TokenType.REFRESH.name())
                 .withExpiresAt(new Date(System.currentTimeMillis() + 3600))
                 .sign(Algorithm.HMAC512(secretKey));
@@ -164,25 +156,6 @@ class JwtServiceImplTest {
 
         // Then
         assertThat(result).isEmpty(); // 유형이 다른 토큰에 대해 인증정보를 담지 않고 반환하는지
-    }
-
-    @Test
-    void getAuthenticationFromAccessToken_존재하지않는회원() {
-        // Given
-        UUID uuid = UUID.randomUUID();
-        when(memberRepository.findByUuid(uuid)).thenReturn(Optional.empty());
-
-        String accessToken = JWT.create()
-                .withSubject(uuid.toString())
-                .withClaim("type", TokenType.ACCESS.name())
-                .withExpiresAt(new Date(System.currentTimeMillis() + 3600))
-                .sign(Algorithm.HMAC512(secretKey));
-
-        // When
-        Optional<Authentication> result = jwtService.getAuthenticationFromAccessToken(accessToken);
-
-        // Then
-        assertThat(result).isEmpty(); // 존재하지 않는 회원 UUID를 담은 토큰에 대해 인증정보를 담지 않고 반환하는지
     }
 
     @Test

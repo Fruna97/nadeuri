@@ -7,16 +7,22 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 public class PrincipalDetails implements UserDetails {
 
-    private final long id;
     private final UUID uuid;
     private final String email;
     private final String password;
     
-    public PrincipalDetails(long id, UUID uuid, String email, String password) {
-        this.id = id;
+    private PrincipalDetails(UUID uuid, String email, String password) {
         this.uuid = uuid;
         this.email = email;
         this.password = password;
+    }
+
+    public static PrincipalDetails ofSignIn(UUID uuid, String email, String password) {
+        return new PrincipalDetails(uuid, email, password);
+    }
+
+    public static PrincipalDetails ofJwt(UUID uuid) {
+        return new PrincipalDetails(uuid, null, null);
     }
 
     @Override
@@ -52,10 +58,6 @@ public class PrincipalDetails implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
-    }
-
-    public long getId() {
-        return id;
     }
 
     public UUID getUuid() {

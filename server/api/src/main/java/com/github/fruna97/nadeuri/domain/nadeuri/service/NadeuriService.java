@@ -5,16 +5,15 @@ import java.util.UUID;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.CreateNadeuriRequest;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.NadeuriSummaryResponse;
 import com.github.fruna97.nadeuri.domain.nadeuri.dto.UpdateNadeuriRequest;
-import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
 public interface NadeuriService {
 
-    NadeuriSummaryResponse createNadeuri(PrincipalDetails principalDetails, CreateNadeuriRequest createNadeuriRequest);
+    NadeuriSummaryResponse createNadeuri(UUID memberUuid, CreateNadeuriRequest createNadeuriRequest);
 
-    NadeuriSummaryResponse getNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid);
+    NadeuriSummaryResponse getNadeuri(UUID memberUuid, UUID nadeuriUuid);
 
-    List<NadeuriSummaryResponse> getParticipatingNadeuris(PrincipalDetails principalDetails);
+    List<NadeuriSummaryResponse> getParticipatingNadeuris(UUID memberUuid);
 
-    NadeuriSummaryResponse updateNadeuri(PrincipalDetails principalDetails, UUID nadeuriUuid,
+    NadeuriSummaryResponse updateNadeuri(UUID memberUuid, UUID nadeuriUuid,
             UpdateNadeuriRequest updateNadeuriRequest);
 }

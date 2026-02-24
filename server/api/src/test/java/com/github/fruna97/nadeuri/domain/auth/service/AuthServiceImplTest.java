@@ -6,9 +6,9 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import java.util.UUID;
 import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -24,23 +24,19 @@ import com.github.fruna97.nadeuri.security.PrincipalDetails;
 class AuthServiceImplTest {
 
     @Mock
-    PrincipalDetails principalDetails;
+    private PrincipalDetails principalDetails;
 
     @Mock
-    Authentication authentication;
+    private Authentication authentication;
 
     @Mock
-    AuthenticationManager authenticationManager;
+    private AuthenticationManager authenticationManager;
 
     @Mock
-    JwtService jwtService;
+    private JwtService jwtService;
 
-    AuthService authService;
-
-    @BeforeEach
-    void beforeEach() {
-        authService = new AuthServiceImpl(authenticationManager, jwtService);
-    }
+    @InjectMocks
+    private AuthServiceImpl authServiceImpl;
 
     @Test
     void signIn() {
@@ -58,7 +54,7 @@ class AuthServiceImplTest {
         when(jwtService.createAndSaveRefreshToken(any(UUID.class))).thenReturn("test_refreshToken_token");
 
         // When
-        TokenResponse result = authService.signIn(signInRequest);
+        TokenResponse result = authServiceImpl.signIn(signInRequest);
 
         // Then
         assertThat(result.getAccessToken()).isNotEmpty(); // Access Token이 발급되었는지
@@ -77,7 +73,7 @@ class AuthServiceImplTest {
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class))).thenThrow(new BadCredentialsException("자격 증명에 실패하였습니다."));
 
         // When
-        ThrowingCallable signInWithInvalidCredentials = () -> authService.signIn(signInRequest);
+        ThrowingCallable signInWithInvalidCredentials = () -> authServiceImpl.signIn(signInRequest);
 
         // Then
         assertThatThrownBy(signInWithInvalidCredentials).isInstanceOf(AuthenticationException.class); // 인증 예외를 throw 하는지

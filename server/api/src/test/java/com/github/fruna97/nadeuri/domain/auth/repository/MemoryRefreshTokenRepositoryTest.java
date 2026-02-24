@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 class MemoryRefreshTokenRepositoryTest {
 
-    MemoryRefreshTokenRepository memoryRefreshTokenRepository;
+    private MemoryRefreshTokenRepository memoryRefreshTokenRepository;
 
     @BeforeEach
     void beforeEach() {

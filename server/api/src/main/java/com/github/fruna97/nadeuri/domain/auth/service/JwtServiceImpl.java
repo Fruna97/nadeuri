@@ -87,19 +87,9 @@ public class JwtServiceImpl implements JwtService {
             return Optional.empty();
         }
 
-        Optional<Member> member = memberRepository.findByUuid(uuid.get());
-        if (member.isEmpty()) {
-            log.warn("존재하지 않는 회원의 Access Token 요청 발생 : " + uuid.toString());
-            return Optional.empty();
-        }
-
-        PrincipalDetails principalDetails = new PrincipalDetails(
-                member.get().getId(),
-                member.get().getUuid(),
-                member.get().getEmail(),
-                member.get().getPassword());
         // 임의로 인증된 객체 생성
         // 권장 생성 방식은 아니지만, 앞전의 AccessToken 유효성 검증을 근거로 둠
+        PrincipalDetails principalDetails = PrincipalDetails.ofJwt(uuid.get());
         Authentication authentication = new UsernamePasswordAuthenticationToken(principalDetails, null, null);
         return Optional.of(authentication);
     }

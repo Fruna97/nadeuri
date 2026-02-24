@@ -25,30 +25,29 @@ import com.github.fruna97.nadeuri.domain.nadeuri.model.Plan;
 import com.github.fruna97.nadeuri.domain.nadeuri.repository.NadeuriRepository;
 import com.github.fruna97.nadeuri.domain.nadeuri.repository.PlanRepository;
 import com.github.fruna97.nadeuri.exception.PlanNotFoundInNadeuriException;
-import com.github.fruna97.nadeuri.security.PrincipalDetails;
 
 @ExtendWith(MockitoExtension.class)
 class PlanServiceImplTest {
 
     @Mock
-    NadeuriRepository nadeuriRepository;
+    private NadeuriRepository nadeuriRepository;
 
     @Mock
-    PlanRepository planRepository;
+    private PlanRepository planRepository;
 
     @InjectMocks
-    PlanServiceImpl planServiceImpl;
+    private PlanServiceImpl planServiceImpl;
 
     @Test
     void createPlan() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         CreatePlanRequest createPlanRequest = mock(CreatePlanRequest.class);
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(true);
 
         long planId = 0L;
         UUID planUuid = UUID.randomUUID();
@@ -74,7 +73,7 @@ class PlanServiceImplTest {
         when(planRepository.save(plan)).thenReturn(savedPlan);
 
         // When
-        PlanSummaryResponse result = planServiceImpl.createPlan(principalDetails, nadeuriUuid, createPlanRequest);
+        PlanSummaryResponse result = planServiceImpl.createPlan(memberUuid, nadeuriUuid, createPlanRequest);
 
         // Then
         ArgumentCaptor<Plan> planCaptor = ArgumentCaptor.forClass(Plan.class);
@@ -90,13 +89,13 @@ class PlanServiceImplTest {
     @Test
     void createPlan_AllDayTrue() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         CreatePlanRequest createPlanRequest = mock(CreatePlanRequest.class);
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(true);
 
         String title = "test_plan";
         boolean allDay = true;
@@ -116,7 +115,7 @@ class PlanServiceImplTest {
         when(nadeuri.getUuid()).thenReturn(nadeuriUuid);
 
         // When
-        planServiceImpl.createPlan(principalDetails, nadeuriUuid, createPlanRequest);
+        planServiceImpl.createPlan(memberUuid, nadeuriUuid, createPlanRequest);
 
         // Then
         ArgumentCaptor<Plan> planCaptor = ArgumentCaptor.forClass(Plan.class);
@@ -131,30 +130,30 @@ class PlanServiceImplTest {
     @Test
     void createPlan_권한이없는회원() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         CreatePlanRequest createPlanRequest = mock(CreatePlanRequest.class);
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(false);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(false);
 
         // When
         // Then
         assertThrows(AuthenticationException.class,
-                () -> planServiceImpl.createPlan(principalDetails, nadeuriUuid, createPlanRequest)); // Nadeuri에 참가중이지 않은 회원이 일정 생성 요청을 했을 때, 인증 예외를 발생시키는지
+                () -> planServiceImpl.createPlan(memberUuid, nadeuriUuid, createPlanRequest)); // Nadeuri에 참가중이지 않은 회원이 일정 생성 요청을 했을 때, 인증 예외를 발생시키는지
     }
 
     @Test
     void getPlan() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(true);
 
         long planId = 0L;
         String title = "test_plan";
@@ -173,7 +172,7 @@ class PlanServiceImplTest {
         when(nadeuri.getUuid()).thenReturn(nadeuriUuid);
 
         // When
-        PlanSummaryResponse result = planServiceImpl.getPlan(principalDetails, nadeuriUuid, planUuid);
+        PlanSummaryResponse result = planServiceImpl.getPlan(memberUuid, nadeuriUuid, planUuid);
 
         // Then
         assertAll(() -> assertEquals(result.getTitle(), title),
@@ -184,30 +183,30 @@ class PlanServiceImplTest {
     @Test
     void getPlan_권한이없는회원() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(false);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(false);
 
         // When
         // Then
         assertThrows(AuthenticationException.class,
-                () -> planServiceImpl.getPlan(principalDetails, nadeuriUuid, planUuid)); // Nadeuri에 참가중이지 않은 회원이 일정 조회 요청을 했을 때, 인증 예외를 발생시키는지
+                () -> planServiceImpl.getPlan(memberUuid, nadeuriUuid, planUuid)); // Nadeuri에 참가중이지 않은 회원이 일정 조회 요청을 했을 때, 인증 예외를 발생시키는지
     }
 
     @Test
     void getPlan_나들이에없는일정조회() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(true);
 
         Plan plan = mock(Plan.class);
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
@@ -217,13 +216,13 @@ class PlanServiceImplTest {
         // When
         // Then
         assertThrows(PlanNotFoundInNadeuriException.class,
-                () -> planServiceImpl.getPlan(principalDetails, nadeuriUuid, planUuid)); // Nadeuri에 속하지 않은 일정 조회 요청 시, 관련 예외를 발생시키는지
+                () -> planServiceImpl.getPlan(memberUuid, nadeuriUuid, planUuid)); // Nadeuri에 속하지 않은 일정 조회 요청 시, 관련 예외를 발생시키는지
     }
 
     @Test
     void updatePlan() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
         String newTitle = "new_title";
@@ -240,7 +239,7 @@ class PlanServiceImplTest {
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(true);
 
         Plan plan = mock(Plan.class);
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
@@ -259,7 +258,7 @@ class PlanServiceImplTest {
         when(planRepository.save(plan)).thenReturn(savedPlan);
 
         // When
-        planServiceImpl.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest);
+        planServiceImpl.updatePlan(memberUuid, nadeuriUuid, planUuid, updatePlanRequest);
 
         // Then
         assertAll(() -> verify(plan).setTitle(newTitle),
@@ -273,7 +272,7 @@ class PlanServiceImplTest {
     @Test
     void updatePlan_AllDayTrue() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
         String newTitle = "new_title";
@@ -290,7 +289,7 @@ class PlanServiceImplTest {
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(true);
 
         String oldTitle = "old_title";
         String oldGooglePlacesId = "old_google_places_id";
@@ -313,7 +312,7 @@ class PlanServiceImplTest {
         when(nadeuri.getUuid()).thenReturn(nadeuriUuid);
 
         // When
-        planServiceImpl.updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest);
+        planServiceImpl.updatePlan(memberUuid, nadeuriUuid, planUuid, updatePlanRequest);
 
         // Then
         ArgumentCaptor<Plan> planCaptor = ArgumentCaptor.forClass(Plan.class);
@@ -328,32 +327,32 @@ class PlanServiceImplTest {
     @Test
     void updatePlan_수정권한이없는회원() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
         UpdatePlanRequest updatePlanRequest = mock(UpdatePlanRequest.class);
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(false);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(false);
 
         // When
         // Then
         assertThrows(AuthenticationException.class, () -> planServiceImpl
-                .updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest)); // Nadeuri에 참가중이지 않은 회원이 일정 갱신 요청을 했을 때, 인증 예외를 발생시키는지
+                .updatePlan(memberUuid, nadeuriUuid, planUuid, updatePlanRequest)); // Nadeuri에 참가중이지 않은 회원이 일정 갱신 요청을 했을 때, 인증 예외를 발생시키는지
     }
 
     @Test
     void updatePlan_나들이에없는일정() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
         UpdatePlanRequest updatePlanRequest = mock(UpdatePlanRequest.class);
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(true);
 
         Plan plan = mock(Plan.class);
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
@@ -363,19 +362,19 @@ class PlanServiceImplTest {
         // When
         // Then
         assertThrows(PlanNotFoundInNadeuriException.class, () -> planServiceImpl
-                .updatePlan(principalDetails, nadeuriUuid, planUuid, updatePlanRequest)); // Nadeuri에 속하지 않은 일정 갱신 요청 시, 관련 예외를 발생시키는지
+                .updatePlan(memberUuid, nadeuriUuid, planUuid, updatePlanRequest)); // Nadeuri에 속하지 않은 일정 갱신 요청 시, 관련 예외를 발생시키는지
     }
 
     @Test
     void deletePlan() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(true);
 
         Plan plan = mock(Plan.class);
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
@@ -383,7 +382,7 @@ class PlanServiceImplTest {
         when(nadeuri.getUuid()).thenReturn(nadeuriUuid);
 
         // When
-        planServiceImpl.deletePlan(principalDetails, nadeuriUuid, planUuid);
+        planServiceImpl.deletePlan(memberUuid, nadeuriUuid, planUuid);
 
         // Then
         verify(planRepository).delete(plan); // [plan]을 담아 [delete] 메서드를 호출했는지
@@ -392,29 +391,29 @@ class PlanServiceImplTest {
     @Test
     void deletePlan_수정권한이없는회원() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(false);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(false);
 
         // When
         // Then
-        assertThrows(AuthenticationException.class, () -> planServiceImpl.deletePlan(principalDetails, nadeuriUuid, planUuid)); // Nadeuri에 참가중이지 않은 회원이 일정 삭제 요청을 했을 때, 인증 예외를 발생시키는지
+        assertThrows(AuthenticationException.class, () -> planServiceImpl.deletePlan(memberUuid, nadeuriUuid, planUuid)); // Nadeuri에 참가중이지 않은 회원이 일정 삭제 요청을 했을 때, 인증 예외를 발생시키는지
     }
 
     @Test
     void deletePlan_나들이에없는일정() {
         // Given
-        PrincipalDetails principalDetails = mock(PrincipalDetails.class);
+        UUID memberUuid = UUID.randomUUID();
         UUID nadeuriUuid = UUID.randomUUID();
         UUID planUuid = UUID.randomUUID();
 
         Nadeuri nadeuri = mock(Nadeuri.class);
         when(nadeuriRepository.findByUuid(nadeuriUuid)).thenReturn(Optional.of(nadeuri));
-        when(nadeuri.hasAuthorityToNadeuri(principalDetails)).thenReturn(true);
+        when(nadeuri.hasAuthorityToNadeuri(memberUuid)).thenReturn(true);
 
         Plan plan = mock(Plan.class);
         when(planRepository.findByUuid(planUuid)).thenReturn(Optional.of(plan));
@@ -424,6 +423,6 @@ class PlanServiceImplTest {
         // When
         // Then
         assertThrows(PlanNotFoundInNadeuriException.class, () -> planServiceImpl
-                .deletePlan(principalDetails, nadeuriUuid, planUuid)); // Nadeuri에 속하지 않은 일정 삭제 요청 시, 관련 예외를 발생시키는지
+                .deletePlan(memberUuid, nadeuriUuid, planUuid)); // Nadeuri에 속하지 않은 일정 삭제 요청 시, 관련 예외를 발생시키는지
     }
 }

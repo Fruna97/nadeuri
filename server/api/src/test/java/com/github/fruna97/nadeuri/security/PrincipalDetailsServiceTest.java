@@ -44,7 +44,6 @@ class PrincipalDetailsServiceTest {
         assertAll(
                 () -> assertThat(result.getUsername()).isEqualTo(email),
                 () -> assertThat(result.getPassword()).isEqualTo(password),
-                () -> assertThat(result.getId()).isEqualTo(id),
                 () -> assertThat(result.getUuid()).isEqualTo(uuid)); // 불러온 회원 정보가 저장된 회원 정보와 같은지
     }
 
