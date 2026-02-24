@@ -40,7 +40,7 @@ public class PlanServiceImpl implements PlanService {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
                 .orElseThrow(NadeuriNotFoundException::new);
         if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
-            log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 수정 요청");
+            log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 생성 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
 
@@ -59,7 +59,7 @@ public class PlanServiceImpl implements PlanService {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
                 .orElseThrow(NadeuriNotFoundException::new);
         if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
-            log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 수정 요청");
+            log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 조회 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
 
@@ -105,7 +105,7 @@ public class PlanServiceImpl implements PlanService {
         Nadeuri nadeuri = nadeuriRepository.findByUuid(nadeuriUuid)
                 .orElseThrow(NadeuriNotFoundException::new);
         if (!nadeuri.hasAuthorityToNadeuri(principalDetails)) {
-            log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 수정 요청");
+            log.warn("비정상적인 요청 발생: Nadeuri에 참가중이지 않은 회원의 삭제 요청");
             throw new BadCredentialsException("자격 증명에 실패하였습니다.");
         }
 

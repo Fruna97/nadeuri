@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -73,7 +72,8 @@ public class NadeuriController {
     @PutMapping("/nadeuri/{uuid}")
     public ResponseEntity<ResponseDto<NadeuriSummaryResponse>> updateNadeuri(
             @AuthenticationPrincipal PrincipalDetails principalDetails,
-            @PathVariable("uuid") UUID uuid, @RequestBody UpdateNadeuriRequest updateNadeuriTitleRequest) {
+            @PathVariable("uuid") UUID uuid,
+            @RequestBody @Valid UpdateNadeuriRequest updateNadeuriTitleRequest) {
         NadeuriSummaryResponse nadeuriSummaryResponse = nadeuriService.updateNadeuri(principalDetails, uuid, updateNadeuriTitleRequest);
 
         return ResponseEntity

@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Nadeuri;
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Plan;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,6 +16,8 @@ import lombok.NoArgsConstructor;
 @Getter
 public class CreatePlanRequest {
 
+    @NotNull
+    @Size(max = 100)
     private String title;
 
     private String googlePlacesId;

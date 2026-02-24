@@ -124,7 +124,7 @@ class PlanServiceImplTest {
         Plan capturedPlan = planCaptor.getValue();
         assertAll(
                 () -> assertEquals(capturedPlan.getStartAt(), LocalDateTime.of(2025, 12, 14, 0, 0)),
-                () -> assertEquals(capturedPlan.getStartAt(), LocalDateTime.of(2025, 12, 14, 0, 0))
+                () -> assertEquals(capturedPlan.getEndAt(), LocalDateTime.of(2025, 12, 15, 0, 0))
         ); // [allDay]가 True 일 때, [startAt]과 [endAt]의 시간을 00시 00분으로 설정하고, Exclusive하게 전처리 하는지
     }
 
@@ -323,7 +323,7 @@ class PlanServiceImplTest {
     }
 
     @Test
-    void updateNadeuri_수정권한이없는회원() {
+    void updatePlan_수정권한이없는회원() {
         // Given
         PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
@@ -341,7 +341,7 @@ class PlanServiceImplTest {
     }
 
     @Test
-    void updateNadeuri_나들이에없는일정() {
+    void updatePlan_나들이에없는일정() {
         // Given
         PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
@@ -363,7 +363,7 @@ class PlanServiceImplTest {
     }
 
     @Test
-    void deleteNadeuri() {
+    void deletePlan() {
         // Given
         PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
@@ -385,7 +385,7 @@ class PlanServiceImplTest {
     }
 
     @Test
-    void deleteNadeuri_수정권한이없는회원() {
+    void deletePlan_수정권한이없는회원() {
         // Given
         PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();
@@ -401,7 +401,7 @@ class PlanServiceImplTest {
     }
 
     @Test
-    void deleteNadeuri_나들이에없는일정() {
+    void deletePlan_나들이에없는일정() {
         // Given
         PrincipalDetails principalDetails = mock(PrincipalDetails.class);
         UUID nadeuriUuid = UUID.randomUUID();

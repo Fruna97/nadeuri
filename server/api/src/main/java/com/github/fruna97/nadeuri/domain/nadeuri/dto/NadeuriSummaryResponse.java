@@ -20,6 +20,7 @@ public class NadeuriSummaryResponse {
     private List<MemberSummaryResponse> members;
     private List<PlanSummaryResponse> plans;
 
+    
     public static NadeuriSummaryResponse fromEntity(Nadeuri nadeuri) {
         return NadeuriSummaryResponse.builder()
                 .uuid(nadeuri.getUuid())
