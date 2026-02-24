@@ -92,6 +92,16 @@ public class CustomExceptionHandler {
                                 .resource("PLAN").build()).build());
     }
 
+    @ExceptionHandler(PlanNotFoundInNadeuriException.class)
+    public ResponseEntity<ResponseDto<Void>> planNotFoundInNadeuriHandler(PlanNotFoundInNadeuriException e) {
+        log.warn("비정상적인 요청 발생: Nadeuri에 포함되지 않은 일정 조회 요청");
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ResponseDto.<Void>builder()
+                        .message("접근 권한이 없습니다.")
+                        .build());
+    }
+
     @ExceptionHandler(AuthenticationException.class)
     public void authenticationExceptionHandler(AuthenticationException e) throws AuthenticationException {
         throw e;
