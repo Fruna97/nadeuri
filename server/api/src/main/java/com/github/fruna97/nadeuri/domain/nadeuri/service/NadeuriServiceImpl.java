@@ -62,7 +62,7 @@ public class NadeuriServiceImpl implements NadeuriService {
     }
 
     @Override
-    @Transactional
+    @Transactional(readOnly = true)
     public List<NadeuriSummaryResponse> getParticipatingNadeuris(PrincipalDetails principalDetails) {
         List<Nadeuri> participatingNadeuris = nadeuriRepository.findByMembers_Id(principalDetails.getId());
 

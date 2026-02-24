@@ -11,5 +11,5 @@ import lombok.NoArgsConstructor;
 @Getter
 public class ResourceNotFoundError {
 
-    String resource;
+    private String resource;
 }

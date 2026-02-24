@@ -1,9 +1,7 @@
 package com.github.fruna97.nadeuri.exception;
 
 import com.github.fruna97.nadeuri.domain.nadeuri.model.Plan;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 public class PlanNotFoundInNadeuriException extends RuntimeException {
 
     public PlanNotFoundInNadeuriException(Plan plan) {
