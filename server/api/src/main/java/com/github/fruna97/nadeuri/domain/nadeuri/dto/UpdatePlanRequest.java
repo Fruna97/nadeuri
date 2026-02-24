@@ -1,5 +1,7 @@
 package com.github.fruna97.nadeuri.domain.nadeuri.dto;
 
+import java.time.LocalDateTime;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,8 +12,20 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 @Getter
-public class CreateNadeuriRequest {
+public class UpdatePlanRequest {
 
+    @NotNull
     @Size(max = 100)
     private String title;
+
+    private String googlePlacesId;
+
+    @NotNull
+    private Boolean allDay;
+
+    @NotNull
+    private LocalDateTime startAt;
+
+    @NotNull
+    private LocalDateTime endAt;
 }

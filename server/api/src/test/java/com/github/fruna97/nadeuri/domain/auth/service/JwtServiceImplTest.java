@@ -94,9 +94,10 @@ class JwtServiceImplTest {
         // Given
         UUID uuid = UUID.randomUUID();
         Member member = Member.builder()
+                .id(0L)
+                .uuid(uuid)
                 .email("test_email")
                 .password("test_password")
-                .uuid(uuid)
                 .build();
         when(memberRepository.findByUuid(uuid)).thenReturn(Optional.of(member));
 

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -11,6 +12,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import com.github.fruna97.nadeuri.common.dto.ResourceNotFoundError;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
 import lombok.extern.slf4j.Slf4j;
 
@@ -25,8 +27,7 @@ public class CustomExceptionHandler {
                 .status(HttpStatus.CONFLICT)
                 .body(ResponseDto.<Void>builder()
                         .message(e.getMessage())
-                        .data(null)
-                        .build());
+                        .data(null).build());
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
@@ -48,8 +49,7 @@ public class CustomExceptionHandler {
                 .unprocessableEntity()
                 .body(ResponseDto.<Map<String, List<String>>>builder()
                         .message("유효성 검사에 실패했습니다.")
-                        .data(errorMap)
-                        .build());
+                        .data(errorMap).build());
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
@@ -58,7 +58,47 @@ public class CustomExceptionHandler {
                 .badRequest()
                 .body(ResponseDto.<Void>builder()
                         .message(e.getMessage())
-                        .data(null)
+                        .data(null).build());
+    }
+
+    @ExceptionHandler(NoSuchElementException.class)
+    public ResponseEntity<ResponseDto<Void>> noSuchElementHandler(NoSuchElementException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ResponseDto.<Void>builder()
+                        .message("요청한 리소스가 존재하지 않습니다.")
+                        .data(null).build());
+    }
+
+    @ExceptionHandler(NadeuriNotFoundException.class)
+    public ResponseEntity<ResponseDto<ResourceNotFoundError>> nadeuriNotFoundHandler(
+            NadeuriNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ResponseDto.<ResourceNotFoundError>builder()
+                        .message("해당하는 나들이가 존재하지 않습니다.")
+                        .data(ResourceNotFoundError.builder()
+                                .resource("NADEURI").build()).build());
+    }
+
+    @ExceptionHandler(PlanNotFoundException.class)
+    public ResponseEntity<ResponseDto<ResourceNotFoundError>> planNotFoundHandler(
+            PlanNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ResponseDto.<ResourceNotFoundError>builder()
+                        .message("해당하는 일정이 존재하지 않습니다.")
+                        .data(ResourceNotFoundError.builder()
+                                .resource("PLAN").build()).build());
+    }
+
+    @ExceptionHandler(PlanNotFoundInNadeuriException.class)
+    public ResponseEntity<ResponseDto<Void>> planNotFoundInNadeuriHandler(PlanNotFoundInNadeuriException e) {
+        log.warn("비정상적인 요청 발생: Nadeuri에 포함되지 않은 일정 조회 요청");
+        return ResponseEntity
+                .status(HttpStatus.FORBIDDEN)
+                .body(ResponseDto.<Void>builder()
+                        .message("접근 권한이 없습니다.")
                         .build());
     }
 
@@ -75,7 +115,6 @@ public class CustomExceptionHandler {
                 .internalServerError()
                 .body(ResponseDto.<Void>builder()
                         .message("Internal Server Error")
-                        .data(null)
-                        .build());
+                        .data(null).build());
     }
 }

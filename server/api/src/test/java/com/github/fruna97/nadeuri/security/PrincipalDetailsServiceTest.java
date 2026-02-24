@@ -27,7 +27,7 @@ class PrincipalDetailsServiceTest {
     @Test
     void loadUserByUsername() {
         // Given
-        Long id = 0L;
+        long id = 0L;
         UUID uuid = UUID.randomUUID();
         String email = "test_email@test.com";
         String password = "test_email@test.com";

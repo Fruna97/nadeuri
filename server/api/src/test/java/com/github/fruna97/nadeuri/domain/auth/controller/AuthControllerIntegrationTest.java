@@ -31,7 +31,7 @@ class AuthControllerIntegrationTest {
     @Test
     void signIn() throws Exception {
         // Given
-        Long id = 0L;
+        long id = 0L;
         UUID uuid = UUID.randomUUID();
         String email = "test_email@test.com";
         String password = "test_password";
@@ -58,7 +58,7 @@ class AuthControllerIntegrationTest {
     @Test
     void signInWithWrongCredentials() throws Exception {
         // Given
-        Long id = 0L;
+        long id = 0L;
         UUID uuid = UUID.randomUUID();
         String email = "test_email@test.com";
         String password = "test_password";

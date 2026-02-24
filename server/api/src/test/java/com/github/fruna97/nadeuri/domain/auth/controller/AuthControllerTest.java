@@ -58,7 +58,7 @@ class AuthControllerTest {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환하는지
         ResponseDto<TokenResponse> body = result.getBody();
         assertNotNull(body); // 응답 본문을 담고있는지
-        assertThat(body.getData()).isEqualTo(tokenResponse); // 응답 본문의 데이터에 [AuthService.signIn]이 반환한 [TokenResponse]를 담고있는지
+        assertThat(body.getData()).isEqualTo(tokenResponse); // 응답 본문의 데이터가 [AuthService.signIn]이 반환한 [TokenResponse]와 동일한지
     }
 
 
@@ -100,7 +100,7 @@ class AuthControllerTest {
         assertThat(result.getStatusCode()).isEqualTo(HttpStatus.OK); // 200 OK를 반환하는지
         ResponseDto<TokenResponse> body = result.getBody();
         assertNotNull(body); // 응답 본문을 담고있는지
-        assertThat(body.getData()).isEqualTo(tokenResponse); // 응답 본문의 데이터에 [JwtService.reissueToken]가 반환한 [TokenResponse]를 담고있는지
+        assertThat(body.getData()).isEqualTo(tokenResponse); // 응답 본문의 데이터가 [JwtService.reissueToken]가 반환한 [TokenResponse]와 동일한지
     }
 
     @Test
