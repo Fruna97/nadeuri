@@ -69,15 +69,30 @@ public class Nadeuri {
     }
 
     /**
-     * UUID에 해당하는 회원이 Nadeuri를 수정할 수 있는 권한을 가지고 있는지 확인합니다.
+     * UUID에 해당하는 회원이 Nadeuri에 대해 수정 권한이 있는지 확인합니다.
+     * <p>
+     * 현재는 {@code isParticipatingMember}와 동일하지만 권한 관련 기능 변경 시 이곳을 수정해주세요.
      * <p>
      * LAZY하게 Fetch되는 {@code members} 필드에 접근하기 위해, <strong>Managed(Attached) 상태의 엔티티에서 사용하는 것을
      * 권장합니다.</strong>
      * 
      * @param memberUuid 회원의 UUID.
-     * @return UUID에 해당하는 회원이 Nadeuri에 대한 수정 권한이 있는지 여부.
+     * @return UUID에 해당하는 회원이 Nadeuri에 수정 권한을 가지고 있는지 여부.
      */
     public boolean hasAuthorityToNadeuri(UUID memberUuid) {
+        return isParticipatingMember(memberUuid);
+    }
+
+    /**
+     * UUID에 해당하는 회원이 Nadeuri에 참가중인지 확인합니다.
+     * <p>
+     * LAZY하게 Fetch되는 {@code members} 필드에 접근하기 위해, <strong>Managed(Attached) 상태의 엔티티에서 사용하는 것을
+     * 권장합니다.</strong>
+     * 
+     * @param memberUuid 회원의 UUID.
+     * @return UUID에 해당하는 회원이 Nadeuri에 참가 여부.
+     */
+    public boolean isParticipatingMember(UUID memberUuid) {
         return members.stream().anyMatch(member -> member.getUuid().equals(memberUuid));
     }
 }

@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -14,21 +13,12 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import com.github.fruna97.nadeuri.common.dto.ResourceNotFoundError;
 import com.github.fruna97.nadeuri.common.dto.ResponseDto;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.extern.slf4j.Slf4j;
 
 @RestControllerAdvice
 @Slf4j
 public class CustomExceptionHandler {
-
-    @ExceptionHandler(DuplicateEmailException.class)
-    public ResponseEntity<ResponseDto<Void>> duplicateEmailHandler(DuplicateEmailException e) {
-        log.warn("중복된 이메일 가입 요청 : " + e.getMessage());
-        return ResponseEntity
-                .status(HttpStatus.CONFLICT)
-                .body(ResponseDto.<Void>builder()
-                        .message(e.getMessage())
-                        .data(null).build());
-    }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ResponseDto<Map<String, List<String>>>> requestValidationHandler(
@@ -61,13 +51,50 @@ public class CustomExceptionHandler {
                         .data(null).build());
     }
 
-    @ExceptionHandler(NoSuchElementException.class)
-    public ResponseEntity<ResponseDto<Void>> noSuchElementHandler(NoSuchElementException e) {
+    @ExceptionHandler(DuplicateEmailException.class)
+    public ResponseEntity<ResponseDto<Void>> duplicateEmailHandler(DuplicateEmailException e) {
+        log.warn("중복된 이메일 가입 요청 : " + e.getMessage());
+        return ResponseEntity
+                .status(HttpStatus.CONFLICT)
+                .body(ResponseDto.<Void>builder()
+                        .message(e.getMessage())
+                        .data(null).build());
+    }
+
+    @ExceptionHandler(InvalidInviteException.class)
+    public ResponseEntity<ResponseDto<Void>> invalidInviteExceptionHandler(InvalidInviteException e) {
+        log.warn("유효하지 않은 초대 : Code : {}, Message : {}", e.getInvalidInviteExceptionCode(),
+                e.getInvalidInviteExceptionCode().getMessage());
+        HttpStatus status = switch (e.getInvalidInviteExceptionCode()) {
+            case SELF_INVITE_NOT_ALLOWED -> HttpStatus.BAD_REQUEST;
+            case ALREADY_PARTICIPATING, DUPLICATE_INVITE -> HttpStatus.CONFLICT;
+        };
+
+        return ResponseEntity
+                .status(status)
+                .body(ResponseDto.<Void>builder()
+                        .message(e.getMessage())
+                        .data(null).build());
+    }
+
+    @ExceptionHandler(EntityNotFoundException.class)
+    public ResponseEntity<ResponseDto<Void>> entityNotFoundHandler(EntityNotFoundException e) {
         return ResponseEntity
                 .status(HttpStatus.NOT_FOUND)
                 .body(ResponseDto.<Void>builder()
                         .message("요청한 리소스가 존재하지 않습니다.")
                         .data(null).build());
+    }
+
+    @ExceptionHandler(MemberNotFoundException.class)
+    public ResponseEntity<ResponseDto<ResourceNotFoundError>> memberNotFoundHandler(
+            MemberNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ResponseDto.<ResourceNotFoundError>builder()
+                        .message("해당하는 회원이 존재하지 않습니다.")
+                        .data(ResourceNotFoundError.builder()
+                                .resource("MEMBER").build()).build());
     }
 
     @ExceptionHandler(NadeuriNotFoundException.class)
@@ -90,6 +117,17 @@ public class CustomExceptionHandler {
                         .message("해당하는 일정이 존재하지 않습니다.")
                         .data(ResourceNotFoundError.builder()
                                 .resource("PLAN").build()).build());
+    }
+
+    @ExceptionHandler(InviteNotFoundException.class)
+    public ResponseEntity<ResponseDto<ResourceNotFoundError>> inviteNotFoundHandler(
+            InviteNotFoundException e) {
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(ResponseDto.<ResourceNotFoundError>builder()
+                        .message("해당하는 초대가 존재하지 않습니다.")
+                        .data(ResourceNotFoundError.builder()
+                                .resource("INVITE").build()).build());
     }
 
     @ExceptionHandler(PlanNotFoundInNadeuriException.class)
