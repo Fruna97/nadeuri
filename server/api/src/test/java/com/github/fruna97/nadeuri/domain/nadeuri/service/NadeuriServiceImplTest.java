@@ -129,8 +129,7 @@ class NadeuriServiceImplTest {
                 .uuid(memberUuid)
                 .email("test_email@test.com")
                 .password("test_password")
-                .nickname("test_nickname")
-                .participatingNadeuris(participatingNadeuris).build();
+                .nickname("test_nickname").build();
 
         UUID uuid1 = UUID.randomUUID();
         UUID uuid2 = UUID.randomUUID();
