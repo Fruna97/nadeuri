@@ -12,7 +12,7 @@ class SignInViewModel extends ChangeNotifier {
   String commonErrorText = "";
 
   SignInViewModel({required AuthRepository authRepository}) : _authRepository = authRepository {
-    signIn = Command1<void, (String email, String password)>(_signIn);
+    signIn = Command1<void, (String, String)>(_signIn);
   }
 
   bool get validated => commonErrorText.isEmpty;

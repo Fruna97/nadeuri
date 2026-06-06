@@ -16,7 +16,7 @@ class SignUpViewModel extends ChangeNotifier {
   String _commonErrorText = "";
 
   SignUpViewModel({required MemberRepository memberRepository}) : _memberRepository = memberRepository {
-    signUp = Command1<void, (String email, String password, String nickname)>(_signUp);
+    signUp = Command1<void, (String, String, String)>(_signUp);
   }
 
   String? get emailErrorText => _emailErrorText;
