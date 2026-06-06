@@ -56,6 +56,8 @@ class _NadeuriDetailsPageState extends State<NadeuriDetailsPage> with RouteAware
             SizedBox(height: 32.0),
             _NadeuriTitleSection(nadeuriDetailsViewModel: widget._nadeuriDetailsViewModel),
             Divider(height: 32.0),
+            _InviteSection(nadeuriDetailsViewModel: widget._nadeuriDetailsViewModel),
+            Divider(height: 32.0),
             _ChatSection(),
             Divider(height: 32.0),
             _PlanSection(nadeuriDetailsViewModel: widget._nadeuriDetailsViewModel),
@@ -289,6 +291,247 @@ class _ChatSection extends StatelessWidget {
           Text("최근 채팅 메시지"),
         ],
       ),
+    );
+  }
+}
+
+class _InviteSection extends StatelessWidget {
+  final NadeuriDetailsViewModel _nadeuriDetailsViewModel;
+
+  const _InviteSection({super.key, required NadeuriDetailsViewModel nadeuriDetailsViewModel})
+    : _nadeuriDetailsViewModel = nadeuriDetailsViewModel;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text("멤버 초대", style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold)),
+        SizedBox(height: 16.0),
+        SizedBox(
+          width: double.infinity,
+          child: OutlinedButton.icon(
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return _InviteDialog(nadeuriDetailsViewModel: _nadeuriDetailsViewModel);
+                },
+              );
+            },
+            style: OutlinedButton.styleFrom(
+              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 14.0),
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+            ),
+            icon: Icon(Icons.person_add_alt_1_outlined),
+            label: Text("멤버 초대하기"),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _InviteDialog extends StatefulWidget {
+  final NadeuriDetailsViewModel _nadeuriDetailsViewModel;
+
+  const _InviteDialog({super.key, required NadeuriDetailsViewModel nadeuriDetailsViewModel})
+    : _nadeuriDetailsViewModel = nadeuriDetailsViewModel;
+
+  @override
+  State<_InviteDialog> createState() => _InviteDialogState();
+}
+
+class _InviteDialogState extends State<_InviteDialog> {
+  static final RegExp _emailRegex = RegExp(r'^[^\s@]+@[^\s@]+\.[^\s@]+$');
+  static const int _maxVisibleMembers = 5;
+
+  late final TextEditingController _inviteEmailController;
+  String? _inviteEmailErrorText;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _inviteEmailController = TextEditingController()..addListener(_onEmailChanged);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      insetPadding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 24.0),
+      child: AnimatedBuilder(
+        animation: widget._nadeuriDetailsViewModel,
+        builder: (context, _) {
+          final members = widget._nadeuriDetailsViewModel.nadeuri.members;
+          final visibleMembers = members.take(_maxVisibleMembers).toList();
+          final hiddenMemberCount = members.length - visibleMembers.length;
+
+          return ConstrainedBox(
+            constraints: BoxConstraints(maxWidth: 520.0),
+            child: Padding(
+              padding: EdgeInsets.all(20.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            "멤버 초대",
+                            style: TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: () => Navigator.pop(context),
+                          icon: Icon(Icons.close),
+                        ),
+                      ],
+                    ),
+                    SizedBox(height: 4.0),
+                    Text(
+                      "이메일을 입력해 나들이에 함께할 멤버를 초대해보세요.",
+                      style: TextStyle(color: Colors.grey.shade700, height: 1.4),
+                    ),
+                    SizedBox(height: 20.0),
+                    Container(
+                      width: double.infinity,
+                      padding: EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey.shade50,
+                        border: Border.all(color: Colors.grey.shade300),
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(Icons.group_outlined, color: Colors.blue),
+                              SizedBox(width: 8.0),
+                              Text("참여 멤버", style: TextStyle(fontWeight: FontWeight.w600)),
+                              SizedBox(width: 8.0),
+                              Text("${members.length}명", style: TextStyle(color: Colors.grey.shade600)),
+                            ],
+                          ),
+                          SizedBox(height: 12.0),
+                          Wrap(
+                            spacing: 8.0,
+                            runSpacing: 8.0,
+                            children: [
+                              for (final member in visibleMembers)
+                                Chip(
+                                  avatar: CircleAvatar(
+                                    foregroundImage: member.profileImageUrl == null
+                                        ? null
+                                        : NetworkImage(member.profileImageUrl!),
+                                    child: member.profileImageUrl == null
+                                        ? Icon(Icons.person, size: 18.0)
+                                        : null,
+                                  ),
+                                  label: Text(
+                                    member.nickname?.isNotEmpty == true ? member.nickname! : member.email,
+                                  ),
+                                ),
+                              if (hiddenMemberCount > 0)
+                                Chip(
+                                  label: Text("+$hiddenMemberCount"),
+                                  backgroundColor: Colors.grey.shade200,
+                                ),
+                            ],
+                          ),
+                          SizedBox(height: 20.0),
+                          TextField(
+                            controller: _inviteEmailController,
+                            keyboardType: TextInputType.emailAddress,
+                            textInputAction: TextInputAction.send,
+                            maxLength: 320,
+                            decoration: InputDecoration(
+                              labelText: "초대할 이메일",
+                              hintText: "example@nadauri.com",
+                              errorText: _inviteEmailErrorText,
+                              prefixIcon: Icon(Icons.mail_outline),
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(12.0)),
+                              counterText: "",
+                            ),
+                            onSubmitted: (_) => _submitInvite(),
+                          ),
+                          SizedBox(height: 12.0),
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: _inviteEmailController.text.trim().isEmpty ? null : _submitInvite,
+                              style: ElevatedButton.styleFrom(
+                                padding: EdgeInsets.symmetric(vertical: 14.0),
+                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
+                              ),
+                              icon: Icon(Icons.send_outlined),
+                              label: Text("초대 보내기"),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _inviteEmailController
+      ..removeListener(_onEmailChanged)
+      ..dispose();
+
+    super.dispose();
+  }
+
+  void _onEmailChanged() {
+    setState(() {
+      _inviteEmailErrorText = null;
+    });
+  }
+
+  void _submitInvite() {
+    final inviteEmail = _inviteEmailController.text.trim();
+
+    if (inviteEmail.isEmpty) {
+      setState(() {
+        _inviteEmailErrorText = "초대할 이메일을 입력해주세요.";
+      });
+      return;
+    }
+
+    if (!_emailRegex.hasMatch(inviteEmail)) {
+      setState(() {
+        _inviteEmailErrorText = "올바른 이메일 형식을 입력해주세요.";
+      });
+      return;
+    }
+
+    if (_isAlreadyParticipant(inviteEmail)) {
+      setState(() {
+        _inviteEmailErrorText = "이미 참여 중인 멤버입니다.";
+      });
+      return;
+    }
+
+    FocusScope.of(context).unfocus();
+    // TODO: 초대 API 요청
+  }
+
+  bool _isAlreadyParticipant(String inviteEmail) {
+    final normalizedEmail = inviteEmail.toLowerCase();
+
+    return widget._nadeuriDetailsViewModel.nadeuri.members.any(
+      (member) => member.email.trim().toLowerCase() == normalizedEmail,
     );
   }
 }
